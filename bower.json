@@ -1,0 +1,21 @@
+{
+  "name": "chrome-autopilot",
+  "version": "0.0.0",
+  "authors": [
+    "@kyo_ago"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "power-assert": "~0.6.1"
+  },
+  "dependencies": {
+    "async": "~0.7.0"
+  }
+}
