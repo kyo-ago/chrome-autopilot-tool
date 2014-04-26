@@ -1,6 +1,6 @@
 /// <reference path="../../base/Service.ts" />
 /// <reference path="./CommandList.ts" />
-/// <reference path="../../../../typings/async/async.d.ts" />
+/// <reference path="../../DefinitelyTyped/async/async.d.ts" />
 
 module CommandList {
     export class CommandListService extends Service.Service {

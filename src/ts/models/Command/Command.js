@@ -1,5 +1,5 @@
 /// <reference path="../../base/entity.ts" />
-/// <reference path="../../../../typings/es6-promises/es6-promises.d.ts" />
+/// <reference path="../../DefinitelyTyped/es6-promises/es6-promises.d.ts" />
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }

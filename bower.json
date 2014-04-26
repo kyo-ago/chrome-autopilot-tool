@@ -16,6 +16,7 @@
     "power-assert": "~0.6.1"
   },
   "dependencies": {
-    "async": "~0.7.0"
+    "async": "~0.7.0",
+    "angular": "~1.2.16"
   }
 }

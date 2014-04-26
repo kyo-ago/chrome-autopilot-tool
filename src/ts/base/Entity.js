@@ -1,4 +1,4 @@
-/// <reference path="../lib/UUID.ts" />
+/// <reference path="../Repositories/UUID.ts" />
 var Entity;
 (function (_Entity) {
     var Identity = (function () {

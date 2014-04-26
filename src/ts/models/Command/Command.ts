@@ -1,5 +1,5 @@
 /// <reference path="../../base/entity.ts" />
-/// <reference path="../../../../typings/es6-promises/es6-promises.d.ts" />
+/// <reference path="../../DefinitelyTyped/es6-promises/es6-promises.d.ts" />
 
 module Command {
     export class Command extends Entity.Entity {

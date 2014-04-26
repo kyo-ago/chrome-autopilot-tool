@@ -1,4 +1,4 @@
-/// <reference path="../lib/UUID.ts" />
+/// <reference path="../Repositories/UUID.ts" />
 module Entity {
     export class Identity {
         private identity: UUID.UUID;

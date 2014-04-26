@@ -1,6 +1,6 @@
 /// <reference path="../../base/Service.ts" />
 /// <reference path="./CommandList.ts" />
-/// <reference path="../../../../typings/async/async.d.ts" />
+/// <reference path="../../DefinitelyTyped/async/async.d.ts" />
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
