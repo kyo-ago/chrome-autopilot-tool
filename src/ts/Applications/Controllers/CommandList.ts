@@ -3,7 +3,7 @@
 /// <reference path="../../Models/CommandList/Model.ts" />
 /// <reference path="../Models/AddCommentMessage/Model.ts" />
 
-module ComandList {
+module CommandList {
     export interface Scope extends ng.IScope {
         ee: EventEmitter2;
         commandList: CommandList.Model;
@@ -13,7 +13,9 @@ module ComandList {
             $scope.ee = eventEmitter;
             $scope.commandList = new CommandList.Model();
             $scope.ee.addListener('addCommand', (message: AddCommentMessage.Model) => {
-                $scope.commandList.add(message.command);
+                $scope.$apply(() => {
+                    $scope.commandList.add(message.command);
+                });
             });
         }
     }

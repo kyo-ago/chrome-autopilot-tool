@@ -19,5 +19,8 @@ declare module chrome.extension {
             var command = new Command.Model(commandName, target, value);
             port.postMessage(AddCommentMessage.Repository.toMessage(command, insertBeforeLastCommand));
         };
+        port.onDisconnect.addListener(() => {
+            Recorder.deregister(observer, window);
+        })
     });
 })();

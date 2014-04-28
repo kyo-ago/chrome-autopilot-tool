@@ -192,5 +192,8 @@ var AddCommentMessage;
             var command = new Command.Model(commandName, target, value);
             port.postMessage(AddCommentMessage.Repository.toMessage(command, insertBeforeLastCommand));
         };
+        port.onDisconnect.addListener(function () {
+            Recorder.deregister(observer, window);
+        });
     });
 })();

@@ -5,8 +5,12 @@
 </head>
 <body>
 <div ng-controller="Autopilot">
-    <div ng-controller="ComandList">
-
+    <div ng-controller="CommandList">
+        <div ng-repeat="command in commandList.getCommands()">
+            {{command.type}}
+            {{command.target}}
+            {{command.value}}
+        </div>
     </div>
 </div>
 <script src="/bower_components/angular/angular.js"></script>

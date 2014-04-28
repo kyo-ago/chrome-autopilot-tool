@@ -269,6 +269,10 @@ var CommandList;
             this.commands.push(command);
         };
 
+        Model.prototype.getCommands = function () {
+            return this.commands;
+        };
+
         Model.prototype.splice = function (index, command) {
             this.commands.splice(index, 1, command);
         };
@@ -292,8 +296,8 @@ var CommandList;
     })(Base.Entity);
     CommandList.Model = Model;
 })(CommandList || (CommandList = {}));
-var ComandList;
-(function (ComandList) {
+var CommandList;
+(function (CommandList) {
     var Controller = (function () {
         function Controller($scope, eventEmitter) {
             this.$scope = $scope;
@@ -301,15 +305,38 @@ var ComandList;
             $scope.ee = eventEmitter;
             $scope.commandList = new CommandList.Model();
             $scope.ee.addListener('addCommand', function (message) {
-                $scope.commandList.add(message.command);
+                $scope.$apply(function () {
+                    $scope.commandList.add(message.command);
+                });
             });
         }
         return Controller;
     })();
-    ComandList.Controller = Controller;
-})(ComandList || (ComandList = {}));
+    CommandList.Controller = Controller;
+})(CommandList || (CommandList = {}));
+var Directives;
+(function (Directives) {
+    var CommandList = (function () {
+        function CommandList() {
+        }
+        CommandList.directive = function () {
+            return {
+                'restrict': 'E',
+                'transclude': 'element',
+                'replace': true,
+                'link': function ($scope, $element, $attr, ctrl, $transclude) {
+                    $scope.$watchCollection('commandList.commands', function (newValue) {
+                        console.log(newValue, $element);
+                    });
+                }
+            };
+        };
+        return CommandList;
+    })();
+    Directives.CommandList = CommandList;
+})(Directives || (Directives = {}));
 angular.module('Autopilot', []).factory('chromeTabs', function () {
     return new ChromeTabs();
 }).factory('eventEmitter', function () {
     return new EventEmitter2();
-}).controller('Autopilot', Autopilot.Controller).controller('ComandList', ComandList.Controller);
+}).directive('commandList', Directives.CommandList.directive).controller('Autopilot', Autopilot.Controller).controller('CommandList', CommandList.Controller);

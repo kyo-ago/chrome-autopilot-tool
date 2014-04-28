@@ -26,6 +26,10 @@ module CommandList {
             this.commands.push(command);
         }
 
+        getCommands() {
+            return this.commands;
+        }
+
         splice(index: number, command: Command.Model) {
             this.commands.splice(index, 1, command);
         }
