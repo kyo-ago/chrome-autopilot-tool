@@ -1,5 +1,5 @@
-/// <reference path="../Repositories/UUID.ts" />
-module Entity {
+/// <reference path="UUID.ts" />
+module Base {
     export class Identity {
         private identity: UUID.UUID;
         constructor (identity: UUID.UUID) {

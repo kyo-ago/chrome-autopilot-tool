@@ -1,10 +1,10 @@
-var Service;
-(function (_Service) {
+var Base;
+(function (Base) {
     var Service = (function () {
         function Service() {
         }
         return Service;
     })();
-    _Service.Service = Service;
-})(Service || (Service = {}));
+    Base.Service = Service;
+})(Base || (Base = {}));
 //# sourceMappingURL=Service.js.map

@@ -1,6 +1,6 @@
-/// <reference path="../Repositories/UUID.ts" />
-var Entity;
-(function (_Entity) {
+/// <reference path="UUID.ts" />
+var Base;
+(function (Base) {
     var Identity = (function () {
         function Identity(identity) {
             this.identity = identity;
@@ -10,7 +10,7 @@ var Entity;
         };
         return Identity;
     })();
-    _Entity.Identity = Identity;
+    Base.Identity = Identity;
 
     var Entity = (function () {
         function Entity(identity) {
@@ -28,6 +28,6 @@ var Entity;
         };
         return Entity;
     })();
-    _Entity.Entity = Entity;
-})(Entity || (Entity = {}));
+    Base.Entity = Entity;
+})(Base || (Base = {}));
 //# sourceMappingURL=entity.js.map

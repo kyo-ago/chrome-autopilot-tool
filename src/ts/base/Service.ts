@@ -1,3 +1,3 @@
-module Service {
+module Base {
     export class Service {}
 }

@@ -9,10 +9,10 @@
   "license": "GPL2",
   "devDependencies": {
     "power-assert": "^0.6.1",
-    "grunt-version": "^0.3.0",
     "grunt": "^0.4.4",
+    "grunt-version": "^0.3.0",
     "grunt-contrib-compress": "^0.8.0",
-    "grunt-contrib-copy": "^0.5.0",
-    "grunt-este-watch": "^0.1.15"
+    "grunt-este-watch": "^0.1.15",
+    "grunt-typescript": "^0.3.4"
   }
 }
