@@ -314,29 +314,8 @@ var CommandList;
     })();
     CommandList.Controller = Controller;
 })(CommandList || (CommandList = {}));
-var Directives;
-(function (Directives) {
-    var CommandList = (function () {
-        function CommandList() {
-        }
-        CommandList.directive = function () {
-            return {
-                'restrict': 'E',
-                'transclude': 'element',
-                'replace': true,
-                'link': function ($scope, $element, $attr, ctrl, $transclude) {
-                    $scope.$watchCollection('commandList.commands', function (newValue) {
-                        console.log(newValue, $element);
-                    });
-                }
-            };
-        };
-        return CommandList;
-    })();
-    Directives.CommandList = CommandList;
-})(Directives || (Directives = {}));
-angular.module('Autopilot', []).factory('chromeTabs', function () {
+var autopilotApp = angular.module('AutopilotApp', ['ui.sortable']).factory('chromeTabs', function () {
     return new ChromeTabs();
 }).factory('eventEmitter', function () {
     return new EventEmitter2();
-}).directive('commandList', Directives.CommandList.directive).controller('Autopilot', Autopilot.Controller).controller('CommandList', CommandList.Controller);
+}).controller('Autopilot', Autopilot.Controller).controller('CommandList', CommandList.Controller);

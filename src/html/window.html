@@ -1,19 +1,27 @@
 <!doctype html>
-<html ng-cloak ng-csp ng-app="Autopilot">
+<html ng-cloak ng-csp ng-app="AutopilotApp">
 <head>
     <title></title>
+    <link rel="stylesheet" href="/bower_components/jqueryui/themes/base/jquery-ui.css" />
+    <link rel="stylesheet" href="/bower_components/jqueryui/themes/base/jquery.ui.base.css" />
+    <link rel="stylesheet" href="/bower_components/angular/angular-csp.css" />
 </head>
 <body>
 <div ng-controller="Autopilot">
     <div ng-controller="CommandList">
-        <div ng-repeat="command in commandList.getCommands()">
-            {{command.type}}
-            {{command.target}}
-            {{command.value}}
-        </div>
+        <ul ui-sortable ng-model="commandList.commands">
+            <li ng-repeat="command in commandList.commands">
+                {{command.type}}
+                {{command.target}}
+                {{command.value}}
+            </li>
+        </ul>
     </div>
 </div>
+<script src="/bower_components/jQuery/dist/jquery.js"></script>
+<script src="/bower_components/jqueryui/ui/jquery-ui.js"></script>
 <script src="/bower_components/angular/angular.js"></script>
+<script src="/bower_components/angular-ui-sortable/src/sortable.js"></script>
 <script src="/bower_components/eventemitter2/lib/eventemitter2.js"></script>
 <script src="/src/js/window.js"></script>
 </body>

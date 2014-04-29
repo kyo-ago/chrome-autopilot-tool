@@ -53,7 +53,7 @@ module.exports = function(grunt) {
                     enabled: false
                 }
             },
-            'ts': function(filepath) { return 'typescript'; }
+            'ts': function(filepath) { return 'typescript:window'; }
         }
     });
 
