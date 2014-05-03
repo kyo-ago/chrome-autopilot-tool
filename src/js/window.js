@@ -161,29 +161,34 @@ var CommandList;
     })(Base.Entity);
     CommandList.Model = Model;
 })(CommandList || (CommandList = {}));
-
-var ChromeTabs = (function () {
-    function ChromeTabs() {
-        this.errorMessage = 'Security Error.\ndoes not run on "chrome://" page.\n';
-    }
-    ChromeTabs.prototype.connect = function () {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            chrome.tabs.query({
-                'active': true,
-                'windowType': 'normal'
-            }, function (tabs) {
-                var tab = tabs[0];
-                if (tab.url.match(/^chrome:/)) {
-                    return reject(_this.errorMessage);
-                }
-                var port = chrome.tabs.connect(tab.id);
-                resolve(port);
-            });
-        });
-    };
-    return ChromeTabs;
-})();
+var Message;
+(function (Message) {
+    var Model = (function (_super) {
+        __extends(Model, _super);
+        function Model() {
+            _super.apply(this, arguments);
+        }
+        return Model;
+    })(Base.Entity);
+    Message.Model = Model;
+})(Message || (Message = {}));
+var Message;
+(function (Message) {
+    (function (AddComment) {
+        var Model = (function (_super) {
+            __extends(Model, _super);
+            function Model(command, insertBeforeLastCommand) {
+                _super.call(this);
+                this.command = command;
+                this.insertBeforeLastCommand = insertBeforeLastCommand;
+            }
+            Model.name = 'addComment';
+            return Model;
+        })(Message.Model);
+        AddComment.Model = Model;
+    })(Message.AddComment || (Message.AddComment = {}));
+    var AddComment = Message.AddComment;
+})(Message || (Message = {}));
 var Command;
 (function (Command) {
     var Repository = (function () {
@@ -205,17 +210,6 @@ var Command;
 })(Command || (Command = {}));
 var Message;
 (function (Message) {
-    var Model = (function (_super) {
-        __extends(Model, _super);
-        function Model() {
-            _super.apply(this, arguments);
-        }
-        return Model;
-    })(Base.Entity);
-    Message.Model = Model;
-})(Message || (Message = {}));
-var Message;
-(function (Message) {
     var Repository = (function () {
         function Repository() {
         }
@@ -228,23 +222,6 @@ var Message;
         return Repository;
     })();
     Message.Repository = Repository;
-})(Message || (Message = {}));
-var Message;
-(function (Message) {
-    (function (AddComment) {
-        var Model = (function (_super) {
-            __extends(Model, _super);
-            function Model(command, insertBeforeLastCommand) {
-                _super.call(this);
-                this.command = command;
-                this.insertBeforeLastCommand = insertBeforeLastCommand;
-            }
-            Model.name = 'addComment';
-            return Model;
-        })(Message.Model);
-        AddComment.Model = Model;
-    })(Message.AddComment || (Message.AddComment = {}));
-    var AddComment = Message.AddComment;
 })(Message || (Message = {}));
 var Message;
 (function (Message) {
@@ -311,6 +288,29 @@ var Autopilot;
     })();
     Autopilot.Controller = Controller;
 })(Autopilot || (Autopilot = {}));
+
+var ChromeTabs = (function () {
+    function ChromeTabs() {
+        this.errorMessage = 'Security Error.\ndoes not run on "chrome://" page.\n';
+    }
+    ChromeTabs.prototype.connect = function () {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            chrome.tabs.query({
+                'active': true,
+                'windowType': 'normal'
+            }, function (tabs) {
+                var tab = tabs[0];
+                if (tab.url.match(/^chrome:/)) {
+                    return reject(_this.errorMessage);
+                }
+                var port = chrome.tabs.connect(tab.id);
+                resolve(port);
+            });
+        });
+    };
+    return ChromeTabs;
+})();
 var autopilotApp;
 Promise.all([
     new Promise(function (resolve, reject) {

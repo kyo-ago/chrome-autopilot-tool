@@ -219,14 +219,15 @@ var Message;
     chrome.extension.onConnect.addListener(function (port) {
         Recorder.register(observer, window);
         observer.addCommand = function (commandName, target, value, window, insertBeforeLastCommand) {
-            var addCommentMessage = messageAddCommentRepository.fromObject({
+            var message = {
                 'command': {
                     'type': commandName,
                     'target': target,
                     'value': value
                 },
                 'insertBeforeLastCommand': insertBeforeLastCommand
-            });
+            };
+            var addCommentMessage = messageAddCommentRepository.fromObject(message);
             port.postMessage(messageAddCommentRepository.toObject(addCommentMessage));
             port.onMessage.addListener(function (a, b) {
             });

@@ -19,7 +19,7 @@ Promise.all([
             return port;
         })
         .service('commandList', CommandList.Model)
-        .service('messageManage', Message.Manager)
+        .service('messageDispatcher', Message.Dispatcher)
         .controller('Autopilot', Autopilot.Controller)
     ;
     angular.bootstrap(document, ['AutopilotApp']);
