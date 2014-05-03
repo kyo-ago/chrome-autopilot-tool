@@ -30,4 +30,4 @@ var Base;
     })();
     Base.Entity = Entity;
 })(Base || (Base = {}));
-//# sourceMappingURL=entity.js.map
+//# sourceMappingURL=Entity.js.map

@@ -1,4 +1,4 @@
-class Observer {
+class RecorderObserver {
     recordingEnabled: boolean = true;
     isSidebar: boolean = false;
     getUserLog () {

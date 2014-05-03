@@ -1,5 +1,5 @@
 <!doctype html>
-<html ng-cloak ng-csp ng-app="AutopilotApp">
+<html ng-cloak ng-csp>
 <head>
     <title></title>
     <link rel="stylesheet" href="/bower_components/jqueryui/themes/base/jquery-ui.css" />
@@ -8,15 +8,14 @@
 </head>
 <body>
 <div ng-controller="Autopilot">
-    <div ng-controller="CommandList">
-        <ul ui-sortable ng-model="commandList.commands">
-            <li ng-repeat="command in commandList.commands">
-                {{command.type}}
-                {{command.target}}
-                {{command.value}}
-            </li>
-        </ul>
-    </div>
+    <ul ui-sortable ng-model="commandList.commands">
+        <li ng-repeat="command in commandList.commands">
+            {{command.type}}
+            {{command.target}}
+            {{command.value}}
+        </li>
+    </ul>
+    <input type="button" ng-click="playAll()">
 </div>
 <script src="/bower_components/jQuery/dist/jquery.js"></script>
 <script src="/bower_components/jqueryui/ui/jquery-ui.js"></script>

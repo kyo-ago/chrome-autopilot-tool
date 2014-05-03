@@ -109,140 +109,6 @@ var Command;
     })(Base.Entity);
     Command.Model = Model;
 })(Command || (Command = {}));
-var Command;
-(function (Command) {
-    var Repository = (function () {
-        function Repository() {
-        }
-        Repository.prototype.toObject = function (command) {
-            return {
-                'type': command.type,
-                'target': command.target,
-                'value': command.value
-            };
-        };
-        Repository.prototype.fromObject = function (command) {
-            return new Command.Model(command.type, command.target, command.value);
-        };
-        return Repository;
-    })();
-    Command.Repository = Repository;
-})(Command || (Command = {}));
-var AddCommentMessage;
-(function (AddCommentMessage) {
-    var Model = (function () {
-        function Model(command, insertBeforeLastCommand) {
-            this.command = command;
-            this.insertBeforeLastCommand = insertBeforeLastCommand;
-        }
-        Model.prototype.equals = function (message) {
-            return message.name === name;
-        };
-        Model.name = 'AddCommentMessage';
-        return Model;
-    })();
-    AddCommentMessage.Model = Model;
-})(AddCommentMessage || (AddCommentMessage = {}));
-var AddCommentMessage;
-(function (AddCommentMessage) {
-    var Repository = (function () {
-        function Repository() {
-        }
-        Repository.toMessage = function (command, insertBeforeLastCommand) {
-            return {
-                'name': AddCommentMessage.Model.name,
-                'command': (new Command.Repository()).toObject(command),
-                'insertBeforeLastCommand': insertBeforeLastCommand
-            };
-        };
-        Repository.isMessage = function (msg) {
-            return msg.name === AddCommentMessage.Model.name;
-        };
-        Repository.fromMessage = function (msg) {
-            var command = (new Command.Repository()).fromObject(msg.command);
-            return new AddCommentMessage.Model(command, msg.insertBeforeLastCommand);
-        };
-        return Repository;
-    })();
-    AddCommentMessage.Repository = Repository;
-})(AddCommentMessage || (AddCommentMessage = {}));
-var ChromeTabs = (function () {
-    function ChromeTabs() {
-        this.ee = new EventEmitter2();
-    }
-    ChromeTabs.prototype.connect = function () {
-        var _this = this;
-        this.ee = new EventEmitter2();
-        return new Promise(function (resolve, reject) {
-            chrome.tabs.query({
-                'active': true,
-                'windowType': 'normal'
-            }, function (tabs) {
-                var tab = tabs[0];
-                if (tab.url.match(/^chrome:/)) {
-                    return reject('Security Error.\ndoes not run on "chrome://" page.');
-                }
-                var port = chrome.tabs.connect(tab.id, {
-                    'name': 'open'
-                });
-                port.onMessage.addListener(function (msg) {
-                    _this.ee.emit('message', msg);
-                });
-                resolve(function (callback) {
-                    _this.ee.addListener('message', callback);
-                });
-            });
-        });
-    };
-    return ChromeTabs;
-})();
-var Autopilot;
-(function (Autopilot) {
-    var Controller = (function () {
-        function Controller($scope, chromeTabs, eventEmitter) {
-            this.$scope = $scope;
-            this.chromeTabs = chromeTabs;
-            this.eventEmitter = eventEmitter;
-            $scope.ee = eventEmitter;
-            chromeTabs.connect().then(function (callback) {
-                callback(function (msg) {
-                    if (AddCommentMessage.Repository.isMessage(msg)) {
-                        var message = AddCommentMessage.Repository.fromMessage(msg);
-                        $scope.ee.emit('addCommand', message);
-                    }
-                });
-            }).catch(function (message) {
-                alert(message);
-            });
-        }
-        return Controller;
-    })();
-    Autopilot.Controller = Controller;
-})(Autopilot || (Autopilot = {}));
-var Base;
-(function (Base) {
-    var Service = (function () {
-        function Service() {
-        }
-        return Service;
-    })();
-    Base.Service = Service;
-})(Base || (Base = {}));
-var Command;
-(function (Command) {
-    var Service = (function (_super) {
-        __extends(Service, _super);
-        function Service() {
-            _super.call(this);
-        }
-        Service.prototype.play = function (command) {
-            return new Promise(function () {
-            });
-        };
-        return Service;
-    })(Base.Service);
-    Command.Service = Service;
-})(Command || (Command = {}));
 var CommandList;
 (function (CommandList) {
     var Model = (function (_super) {
@@ -255,7 +121,6 @@ var CommandList;
             this.commands = commands;
             this.name = name;
             this.url = url;
-            this.commandService = new Command.Service();
         }
         Model.prototype.clone = function (commands, name, url) {
             if (typeof commands === "undefined") { commands = this.commands; }
@@ -296,26 +161,170 @@ var CommandList;
     })(Base.Entity);
     CommandList.Model = Model;
 })(CommandList || (CommandList = {}));
-var CommandList;
-(function (CommandList) {
+
+var ChromeTabs = (function () {
+    function ChromeTabs() {
+        this.errorMessage = 'Security Error.\ndoes not run on "chrome://" page.\n';
+    }
+    ChromeTabs.prototype.connect = function () {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            chrome.tabs.query({
+                'active': true,
+                'windowType': 'normal'
+            }, function (tabs) {
+                var tab = tabs[0];
+                if (tab.url.match(/^chrome:/)) {
+                    return reject(_this.errorMessage);
+                }
+                var port = chrome.tabs.connect(tab.id);
+                resolve(port);
+            });
+        });
+    };
+    return ChromeTabs;
+})();
+var Command;
+(function (Command) {
+    var Repository = (function () {
+        function Repository() {
+        }
+        Repository.prototype.toObject = function (command) {
+            return {
+                'type': command.type,
+                'target': command.target,
+                'value': command.value
+            };
+        };
+        Repository.prototype.fromObject = function (command) {
+            return new Command.Model(command.type, command.target, command.value);
+        };
+        return Repository;
+    })();
+    Command.Repository = Repository;
+})(Command || (Command = {}));
+var Message;
+(function (Message) {
+    var Model = (function (_super) {
+        __extends(Model, _super);
+        function Model() {
+            _super.apply(this, arguments);
+        }
+        return Model;
+    })(Base.Entity);
+    Message.Model = Model;
+})(Message || (Message = {}));
+var Message;
+(function (Message) {
+    var Repository = (function () {
+        function Repository() {
+        }
+        Repository.prototype.toObject = function (entity) {
+            return {};
+        };
+        Repository.prototype.fromObject = function (object) {
+            return new Message.Model();
+        };
+        return Repository;
+    })();
+    Message.Repository = Repository;
+})(Message || (Message = {}));
+var Message;
+(function (Message) {
+    (function (AddComment) {
+        var Model = (function (_super) {
+            __extends(Model, _super);
+            function Model(command, insertBeforeLastCommand) {
+                _super.call(this);
+                this.command = command;
+                this.insertBeforeLastCommand = insertBeforeLastCommand;
+            }
+            Model.name = 'addComment';
+            return Model;
+        })(Message.Model);
+        AddComment.Model = Model;
+    })(Message.AddComment || (Message.AddComment = {}));
+    var AddComment = Message.AddComment;
+})(Message || (Message = {}));
+var Message;
+(function (Message) {
+    (function (AddComment) {
+        var Repository = (function (_super) {
+            __extends(Repository, _super);
+            function Repository() {
+                _super.apply(this, arguments);
+                this.commandRepository = new Command.Repository();
+            }
+            Repository.prototype.toObject = function (message) {
+                return {
+                    'name': Message.AddComment.Model.name,
+                    'command': this.commandRepository.toObject(message.command),
+                    'insertBeforeLastCommand': message.insertBeforeLastCommand
+                };
+            };
+            Repository.prototype.fromObject = function (message) {
+                var command = this.commandRepository.fromObject(message.command);
+                var insertBeforeLastCommand = !!message.insertBeforeLastCommand;
+                return new Message.AddComment.Model(command, insertBeforeLastCommand);
+            };
+            return Repository;
+        })(Message.Repository);
+        AddComment.Repository = Repository;
+    })(Message.AddComment || (Message.AddComment = {}));
+    var AddComment = Message.AddComment;
+})(Message || (Message = {}));
+var Message;
+(function (Message) {
+    var Manager = (function () {
+        function Manager() {
+            this.messageAddCommentModel = new Message.AddComment.Repository();
+        }
+        Manager.prototype.dispatch = function (message, dispatcher) {
+            if (message.name == Message.AddComment.Model.name) {
+                dispatcher.MessageAddCommentModel(this.messageAddCommentModel.fromObject(message));
+            }
+        };
+        return Manager;
+    })();
+    Message.Manager = Manager;
+})(Message || (Message = {}));
+var Autopilot;
+(function (Autopilot) {
     var Controller = (function () {
-        function Controller($scope, eventEmitter) {
-            this.$scope = $scope;
-            this.eventEmitter = eventEmitter;
-            $scope.ee = eventEmitter;
-            $scope.commandList = new CommandList.Model();
-            $scope.ee.addListener('addCommand', function (message) {
-                $scope.$apply(function () {
-                    $scope.commandList.add(message.command);
+        function Controller($scope, chromeTabs, commandList, messageManage) {
+            $scope.commandList = commandList;
+            $scope.playAll = function () {
+                chromeTabs.postMessage({
+                    'name': 'playAll',
+                    'commands': JSON.stringify($scope.commandList.commands)
+                });
+            };
+            chromeTabs.onMessage.addListener(function (msg) {
+                messageManage.dispatch(msg, {
+                    MessageAddCommentModel: function (message) {
+                        $scope.commandList.add(message.command);
+                    }
                 });
             });
         }
         return Controller;
     })();
-    CommandList.Controller = Controller;
-})(CommandList || (CommandList = {}));
-var autopilotApp = angular.module('AutopilotApp', ['ui.sortable']).factory('chromeTabs', function () {
-    return new ChromeTabs();
-}).factory('eventEmitter', function () {
-    return new EventEmitter2();
-}).controller('Autopilot', Autopilot.Controller).controller('CommandList', CommandList.Controller);
+    Autopilot.Controller = Controller;
+})(Autopilot || (Autopilot = {}));
+var autopilotApp;
+Promise.all([
+    new Promise(function (resolve, reject) {
+        (new ChromeTabs()).connect().then(resolve).catch(reject);
+    }),
+    new Promise(function (resolve, reject) {
+        angular.element(document).ready(resolve);
+    })
+]).then(function (results) {
+    var port = results[0];
+    autopilotApp = angular.module('AutopilotApp', ['ui.sortable']).factory('chromeTabs', function () {
+        return port;
+    }).service('commandList', CommandList.Model).service('messageManage', Message.Manager).controller('Autopilot', Autopilot.Controller);
+    angular.bootstrap(document, ['AutopilotApp']);
+}).catch(function (messages) {
+    alert(messages.join('\n'));
+});

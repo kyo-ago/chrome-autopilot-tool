@@ -109,19 +109,19 @@ var Command;
     })(Base.Entity);
     Command.Model = Model;
 })(Command || (Command = {}));
-var Observer = (function () {
-    function Observer() {
+var RecorderObserver = (function () {
+    function RecorderObserver() {
         this.recordingEnabled = true;
         this.isSidebar = false;
     }
-    Observer.prototype.getUserLog = function () {
+    RecorderObserver.prototype.getUserLog = function () {
         return console;
     };
-    Observer.prototype.addCommand = function (command, target, value, window, insertBeforeLastCommand) {
+    RecorderObserver.prototype.addCommand = function (command, target, value, window, insertBeforeLastCommand) {
     };
-    Observer.prototype.onUnloadDocument = function (doc) {
+    RecorderObserver.prototype.onUnloadDocument = function (doc) {
     };
-    return Observer;
+    return RecorderObserver;
 })();
 var Command;
 (function (Command) {
@@ -142,58 +142,94 @@ var Command;
     })();
     Command.Repository = Repository;
 })(Command || (Command = {}));
-var AddCommentMessage;
-(function (AddCommentMessage) {
-    var Model = (function () {
-        function Model(command, insertBeforeLastCommand) {
-            this.command = command;
-            this.insertBeforeLastCommand = insertBeforeLastCommand;
+var Message;
+(function (Message) {
+    var Model = (function (_super) {
+        __extends(Model, _super);
+        function Model() {
+            _super.apply(this, arguments);
         }
-        Model.prototype.equals = function (message) {
-            return message.name === name;
-        };
-        Model.name = 'AddCommentMessage';
         return Model;
-    })();
-    AddCommentMessage.Model = Model;
-})(AddCommentMessage || (AddCommentMessage = {}));
-var AddCommentMessage;
-(function (AddCommentMessage) {
+    })(Base.Entity);
+    Message.Model = Model;
+})(Message || (Message = {}));
+var Message;
+(function (Message) {
     var Repository = (function () {
         function Repository() {
         }
-        Repository.toMessage = function (command, insertBeforeLastCommand) {
-            return {
-                'name': AddCommentMessage.Model.name,
-                'command': (new Command.Repository()).toObject(command),
-                'insertBeforeLastCommand': insertBeforeLastCommand
-            };
+        Repository.prototype.toObject = function (entity) {
+            return {};
         };
-        Repository.isMessage = function (msg) {
-            return msg.name === AddCommentMessage.Model.name;
-        };
-        Repository.fromMessage = function (msg) {
-            var command = (new Command.Repository()).fromObject(msg.command);
-            return new AddCommentMessage.Model(command, msg.insertBeforeLastCommand);
+        Repository.prototype.fromObject = function (object) {
+            return new Message.Model();
         };
         return Repository;
     })();
-    AddCommentMessage.Repository = Repository;
-})(AddCommentMessage || (AddCommentMessage = {}));
+    Message.Repository = Repository;
+})(Message || (Message = {}));
+var Message;
+(function (Message) {
+    (function (AddComment) {
+        var Model = (function (_super) {
+            __extends(Model, _super);
+            function Model(command, insertBeforeLastCommand) {
+                _super.call(this);
+                this.command = command;
+                this.insertBeforeLastCommand = insertBeforeLastCommand;
+            }
+            Model.name = 'addComment';
+            return Model;
+        })(Message.Model);
+        AddComment.Model = Model;
+    })(Message.AddComment || (Message.AddComment = {}));
+    var AddComment = Message.AddComment;
+})(Message || (Message = {}));
+var Message;
+(function (Message) {
+    (function (AddComment) {
+        var Repository = (function (_super) {
+            __extends(Repository, _super);
+            function Repository() {
+                _super.apply(this, arguments);
+                this.commandRepository = new Command.Repository();
+            }
+            Repository.prototype.toObject = function (message) {
+                return {
+                    'name': Message.AddComment.Model.name,
+                    'command': this.commandRepository.toObject(message.command),
+                    'insertBeforeLastCommand': message.insertBeforeLastCommand
+                };
+            };
+            Repository.prototype.fromObject = function (message) {
+                var command = this.commandRepository.fromObject(message.command);
+                var insertBeforeLastCommand = !!message.insertBeforeLastCommand;
+                return new Message.AddComment.Model(command, insertBeforeLastCommand);
+            };
+            return Repository;
+        })(Message.Repository);
+        AddComment.Repository = Repository;
+    })(Message.AddComment || (Message.AddComment = {}));
+    var AddComment = Message.AddComment;
+})(Message || (Message = {}));
 
 (function () {
-    var observer = new Observer();
+    var observer = new RecorderObserver();
+    var messageAddCommentRepository = new Message.AddComment.Repository();
     chrome.extension.onConnect.addListener(function (port) {
-        if (port.name !== 'open') {
-            return;
-        }
         Recorder.register(observer, window);
         observer.addCommand = function (commandName, target, value, window, insertBeforeLastCommand) {
-            var command = new Command.Model(commandName, target, value);
-            port.postMessage(AddCommentMessage.Repository.toMessage(command, insertBeforeLastCommand));
+            var addCommentMessage = messageAddCommentRepository.fromObject({
+                'command': {
+                    'type': commandName,
+                    'target': target,
+                    'value': value
+                },
+                'insertBeforeLastCommand': insertBeforeLastCommand
+            });
+            port.postMessage(messageAddCommentRepository.toObject(addCommentMessage));
+            port.onMessage.addListener(function (a, b) {
+            });
         };
-        port.onDisconnect.addListener(function () {
-            Recorder.deregister(observer, window);
-        });
     });
 })();

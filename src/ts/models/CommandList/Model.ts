@@ -1,11 +1,8 @@
 /// <reference path="../../Base/entity.ts" />
 /// <reference path="../Command/Model.ts" />
-/// <reference path="../Command/Service.ts" />
 
 module CommandList {
     export class Model extends Base.Entity {
-        private commandService = new Command.Service();
-
         constructor (
             public commands: Command.Model[] = [],
             public name = '',

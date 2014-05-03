@@ -1,4 +1,5 @@
 /// <reference path="UUID.ts" />
+
 module Base {
     export class Identity {
         private identity: UUID.UUID;
@@ -17,7 +18,6 @@ module Base {
         }
 
         eq (e: Entity): boolean {
-
             return this.identity.eq(e.identity);
         }
 
