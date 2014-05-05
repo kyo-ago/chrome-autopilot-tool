@@ -1,11 +1,13 @@
 /// <reference path="../../Base/EntityList/Repository.ts" />
-/// <reference path="../Command/Repository.ts" />
+/// <reference path="../SeleniumCommand/Repository.ts" />
 /// <reference path="./Model.ts" />
 
-module Models.CommandList {
-    export class Repository extends Base.EntityList.Repository<Command.Model, Model> implements Base.Entity.Repository<Model> {
+module Models.SeleniumCommandList {
+    export class Repository extends Base.EntityList.Repository<SeleniumCommand.Model, Model> implements Base.Entity.Repository<Model> {
+        seleniumIDECommandObject: any;
+
         constructor () {
-            super(new Command.Repository());
+            super(new SeleniumCommand.Repository());
         }
 
         toObject (commandList: Model) {

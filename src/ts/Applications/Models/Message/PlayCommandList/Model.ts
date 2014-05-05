@@ -4,7 +4,7 @@
 module Message.PlayCommandList {
     export class Model extends Message.Model {
         static name = 'playCommandList';
-        constructor (public commandList: CommandList.Model) {
+        constructor (public commandList: Models.CommandList.Model) {
             super();
         }
     }

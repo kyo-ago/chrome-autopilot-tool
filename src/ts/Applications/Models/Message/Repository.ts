@@ -1,12 +1,12 @@
-/// <reference path="../../../Base/Repository.ts" />
+/// <reference path="../../../Base/Entity/Repository.ts" />
 /// <reference path="./Model.ts" />
 
 module Message {
-    export class Repository implements Base.Repository {
+    export class Repository implements Base.Entity.Repository<Model> {
         toObject (entity: Model) {
             return {};
         }
-        fromObject (object: any) {
+        fromObject (object: Object) {
             return new Model();
         }
     }

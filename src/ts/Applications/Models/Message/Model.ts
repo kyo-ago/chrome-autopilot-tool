@@ -1,6 +1,6 @@
-/// <reference path="../../../Base/Entity.ts" />
+/// <reference path="../../../Base/Entity/Model.ts" />
 
 module Message {
-    export class Model extends Base.Entity {
+    export class Model extends Base.Entity.Model {
     }
 }

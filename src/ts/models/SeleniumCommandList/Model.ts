@@ -1,14 +1,14 @@
 /// <reference path="../../Base/EntityList/Model.ts" />
-/// <reference path="../Command/Model.ts" />
+/// <reference path="../SeleniumCommand/Model.ts" />
 
-module Models.CommandList {
-    export class Model extends Base.EntityList.Model<Models.Command.Model> {
+module Models.SeleniumCommandList {
+    export class Model extends Base.EntityList.Model<Models.SeleniumCommand.Model> {
         constructor (
-            private commands: Models.Command.Model[] = [],
+            private commands: SeleniumCommand.Model[] = [],
             public name = '',
             public url = ''
         ) {
-            super(commands);
+            super(commands)
         }
         clear() {
             this.name = '';

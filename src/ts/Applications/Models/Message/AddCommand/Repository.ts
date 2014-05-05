@@ -4,11 +4,11 @@
 
 module Message.AddComment {
     export class Repository extends Message.Repository {
-        commandRepository = new Command.Repository();
+        commandRepository = new Models.Command.Repository();
 
-        toObject (message: Message.AddComment.Model) {
+        toObject (message: Model) {
             return {
-                'name' : Message.AddComment.Model.name,
+                'name' : Model.name,
                 'command' : this.commandRepository.toObject(message.command),
                 'insertBeforeLastCommand' : message.insertBeforeLastCommand
             };
@@ -16,7 +16,7 @@ module Message.AddComment {
         fromObject (message: any) {
             var command = this.commandRepository.fromObject(message.command);
             var insertBeforeLastCommand = !!message.insertBeforeLastCommand;
-            return new Message.AddComment.Model(command, insertBeforeLastCommand);
+            return new Model(command, insertBeforeLastCommand);
         }
     }
 }

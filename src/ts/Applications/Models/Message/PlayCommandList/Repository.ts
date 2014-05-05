@@ -4,16 +4,16 @@
 
 module Message.PlayCommandList {
     export class Repository extends Message.Repository {
-        commandListRepository = new CommandList.Repository();
+        commandListRepository = new Models.CommandList.Repository();
 
-        toObject (message: Message.PlayCommandList.Model) {
+        toObject (message: Model) {
             return {
-                'name' : Message.PlayCommandList.Model.name,
+                'name' : Model.name,
                 'commandList' : this.commandListRepository.toObject(message.commandList)
             };
         }
-        fromObject (message: any) {
-            return new Message.PlayCommandList.Model(this.commandListRepository.fromObject(message));
+        fromObject (message: Object) {
+            return new Model(this.commandListRepository.fromObject(message));
         }
     }
 }

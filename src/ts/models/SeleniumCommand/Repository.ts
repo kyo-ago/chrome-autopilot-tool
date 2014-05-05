@@ -1,7 +1,7 @@
 /// <reference path="../../Base/Entity/Repository.ts" />
 /// <reference path="./Model.ts" />
 
-module Models.Command {
+module Models.SeleniumCommand {
     export interface IModelObject {
         type: string;
         target: string;

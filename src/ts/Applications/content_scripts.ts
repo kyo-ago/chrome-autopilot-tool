@@ -8,17 +8,25 @@
 declare module chrome.extension {
     var onConnect: chrome.runtime.ExtensionConnectEvent;
 }
-declare function createSelenium (baseURL: string, useLastWindow: boolean): any;
+
+// for selenium-runner
+(<any>window).getBrowser = function () { return { 'selectedBrowser' : { 'contentWindow' : window } } };
+(<any>window).lastWindow = window;
+
+var globalPort;
+setInterval(() => {
+    // break point(for debugger)
+    console.debug(undefined);
+}, 3000);
 
 (() => {
-    (<any>window).getBrowser = function () { return { 'selectedBrowser' : { 'contentWindow' : window } } };
-    (<any>window).lastWindow = window;
-    var selenium = createSelenium(location.href, true);
-
     var recorderObserver = new RecorderObserver();
     var messageAddCommentRepository = new Message.AddComment.Repository();
     var messageDispatcher = new Message.Dispatcher();
+    var selenium = (<any>window).createSelenium(location.href, true);
+
     chrome.extension.onConnect.addListener((port: chrome.runtime.Port) => {
+        globalPort = port;
         Recorder.register(recorderObserver, window);
         recorderObserver.addCommand = (commandName: string, target: string, value: string, window: Window, insertBeforeLastCommand: boolean) => {
             var message = {
@@ -35,7 +43,9 @@ declare function createSelenium (baseURL: string, useLastWindow: boolean): any;
         port.onMessage.addListener((message: Object) => {
             messageDispatcher.dispatch(message, {
                 MessagePlayCommandListModel : (message: Message.PlayCommandList.Model) => {
-
+                    message.commandList
+//                    message.commandList
+//                    selenium.doType("//*[@id=\"inputtext\"]","aaa");
                 }
             });
         });
