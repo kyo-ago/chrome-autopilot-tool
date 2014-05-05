@@ -1,7 +1,7 @@
 /// <reference path="../../Base/Entity/Model.ts" />
 
-module Models.Command {
-    export class Model extends Base.Entity.Model {
+module ts.Models.Command {
+    export class Model extends ts.Base.Entity.Model {
         constructor (
             public type = '',
             public target = '',

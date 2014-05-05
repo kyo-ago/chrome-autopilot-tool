@@ -1,10 +1,10 @@
 /// <reference path="../../Base/EntityList/Model.ts" />
 /// <reference path="../Command/Model.ts" />
 
-module Models.CommandList {
-    export class Model extends Base.EntityList.Model<Models.Command.Model> {
+module ts.Models.CommandList {
+    export class Model extends ts.Base.EntityList.Model<Command.Model> {
         constructor (
-            private commands: Models.Command.Model[] = [],
+            private commands: Command.Model[] = [],
             public name = '',
             public url = ''
         ) {

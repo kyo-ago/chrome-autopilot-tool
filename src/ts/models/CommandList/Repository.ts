@@ -2,8 +2,8 @@
 /// <reference path="../Command/Repository.ts" />
 /// <reference path="./Model.ts" />
 
-module Models.CommandList {
-    export class Repository extends Base.EntityList.Repository<Command.Model, Model> implements Base.Entity.Repository<Model> {
+module ts.Models.CommandList {
+    export class Repository extends ts.Base.EntityList.Repository<Command.Model, Model> implements ts.Base.Entity.Repository<Model> {
         constructor () {
             super(new Command.Repository());
         }

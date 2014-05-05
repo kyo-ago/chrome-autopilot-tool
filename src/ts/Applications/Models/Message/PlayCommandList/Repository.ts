@@ -2,9 +2,9 @@
 /// <reference path="../Repository.ts" />
 /// <reference path="./Model.ts" />
 
-module Message.PlayCommandList {
+module ts.Application.Models.Message.PlayCommandList {
     export class Repository extends Message.Repository {
-        commandListRepository = new Models.CommandList.Repository();
+        commandListRepository = new ts.Models.CommandList.Repository();
 
         toObject (message: Model) {
             return {

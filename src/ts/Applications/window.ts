@@ -5,21 +5,21 @@
 /// <reference path="./Services/ConnectTab.ts" />
 /// <reference path="./Services/InjectScripts.ts" />
 /// <reference path="./Services/Config.ts" />
-/// <reference path="./Services/LoadSeleniumCommandXML.ts" />
+/// <reference path="./Services/SeleniumIDE.ts" />
 
 var autopilotApp: ng.IModule;
 var catchError = (messages: string[]) => {
     alert([].concat(messages).join('\n'));
 };
 (new Promise((resolve: (tabId: number) => any, reject: () => any) => {
-    (new ConnectTab()).connect().then(resolve).catch(reject);
+    (new ts.Application.Services.ConnectTab()).connect().then(resolve).catch(reject);
 })).then((tabid: number) => {
     Promise.all([
         new Promise((resolve: () => any, reject: (errorMessage: string) => any) => {
-            (new LoadSeleniumCommandXML()).loadFile(Config.seleniumApiXML).then(resolve).catch(reject);
+            ts.Application.Services.SeleniumIDE.loadFile(ts.Application.Services.Config.seleniumApiXML).then(resolve).catch(reject);
         }),
         new Promise((resolve: () => any, reject: (errorMessage: string) => any) => {
-            (new InjectScripts()).connect(tabid, Config.injectScripts).then(resolve).catch(reject);
+            (new ts.Application.Services.InjectScripts()).connect(tabid, ts.Application.Services.Config.injectScripts).then(resolve).catch(reject);
         }),
         new Promise((resolve: () => any) => {
             angular.element(document).ready(resolve);
@@ -30,10 +30,10 @@ var catchError = (messages: string[]) => {
                 return chrome.tabs.connect(tabid);
             })
             .factory('commandList', () => {
-                return new Models.CommandList.Model();
+                return new ts.Models.CommandList.Model();
             })
-            .service('messageDispatcher', Message.Dispatcher)
-            .controller('Autopilot', Autopilot.Controller)
+            .service('messageDispatcher', ts.Application.Models.Message.Dispatcher)
+            .controller('Autopilot', ts.Application.Controllers.Autopilot.Controller)
         ;
         angular.bootstrap(document, ['AutopilotApp']);
     }).catch(catchError);

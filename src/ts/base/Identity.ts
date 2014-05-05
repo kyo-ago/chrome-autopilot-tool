@@ -1,6 +1,6 @@
 /// <reference path="UUID" />
 
-module Base {
+module ts.Base {
     export class Identity {
         constructor (public uuid: UUID.UUID = new UUID.UUID) {
         }

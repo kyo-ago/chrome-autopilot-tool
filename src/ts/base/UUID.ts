@@ -1,5 +1,5 @@
-module UUID {
-    class InvalidUUIDFormat {};
+module ts.UUID {
+    class InvalidUUIDFormat {}
     export class UUID {
         uuid: string;
 

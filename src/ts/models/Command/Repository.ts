@@ -1,13 +1,13 @@
 /// <reference path="../../Base/Entity/Repository.ts" />
 /// <reference path="./Model.ts" />
 
-module Models.Command {
+module ts.Models.Command {
     export interface IModelObject {
         type: string;
         target: string;
         value: string;
     }
-    export class Repository implements Base.Entity.Repository<Model> {
+    export class Repository implements ts.Base.Entity.Repository<Model> {
         toObject (command: Model): IModelObject {
             return {
                 'type' : command.type,

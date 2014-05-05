@@ -2,9 +2,9 @@
 /// <reference path="../Repository.ts" />
 /// <reference path="./Model.ts" />
 
-module Message.AddComment {
+module ts.Application.Models.Message.AddComment {
     export class Repository extends Message.Repository {
-        commandRepository = new Models.Command.Repository();
+        commandRepository = new ts.Models.Command.Repository();
 
         toObject (message: Model) {
             return {

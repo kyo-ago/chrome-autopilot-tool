@@ -5,28 +5,28 @@
 /// <reference path="../Models/Message/PlayCommandList/Repository.ts" />
 /// <reference path="../Models/Message/Dispatcher.ts" />
 
-module Autopilot {
+module ts.Application.Controllers.Autopilot {
     export interface Scope extends ng.IScope {
         playAll: () => any;
-        commandList: Models.CommandList.Model;
+        commandList: ts.Models.CommandList.Model;
     }
     export class Controller {
-        messagePlayCommandListRepository = new Message.PlayCommandList.Repository();
+        messagePlayCommandListRepository = new Models.Message.PlayCommandList.Repository();
 
         constructor(
             $scope: Scope,
             connectTab: chrome.runtime.Port,
-            commandList: Models.CommandList.Model,
-            messageDispatcher: Message.Dispatcher
+            commandList: ts.Models.CommandList.Model,
+            messageDispatcher: Models.Message.Dispatcher
         ) {
             $scope.commandList = commandList;
             $scope.playAll = () => {
-                var message = new Message.PlayCommandList.Model($scope.commandList);
+                var message = new Models.Message.PlayCommandList.Model($scope.commandList);
                 connectTab.postMessage(this.messagePlayCommandListRepository.toObject(message));
             };
             connectTab.onMessage.addListener((message: Object) => {
                 messageDispatcher.dispatch(message, {
-                    MessageAddCommentModel : (message: Message.AddComment.Model) => {
+                    MessageAddCommentModel : (message: Models.Message.AddComment.Model) => {
                         $scope.commandList.add(message.command);
                     }
                 });

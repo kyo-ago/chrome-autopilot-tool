@@ -20,10 +20,11 @@ setInterval(() => {
 }, 3000);
 
 (() => {
-    var recorderObserver = new RecorderObserver();
-    var messageAddCommentRepository = new Message.AddComment.Repository();
-    var messageDispatcher = new Message.Dispatcher();
+    var recorderObserver = new ts.Application.Services.RecorderObserver();
+    var messageAddCommentRepository = new ts.Application.Models.Message.AddComment.Repository();
+    var messageDispatcher = new ts.Application.Models.Message.Dispatcher();
     var selenium = (<any>window).createSelenium(location.href, true);
+    selenium.browserbot.selectWindow(null);
 
     chrome.extension.onConnect.addListener((port: chrome.runtime.Port) => {
         globalPort = port;
@@ -42,7 +43,7 @@ setInterval(() => {
         };
         port.onMessage.addListener((message: Object) => {
             messageDispatcher.dispatch(message, {
-                MessagePlayCommandListModel : (message: Message.PlayCommandList.Model) => {
+                MessagePlayCommandListModel : (message: ts.Application.Models.Message.PlayCommandList.Model) => {
                     message.commandList
 //                    message.commandList
 //                    selenium.doType("//*[@id=\"inputtext\"]","aaa");

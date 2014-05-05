@@ -1,8 +1,8 @@
 /// <reference path="../Identity" />
 /// <reference path="../Entity/Model.ts" />
 
-module Base.EntityList {
-    export class Model<E extends Base.Entity.Model> extends Base.Entity.Model {
+module ts.Base.EntityList {
+    export class Model<E extends Entity.Model> extends Entity.Model {
         list: E[];
 
         constructor(list: E[]) {
@@ -18,7 +18,7 @@ module Base.EntityList {
         splice(index: number, entity: E) {
             this.list.splice(index, 1, entity);
         }
-        replace(identity: Base.Identity, entity: E) {
+        replace(identity: Identity, entity: E) {
             this.list = this.list.map(
                 (e) => e.identity.eq(identity) ? entity : e
             );
