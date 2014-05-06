@@ -3,7 +3,7 @@
 
 module ts.Application.Models.Message.PlayCommandList {
     export class Model extends Message.Model {
-        static name = 'playCommandList';
+        static messageName = 'playCommandList';
         constructor (public commandList: ts.Models.CommandList.Model) {
             super();
         }

@@ -11,9 +11,9 @@ module ts.Application.Models.Message {
         messagePlayCommandListModel = new PlayCommandList.Repository();
 
         dispatch (message: any, dispatcher: DispatchMap) {
-            if (message.name == AddComment.Model.name) {
+            if (message.name == AddComment.Model.messageName) {
                 dispatcher.MessageAddCommentModel(this.messageAddCommentModel.fromObject(message));
-            } else if (message.name == PlayCommandList.Model.name) {
+            } else if (message.name == PlayCommandList.Model.messageName) {
                 dispatcher.MessagePlayCommandListModel(this.messagePlayCommandListModel.fromObject(message));
             }
         }

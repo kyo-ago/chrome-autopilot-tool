@@ -8,7 +8,7 @@ module ts.Application.Models.Message.AddComment {
 
         toObject (message: Model) {
             return {
-                'name' : Model.name,
+                'name' : Model.messageName,
                 'command' : this.commandRepository.toObject(message.command),
                 'insertBeforeLastCommand' : message.insertBeforeLastCommand
             };

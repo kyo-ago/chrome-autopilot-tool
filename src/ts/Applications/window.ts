@@ -2,7 +2,7 @@
 /// <reference path="../DefinitelyTyped/es6-promises/es6-promises.d.ts" />
 /// <reference path="../DefinitelyTyped/chrome/chrome.d.ts" />
 /// <reference path="./Controllers/Autopilot.ts" />
-/// <reference path="./Services/ConnectTab.ts" />
+/// <reference path="./Services/TabManager.ts" />
 /// <reference path="./Services/InjectScripts.ts" />
 /// <reference path="./Services/Config.ts" />
 /// <reference path="./Services/SeleniumIDE.ts" />
@@ -11,9 +11,9 @@ var autopilotApp: ng.IModule;
 var catchError = (messages: string[]) => {
     alert([].concat(messages).join('\n'));
 };
-(new Promise((resolve: (tabId: number) => any, reject: () => any) => {
-    (new ts.Application.Services.ConnectTab()).connect().then(resolve).catch(reject);
-})).then((tabid: number) => {
+(new Promise((resolve: (tabManager: ts.Application.Services.TabManager) => any, reject: (errorMessage: string) => any) => {
+    new ts.Application.Services.TabManager(resolve, reject);
+})).then((tabManager: ts.Application.Services.TabManager) => {
     Promise.all([
         new Promise((resolve: () => any, reject: (errorMessage: string) => any) => {
             var file = chrome.runtime.getURL(ts.Application.Services.Config.seleniumApiXML);
@@ -21,15 +21,16 @@ var catchError = (messages: string[]) => {
         }),
         new Promise((resolve: () => any, reject: (errorMessage: string) => any) => {
             var injectScripts = ts.Application.Services.Config.injectScripts;
-            (new ts.Application.Services.InjectScripts()).connect(tabid, injectScripts).then(resolve).catch(reject);
+            ts.Application.Services.InjectScripts.connect(tabManager.getTabId(), injectScripts).then(resolve).catch(reject);
         }),
         new Promise((resolve: () => any) => {
             angular.element(document).ready(resolve);
         })
     ]).then(() => {
+        tabManager.connect();
         autopilotApp = angular.module('AutopilotApp', ['ui.sortable'])
-            .factory('connectTab', () => {
-                return chrome.tabs.connect(tabid);
+            .factory('tabManager', () => {
+                return tabManager;
             })
             .factory('commandList', () => {
                 return new ts.Models.CommandList.Model();

@@ -10,13 +10,14 @@ module ts.Models.CommandList {
 
         toObject (commandList: Model) {
             return {
-                'commands' : super.toEntityList(commandList),
+                'commandList' : super.toEntityList(commandList),
                 'name' : commandList.name,
                 'url' : commandList.url
             };
         }
         fromObject (commandList: Object) {
-            return new Model(super.fromEntityList(commandList['commands']), commandList['name'], commandList['url']);
+            var commandListObject = super.fromEntityList(commandList['commandList']);
+            return new Model(commandListObject, commandList['name'], commandList['url']);
         }
     }
 }

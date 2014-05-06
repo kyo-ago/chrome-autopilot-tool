@@ -219,7 +219,7 @@ var ts;
                             this.command = command;
                             this.insertBeforeLastCommand = insertBeforeLastCommand;
                         }
-                        Model.name = 'addComment';
+                        Model.messageName = 'addComment';
                         return Model;
                     })(Message.Model);
                     AddComment.Model = Model;
@@ -296,13 +296,14 @@ var ts;
                 }
                 Repository.prototype.toObject = function (commandList) {
                     return {
-                        'commands': _super.prototype.toEntityList.call(this, commandList),
+                        'commandList': _super.prototype.toEntityList.call(this, commandList),
                         'name': commandList.name,
                         'url': commandList.url
                     };
                 };
                 Repository.prototype.fromObject = function (commandList) {
-                    return new CommandList.Model(_super.prototype.fromEntityList.call(this, commandList['commands']), commandList['name'], commandList['url']);
+                    var commandListObject = _super.prototype.fromEntityList.call(this, commandList['commandList']);
+                    return new CommandList.Model(commandListObject, commandList['name'], commandList['url']);
                 };
                 return Repository;
             })(ts.Base.EntityList.Repository);
@@ -348,7 +349,7 @@ var ts;
                             _super.call(this);
                             this.commandList = commandList;
                         }
-                        Model.name = 'playCommandList';
+                        Model.messageName = 'playCommandList';
                         return Model;
                     })(Message.Model);
                     PlayCommandList.Model = Model;
@@ -375,12 +376,12 @@ var ts;
                         }
                         Repository.prototype.toObject = function (message) {
                             return {
-                                'name': PlayCommandList.Model.name,
+                                'name': PlayCommandList.Model.messageName,
                                 'commandList': this.commandListRepository.toObject(message.commandList)
                             };
                         };
                         Repository.prototype.fromObject = function (message) {
-                            return new PlayCommandList.Model(this.commandListRepository.fromObject(message));
+                            return new PlayCommandList.Model(this.commandListRepository.fromObject(message['commandList']));
                         };
                         return Repository;
                     })(Message.Repository);
@@ -408,7 +409,7 @@ var ts;
                         }
                         Repository.prototype.toObject = function (message) {
                             return {
-                                'name': AddComment.Model.name,
+                                'name': AddComment.Model.messageName,
                                 'command': this.commandRepository.toObject(message.command),
                                 'insertBeforeLastCommand': message.insertBeforeLastCommand
                             };
@@ -441,9 +442,9 @@ var ts;
                         this.messagePlayCommandListModel = new Message.PlayCommandList.Repository();
                     }
                     Dispatcher.prototype.dispatch = function (message, dispatcher) {
-                        if (message.name == Message.AddComment.Model.name) {
+                        if (message.name == Message.AddComment.Model.messageName) {
                             dispatcher.MessageAddCommentModel(this.messageAddCommentModel.fromObject(message));
-                        } else if (message.name == Message.PlayCommandList.Model.name) {
+                        } else if (message.name == Message.PlayCommandList.Model.messageName) {
                             dispatcher.MessagePlayCommandListModel(this.messagePlayCommandListModel.fromObject(message));
                         }
                     };
@@ -460,21 +461,88 @@ var ts;
 var ts;
 (function (ts) {
     (function (Application) {
+        (function (Services) {
+            var TabManager = (function () {
+                function TabManager(resolveAll, rejectAll) {
+                    var _this = this;
+                    var resolve = function () {
+                        resolveAll(_this);
+                    };
+                    var reject = function () {
+                        rejectAll('Security Error.\ndoes not run on "chrome://" page.\n');
+                    };
+                    chrome.tabs.query({
+                        'active': true,
+                        'windowType': 'normal',
+                        'lastFocusedWindow': true
+                    }, function (tabs) {
+                        _this.tab = tabs[0];
+                        if (_this.tab && _this.tab.id) {
+                            chrome.storage.local.set({
+                                'lastFocusedWindowId': _this.tab.windowId,
+                                'lastFocusedWindowUrl': _this.tab.url
+                            });
+                            return resolve();
+                        } else {
+                            chrome.storage.local.get(['lastFocusedWindowId', 'lastFocusedWindowUrl'], function (lastFocusedWindow) {
+                                if (!lastFocusedWindow['lastFocusedWindowId']) {
+                                    return reject();
+                                }
+                                chrome.tabs.query({
+                                    'active': true,
+                                    'url': lastFocusedWindow['lastFocusedWindowUrl'],
+                                    'windowId': lastFocusedWindow['lastFocusedWindowId']
+                                }, function (tabs) {
+                                    _this.tab = tabs[0];
+                                    if (_this.tab) {
+                                        return resolve();
+                                    }
+                                    return reject();
+                                });
+                            });
+                        }
+                    });
+                }
+                TabManager.prototype.connect = function () {
+                    this.port = chrome.tabs.connect(this.tab.id);
+                };
+                TabManager.prototype.getTabId = function () {
+                    return this.tab.id;
+                };
+                TabManager.prototype.postMessage = function (message) {
+                    this.port.postMessage(message);
+                };
+                TabManager.prototype.onMessage = function (callback) {
+                    this.port.onMessage.addListener(callback);
+                };
+                return TabManager;
+            })();
+            Services.TabManager = TabManager;
+        })(Application.Services || (Application.Services = {}));
+        var Services = Application.Services;
+    })(ts.Application || (ts.Application = {}));
+    var Application = ts.Application;
+})(ts || (ts = {}));
+var ts;
+(function (ts) {
+    (function (Application) {
         (function (Controllers) {
             (function (Autopilot) {
                 var Controller = (function () {
-                    function Controller($scope, connectTab, commandList, messageDispatcher) {
+                    function Controller($scope, tabManager, commandList, messageDispatcher) {
                         var _this = this;
                         this.messagePlayCommandListRepository = new Application.Models.Message.PlayCommandList.Repository();
                         $scope.commandList = commandList;
                         $scope.playAll = function () {
                             var message = new Application.Models.Message.PlayCommandList.Model($scope.commandList);
-                            connectTab.postMessage(_this.messagePlayCommandListRepository.toObject(message));
+                            tabManager.postMessage(_this.messagePlayCommandListRepository.toObject(message));
                         };
-                        connectTab.onMessage.addListener(function (message) {
+                        tabManager.onMessage(function (message) {
                             messageDispatcher.dispatch(message, {
                                 MessageAddCommentModel: function (message) {
-                                    $scope.commandList.add(message.command);
+                                    $scope.$apply(function () {
+                                        $scope.commandList.add(message.command);
+                                    });
                                 }
                             });
                         });
@@ -493,65 +561,10 @@ var ts;
 (function (ts) {
     (function (Application) {
         (function (Services) {
-            var ConnectTab = (function () {
-                function ConnectTab() {
-                    this.errorMessage = 'Security Error.\ndoes not run on "chrome://" page.\n';
-                }
-                ConnectTab.prototype.connect = function () {
-                    var _this = this;
-                    return new Promise(function (resolve, rejectAll) {
-                        var reject = function () {
-                            rejectAll(_this.errorMessage);
-                        };
-                        chrome.tabs.query({
-                            'active': true,
-                            'windowType': 'normal',
-                            'lastFocusedWindow': true
-                        }, function (tabs) {
-                            var tab = tabs[0];
-                            if (tab) {
-                                chrome.storage.local.set({
-                                    'lastFocusedWindowId': tab.windowId,
-                                    'lastFocusedWindowUrl': tab.url
-                                });
-                                return resolve(tab.id);
-                            } else {
-                                chrome.storage.local.get(['lastFocusedWindowId', 'lastFocusedWindowUrl'], function (lastFocusedWindow) {
-                                    if (!lastFocusedWindow['lastFocusedWindowId']) {
-                                        return reject();
-                                    }
-                                    chrome.tabs.query({
-                                        'active': true,
-                                        'url': lastFocusedWindow['lastFocusedWindowUrl'],
-                                        'windowId': lastFocusedWindow['lastFocusedWindowId']
-                                    }, function (tabs) {
-                                        var tab = tabs[0];
-                                        if (tab) {
-                                            return resolve(tab.id);
-                                        }
-                                        return reject();
-                                    });
-                                });
-                            }
-                        });
-                    });
-                };
-                return ConnectTab;
-            })();
-            Services.ConnectTab = ConnectTab;
-        })(Application.Services || (Application.Services = {}));
-        var Services = Application.Services;
-    })(ts.Application || (ts.Application = {}));
-    var Application = ts.Application;
-})(ts || (ts = {}));
-var ts;
-(function (ts) {
-    (function (Application) {
-        (function (Services) {
             var InjectScripts = (function () {
                 function InjectScripts() {
                 }
-                InjectScripts.prototype.connect = function (tabid, injectScripts_) {
+                InjectScripts.connect = function (tabid, injectScripts_) {
                     var injectScripts = injectScripts_.slice();
                     return new Promise(function (resolve) {
                         var executeScript = function (injectScript) {
@@ -629,6 +642,22 @@ var ts;
                     window.testCase = new window.TestCase;
                     window.selenium = window.createSelenium(location.href, true);
 
+                    window.editor = {
+                        'app': {
+                            'getOptions': function () {
+                                return {
+                                    'timeout': 1
+                                };
+                            }
+                        },
+                        'view': {
+                            'rowUpdated': function () {
+                            },
+                            'scrollToRow': function () {
+                            }
+                        }
+                    };
+
                     this.testCase = window.testCase;
                     this.selenium = window.selenium;
 
@@ -638,6 +667,13 @@ var ts;
                 }
                 SeleniumIDE.prototype.getInterval = function () {
                     return 1;
+                };
+                SeleniumIDE.prototype.addComment = function (commandList) {
+                    var _this = this;
+                    commandList.getList().forEach(function (command) {
+                        var selCommand = new window.Command(command.type, command.target, command.value);
+                        _this.testCase.commands.push(selCommand);
+                    });
                 };
                 SeleniumIDE.prototype.start = function () {
                     var _this = this;
@@ -681,8 +717,8 @@ var catchError = function (messages) {
     alert([].concat(messages).join('\n'));
 };
 (new Promise(function (resolve, reject) {
-    (new ts.Application.Services.ConnectTab()).connect().then(resolve).catch(reject);
-})).then(function (tabid) {
+    new ts.Application.Services.TabManager(resolve, reject);
+})).then(function (tabManager) {
     Promise.all([
         new Promise(function (resolve, reject) {
             var file = chrome.runtime.getURL(ts.Application.Services.Config.seleniumApiXML);
@@ -690,14 +726,15 @@ var catchError = function (messages) {
         }),
         new Promise(function (resolve, reject) {
             var injectScripts = ts.Application.Services.Config.injectScripts;
-            (new ts.Application.Services.InjectScripts()).connect(tabid, injectScripts).then(resolve).catch(reject);
+            ts.Application.Services.InjectScripts.connect(tabManager.getTabId(), injectScripts).then(resolve).catch(reject);
         }),
         new Promise(function (resolve) {
             angular.element(document).ready(resolve);
         })
     ]).then(function () {
-        autopilotApp = angular.module('AutopilotApp', ['ui.sortable']).factory('connectTab', function () {
-            return chrome.tabs.connect(tabid);
+        tabManager.connect();
+        autopilotApp = angular.module('AutopilotApp', ['ui.sortable']).factory('tabManager', function () {
+            return tabManager;
         }).factory('commandList', function () {
             return new ts.Models.CommandList.Model();
         }).service('messageDispatcher', ts.Application.Models.Message.Dispatcher).controller('Autopilot', ts.Application.Controllers.Autopilot.Controller);

@@ -200,7 +200,7 @@ var ts;
                             this.command = command;
                             this.insertBeforeLastCommand = insertBeforeLastCommand;
                         }
-                        Model.name = 'addComment';
+                        Model.messageName = 'addComment';
                         return Model;
                     })(Message.Model);
                     AddComment.Model = Model;
@@ -227,7 +227,7 @@ var ts;
                         }
                         Repository.prototype.toObject = function (message) {
                             return {
-                                'name': AddComment.Model.name,
+                                'name': AddComment.Model.messageName,
                                 'command': this.commandRepository.toObject(message.command),
                                 'insertBeforeLastCommand': message.insertBeforeLastCommand
                             };
@@ -356,13 +356,14 @@ var ts;
                 }
                 Repository.prototype.toObject = function (commandList) {
                     return {
-                        'commands': _super.prototype.toEntityList.call(this, commandList),
+                        'commandList': _super.prototype.toEntityList.call(this, commandList),
                         'name': commandList.name,
                         'url': commandList.url
                     };
                 };
                 Repository.prototype.fromObject = function (commandList) {
-                    return new CommandList.Model(_super.prototype.fromEntityList.call(this, commandList['commands']), commandList['name'], commandList['url']);
+                    var commandListObject = _super.prototype.fromEntityList.call(this, commandList['commandList']);
+                    return new CommandList.Model(commandListObject, commandList['name'], commandList['url']);
                 };
                 return Repository;
             })(ts.Base.EntityList.Repository);
@@ -384,7 +385,7 @@ var ts;
                             _super.call(this);
                             this.commandList = commandList;
                         }
-                        Model.name = 'playCommandList';
+                        Model.messageName = 'playCommandList';
                         return Model;
                     })(Message.Model);
                     PlayCommandList.Model = Model;
@@ -411,12 +412,12 @@ var ts;
                         }
                         Repository.prototype.toObject = function (message) {
                             return {
-                                'name': PlayCommandList.Model.name,
+                                'name': PlayCommandList.Model.messageName,
                                 'commandList': this.commandListRepository.toObject(message.commandList)
                             };
                         };
                         Repository.prototype.fromObject = function (message) {
-                            return new PlayCommandList.Model(this.commandListRepository.fromObject(message));
+                            return new PlayCommandList.Model(this.commandListRepository.fromObject(message['commandList']));
                         };
                         return Repository;
                     })(Message.Repository);
@@ -441,9 +442,9 @@ var ts;
                         this.messagePlayCommandListModel = new Message.PlayCommandList.Repository();
                     }
                     Dispatcher.prototype.dispatch = function (message, dispatcher) {
-                        if (message.name == Message.AddComment.Model.name) {
+                        if (message.name == Message.AddComment.Model.messageName) {
                             dispatcher.MessageAddCommentModel(this.messageAddCommentModel.fromObject(message));
-                        } else if (message.name == Message.PlayCommandList.Model.name) {
+                        } else if (message.name == Message.PlayCommandList.Model.messageName) {
                             dispatcher.MessagePlayCommandListModel(this.messagePlayCommandListModel.fromObject(message));
                         }
                     };
@@ -494,6 +495,22 @@ var ts;
                     window.testCase = new window.TestCase;
                     window.selenium = window.createSelenium(location.href, true);
 
+                    window.editor = {
+                        'app': {
+                            'getOptions': function () {
+                                return {
+                                    'timeout': 1
+                                };
+                            }
+                        },
+                        'view': {
+                            'rowUpdated': function () {
+                            },
+                            'scrollToRow': function () {
+                            }
+                        }
+                    };
+
                     this.testCase = window.testCase;
                     this.selenium = window.selenium;
 
@@ -503,6 +520,13 @@ var ts;
                 }
                 SeleniumIDE.prototype.getInterval = function () {
                     return 1;
+                };
+                SeleniumIDE.prototype.addComment = function (commandList) {
+                    var _this = this;
+                    commandList.getList().forEach(function (command) {
+                        var selCommand = new window.Command(command.type, command.target, command.value);
+                        _this.testCase.commands.push(selCommand);
+                    });
                 };
                 SeleniumIDE.prototype.start = function () {
                     var _this = this;
@@ -571,7 +595,8 @@ setInterval(function () {
         port.onMessage.addListener(function (message) {
             messageDispatcher.dispatch(message, {
                 MessagePlayCommandListModel: function (message) {
-                    message.commandList;
+                    seleniumIDE.addComment(message.commandList);
+                    seleniumIDE.start();
                 }
             });
         });

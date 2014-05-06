@@ -3,7 +3,7 @@
 
 module ts.Application.Services {
     export class InjectScripts {
-        connect(tabid: number, injectScripts_: string[]) {
+        static connect(tabid: number, injectScripts_: string[]) {
             var injectScripts = injectScripts_.slice();
             return new Promise((resolve: () => any) => {
                 var executeScript = (injectScript: string) => {

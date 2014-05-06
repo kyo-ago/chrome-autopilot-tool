@@ -1,4 +1,5 @@
 /// <reference path="../../DefinitelyTyped/es6-promises/es6-promises.d.ts" />
+/// <reference path="../../Models/CommandList/Model.ts" />
 
 module ts.Application.Services {
     export class SeleniumIDE {
@@ -8,10 +9,24 @@ module ts.Application.Services {
         testCase: any;
         constructor () {
             // for selenium-runner
-            (<any>window).getBrowser = function () { return { 'selectedBrowser' : { 'contentWindow' : window } } };
+            (<any>window).getBrowser = () => { return { 'selectedBrowser' : { 'contentWindow' : window } } };
             (<any>window).lastWindow = window;
             (<any>window).testCase = new (<any>window).TestCase;
             (<any>window).selenium = (<any>window).createSelenium(location.href, true);
+
+            (<any>window).editor = {
+                'app' : {
+                    'getOptions' : () => {
+                        return {
+                            'timeout' : 1
+                        };
+                    }
+                },
+                'view' : {
+                    'rowUpdated' : () => {},
+                    'scrollToRow' : () => {}
+                }
+            };
 
             this.testCase = (<any>window).testCase;
             this.selenium = (<any>window).selenium;
@@ -22,6 +37,12 @@ module ts.Application.Services {
         }
         getInterval () {
             return 1;
+        }
+        addComment (commandList: ts.Models.CommandList.Model) {
+            commandList.getList().forEach((command) => {
+                var selCommand = new (<any>window).Command(command.type, command.target, command.value);
+                this.testCase.commands.push(selCommand);
+            });
         }
         start () {
             this.currentTest = new (<any>window).IDETestLoop(this.commandFactory, {});

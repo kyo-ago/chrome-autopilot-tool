@@ -3,7 +3,7 @@
 
 module ts.Application.Models.Message.AddComment {
     export class Model extends Message.Model {
-        static name = 'addComment';
+        static messageName = 'addComment';
         constructor (public command: ts.Models.Command.Model, public insertBeforeLastCommand: boolean) {
             super();
         }

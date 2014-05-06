@@ -8,12 +8,12 @@ module ts.Application.Models.Message.PlayCommandList {
 
         toObject (message: Model) {
             return {
-                'name' : Model.name,
+                'name' : Model.messageName,
                 'commandList' : this.commandListRepository.toObject(message.commandList)
             };
         }
         fromObject (message: Object) {
-            return new Model(this.commandListRepository.fromObject(message));
+            return new Model(this.commandListRepository.fromObject(message['commandList']));
         }
     }
 }

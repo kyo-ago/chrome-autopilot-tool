@@ -40,9 +40,8 @@ setInterval(() => {
         port.onMessage.addListener((message: Object) => {
             messageDispatcher.dispatch(message, {
                 MessagePlayCommandListModel : (message: ts.Application.Models.Message.PlayCommandList.Model) => {
-                    message.commandList
-//                    message.commandList
-//                    selenium.doType("//*[@id=\"inputtext\"]","aaa");
+                    seleniumIDE.addComment(message.commandList);
+                    seleniumIDE.start();
                 }
             });
         });
