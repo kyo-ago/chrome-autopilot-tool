@@ -40,10 +40,16 @@ setInterval(() => {
         port.onMessage.addListener((message: Object) => {
             messageDispatcher.dispatch(message, {
                 MessagePlayCommandListModel : (message: ts.Application.Models.Message.PlayCommandList.Model) => {
+                    Recorder.deregister(recorderObserver, window);
                     seleniumIDE.addComment(message.commandList);
-                    seleniumIDE.start();
+                    seleniumIDE.start().then(() => {
+                        Recorder.register(recorderObserver, window);
+                    });
                 }
             });
+        });
+        port.onDisconnect.addListener(() => {
+            Recorder.deregister(recorderObserver, window);
         });
     });
 })();

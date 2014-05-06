@@ -465,6 +465,9 @@ var ts;
             var TabManager = (function () {
                 function TabManager(initialize, resolve, reject) {
                     var _this = this;
+                    this.initialize = function () {
+                    };
+                    this.onMessageListeners = [];
                     this.initialize = initialize;
                     this.getTab().then(function () {
                         _this.initialize(_this).then(function () {
@@ -538,6 +541,9 @@ var ts;
                     return new Promise(function (resolve, reject) {
                         _this.initialize(_this).then(function () {
                             _this.port = chrome.tabs.connect(_this.tab.id);
+                            _this.onMessageListeners.forEach(function (Listener) {
+                                return _this.port.onMessage.addListener(Listener);
+                            });
                             resolve();
                         }).catch(reject);
                     });
@@ -549,6 +555,7 @@ var ts;
                     this.port.postMessage(message);
                 };
                 TabManager.prototype.onMessage = function (callback) {
+                    this.onMessageListeners.push(callback);
                     this.port.onMessage.addListener(callback);
                 };
                 return TabManager;
@@ -672,7 +679,11 @@ var ts;
             var SeleniumIDE = (function () {
                 function SeleniumIDE() {
                     window.getBrowser = function () {
-                        return { 'selectedBrowser': { 'contentWindow': window } };
+                        return {
+                            'selectedBrowser': {
+                                'contentWindow': window
+                            }
+                        };
                     };
                     window.lastWindow = window;
                     window.testCase = new window.TestCase;
@@ -713,13 +724,17 @@ var ts;
                 };
                 SeleniumIDE.prototype.start = function () {
                     var _this = this;
-                    this.currentTest = new window.IDETestLoop(this.commandFactory, {});
-                    this.currentTest.getCommandInterval = function () {
-                        return _this.getInterval();
-                    };
+                    return new Promise(function (resolve) {
+                        _this.currentTest = new window.IDETestLoop(_this.commandFactory, {
+                            'testComplete': resolve
+                        });
+                        _this.currentTest.getCommandInterval = function () {
+                            return _this.getInterval();
+                        };
 
-                    this.testCase.debugContext.reset();
-                    this.currentTest.start();
+                        _this.testCase.debugContext.reset();
+                        _this.currentTest.start();
+                    });
                 };
 
                 SeleniumIDE.loadFile = function (file) {

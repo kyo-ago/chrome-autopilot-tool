@@ -5,7 +5,9 @@ module ts.Application.Services {
     export class TabManager {
         private tab: chrome.tabs.Tab;
         private port: chrome.runtime.Port;
-        private initialize: Function;
+        private initialize: Function = () => {};
+        private onMessageListeners: Function[] = [];
+
         constructor (
             initialize: (tabManager: TabManager) => Promise<any>,
             resolve: (tabManager: TabManager) => any,
@@ -81,6 +83,7 @@ module ts.Application.Services {
             return new Promise((resolve: () => any, reject: (errorMessage: string) => any) => {
                 this.initialize(this).then(() => {
                     this.port = chrome.tabs.connect(this.tab.id);
+                    this.onMessageListeners.forEach(Listener => this.port.onMessage.addListener(Listener));
                     resolve();
                 }).catch(reject);
             });
@@ -92,6 +95,7 @@ module ts.Application.Services {
             this.port.postMessage(message);
         }
         onMessage (callback: (message: Object) => any) {
+            this.onMessageListeners.push(callback);
             this.port.onMessage.addListener(callback);
         }
     }

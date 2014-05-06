@@ -489,7 +489,11 @@ var ts;
             var SeleniumIDE = (function () {
                 function SeleniumIDE() {
                     window.getBrowser = function () {
-                        return { 'selectedBrowser': { 'contentWindow': window } };
+                        return {
+                            'selectedBrowser': {
+                                'contentWindow': window
+                            }
+                        };
                     };
                     window.lastWindow = window;
                     window.testCase = new window.TestCase;
@@ -530,13 +534,17 @@ var ts;
                 };
                 SeleniumIDE.prototype.start = function () {
                     var _this = this;
-                    this.currentTest = new window.IDETestLoop(this.commandFactory, {});
-                    this.currentTest.getCommandInterval = function () {
-                        return _this.getInterval();
-                    };
+                    return new Promise(function (resolve) {
+                        _this.currentTest = new window.IDETestLoop(_this.commandFactory, {
+                            'testComplete': resolve
+                        });
+                        _this.currentTest.getCommandInterval = function () {
+                            return _this.getInterval();
+                        };
 
-                    this.testCase.debugContext.reset();
-                    this.currentTest.start();
+                        _this.testCase.debugContext.reset();
+                        _this.currentTest.start();
+                    });
                 };
 
                 SeleniumIDE.loadFile = function (file) {
@@ -595,10 +603,16 @@ setInterval(function () {
         port.onMessage.addListener(function (message) {
             messageDispatcher.dispatch(message, {
                 MessagePlayCommandListModel: function (message) {
+                    Recorder.deregister(recorderObserver, window);
                     seleniumIDE.addComment(message.commandList);
-                    seleniumIDE.start();
+                    seleniumIDE.start().then(function () {
+                        Recorder.register(recorderObserver, window);
+                    });
                 }
             });
+        });
+        port.onDisconnect.addListener(function () {
+            Recorder.deregister(recorderObserver, window);
         });
     });
 })();
