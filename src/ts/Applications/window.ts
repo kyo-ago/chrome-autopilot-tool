@@ -12,22 +12,20 @@ var catchError = (messages: string[]) => {
     alert([].concat(messages).join('\n'));
 };
 (new Promise((resolve: (tabManager: ts.Application.Services.TabManager) => any, reject: (errorMessage: string) => any) => {
-    new ts.Application.Services.TabManager(resolve, reject);
+    new ts.Application.Services.TabManager((tabManager: ts.Application.Services.TabManager) => {
+        var injectScripts = ts.Application.Services.Config.injectScripts;
+        return ts.Application.Services.InjectScripts.connect(tabManager.getTabId(), injectScripts);
+    }, resolve, reject);
 })).then((tabManager: ts.Application.Services.TabManager) => {
     Promise.all([
         new Promise((resolve: () => any, reject: (errorMessage: string) => any) => {
             var file = chrome.runtime.getURL(ts.Application.Services.Config.seleniumApiXML);
             ts.Application.Services.SeleniumIDE.loadFile(file).then(resolve).catch(reject);
         }),
-        new Promise((resolve: () => any, reject: (errorMessage: string) => any) => {
-            var injectScripts = ts.Application.Services.Config.injectScripts;
-            ts.Application.Services.InjectScripts.connect(tabManager.getTabId(), injectScripts).then(resolve).catch(reject);
-        }),
         new Promise((resolve: () => any) => {
             angular.element(document).ready(resolve);
         })
     ]).then(() => {
-        tabManager.connect();
         autopilotApp = angular.module('AutopilotApp', ['ui.sortable'])
             .factory('tabManager', () => {
                 return tabManager;

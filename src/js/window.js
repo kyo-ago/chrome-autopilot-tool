@@ -463,27 +463,36 @@ var ts;
     (function (Application) {
         (function (Services) {
             var TabManager = (function () {
-                function TabManager(resolveAll, rejectAll) {
+                function TabManager(initialize, resolve, reject) {
                     var _this = this;
-                    var resolve = function () {
-                        resolveAll(_this);
-                    };
-                    var reject = function () {
-                        rejectAll('Security Error.\ndoes not run on "chrome://" page.\n');
-                    };
-                    chrome.tabs.query({
-                        'active': true,
-                        'windowType': 'normal',
-                        'lastFocusedWindow': true
-                    }, function (tabs) {
-                        _this.tab = tabs[0];
-                        if (_this.tab && _this.tab.id) {
-                            chrome.storage.local.set({
-                                'lastFocusedWindowId': _this.tab.windowId,
-                                'lastFocusedWindowUrl': _this.tab.url
-                            });
-                            return resolve();
-                        } else {
+                    this.initialize = initialize;
+                    this.getTab().then(function () {
+                        _this.initialize(_this).then(function () {
+                            _this.connectTab();
+                            resolve(_this);
+                        }).catch(reject);
+                    }).catch(reject);
+                }
+                TabManager.prototype.getTab = function () {
+                    var _this = this;
+                    return new Promise(function (resolve, rejectAll) {
+                        var reject = function () {
+                            rejectAll('Security Error.\ndoes not run on "chrome://" page.\n');
+                        };
+                        chrome.tabs.query({
+                            'active': true,
+                            'windowType': 'normal',
+                            'lastFocusedWindow': true
+                        }, function (tabs) {
+                            _this.tab = tabs[0];
+                            if (_this.tab && _this.tab.id) {
+                                chrome.storage.local.set({
+                                    'lastFocusedWindowId': _this.tab.windowId,
+                                    'lastFocusedWindowUrl': _this.tab.url
+                                });
+                                resolve();
+                                return;
+                            }
                             chrome.storage.local.get(['lastFocusedWindowId', 'lastFocusedWindowUrl'], function (lastFocusedWindow) {
                                 if (!lastFocusedWindow['lastFocusedWindowId']) {
                                     return reject();
@@ -500,11 +509,38 @@ var ts;
                                     return reject();
                                 });
                             });
+                        });
+                    });
+                };
+                TabManager.prototype.connectTab = function () {
+                    var _this = this;
+                    this.port = chrome.tabs.connect(this.tab.id);
+                    chrome.tabs.onRemoved.addListener(function (tabId, removeInfo) {
+                        if (_this.tab.id !== tabId) {
+                            return;
+                        }
+                        if (confirm('Close test case?')) {
+                            window.close();
                         }
                     });
-                }
-                TabManager.prototype.connect = function () {
-                    this.port = chrome.tabs.connect(this.tab.id);
+                    chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
+                        if (_this.tab.id !== tabId) {
+                            return;
+                        }
+                        if (changeInfo.status !== 'complete') {
+                            return;
+                        }
+                        _this.reloadTab();
+                    });
+                };
+                TabManager.prototype.reloadTab = function () {
+                    var _this = this;
+                    return new Promise(function (resolve, reject) {
+                        _this.initialize(_this).then(function () {
+                            _this.port = chrome.tabs.connect(_this.tab.id);
+                            resolve();
+                        }).catch(reject);
+                    });
                 };
                 TabManager.prototype.getTabId = function () {
                     return this.tab.id;
@@ -717,22 +753,20 @@ var catchError = function (messages) {
     alert([].concat(messages).join('\n'));
 };
 (new Promise(function (resolve, reject) {
-    new ts.Application.Services.TabManager(resolve, reject);
+    new ts.Application.Services.TabManager(function (tabManager) {
+        var injectScripts = ts.Application.Services.Config.injectScripts;
+        return ts.Application.Services.InjectScripts.connect(tabManager.getTabId(), injectScripts);
+    }, resolve, reject);
 })).then(function (tabManager) {
     Promise.all([
         new Promise(function (resolve, reject) {
             var file = chrome.runtime.getURL(ts.Application.Services.Config.seleniumApiXML);
             ts.Application.Services.SeleniumIDE.loadFile(file).then(resolve).catch(reject);
         }),
-        new Promise(function (resolve, reject) {
-            var injectScripts = ts.Application.Services.Config.injectScripts;
-            ts.Application.Services.InjectScripts.connect(tabManager.getTabId(), injectScripts).then(resolve).catch(reject);
-        }),
         new Promise(function (resolve) {
             angular.element(document).ready(resolve);
         })
     ]).then(function () {
-        tabManager.connect();
         autopilotApp = angular.module('AutopilotApp', ['ui.sortable']).factory('tabManager', function () {
             return tabManager;
         }).factory('commandList', function () {
