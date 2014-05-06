@@ -1,17 +1,14 @@
 /// <reference path="../DefinitelyTyped/Selenium/recorder.d.ts" />
 /// <reference path="../DefinitelyTyped/chrome/chrome.d.ts" />
 /// <reference path="../Models/Command/Model.ts" />
-/// <reference path="./Services/RecorderObserver.ts" />
 /// <reference path="./Models/Message/AddCommand/Repository.ts" />
 /// <reference path="./Models/Message/Dispatcher.ts" />
+/// <reference path="./Services/RecorderObserver.ts" />
+/// <reference path="./Services/SeleniumIDE.ts" />
 
 declare module chrome.extension {
     var onConnect: chrome.runtime.ExtensionConnectEvent;
 }
-
-// for selenium-runner
-(<any>window).getBrowser = function () { return { 'selectedBrowser' : { 'contentWindow' : window } } };
-(<any>window).lastWindow = window;
 
 var globalPort;
 setInterval(() => {
@@ -23,8 +20,7 @@ setInterval(() => {
     var recorderObserver = new ts.Application.Services.RecorderObserver();
     var messageAddCommentRepository = new ts.Application.Models.Message.AddComment.Repository();
     var messageDispatcher = new ts.Application.Models.Message.Dispatcher();
-    var selenium = (<any>window).createSelenium(location.href, true);
-    selenium.browserbot.selectWindow(null);
+    var seleniumIDE = new ts.Application.Services.SeleniumIDE();
 
     chrome.extension.onConnect.addListener((port: chrome.runtime.Port) => {
         globalPort = port;

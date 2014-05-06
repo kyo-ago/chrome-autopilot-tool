@@ -27,10 +27,13 @@ module ts.Application.Controllers.Autopilot {
             connectTab.onMessage.addListener((message: Object) => {
                 messageDispatcher.dispatch(message, {
                     MessageAddCommentModel : (message: Models.Message.AddComment.Model) => {
-                        $scope.commandList.add(message.command);
+                        $scope.$apply(() => {
+                            $scope.commandList.add(message.command);
+                        });
                     }
                 });
             });
+
         }
     }
 }

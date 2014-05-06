@@ -17,6 +17,6 @@ module ts.Application.Services {
             "src/js/selenium-ide/testCase.js",
             "src/js/content_scripts.js"
         ];
-        static seleniumApiXML = 'src/js/selenium-ide/iedoc-core.xml';
+        static seleniumApiXML = '/src/js/selenium-ide/iedoc-core.xml';
     }
 }

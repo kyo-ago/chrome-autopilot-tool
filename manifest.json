@@ -16,5 +16,8 @@
     ],
     "icons": {
         "48": "src/img/icon128.png"
-    }
+    },
+    "web_accessible_resources": [
+        "/src/js/selenium-ide/iedoc-core.xml"
+    ]
 }

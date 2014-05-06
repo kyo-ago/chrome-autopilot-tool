@@ -120,30 +120,6 @@ var ts;
 })(ts || (ts = {}));
 var ts;
 (function (ts) {
-    (function (Application) {
-        (function (Services) {
-            var RecorderObserver = (function () {
-                function RecorderObserver() {
-                    this.recordingEnabled = true;
-                    this.isSidebar = false;
-                }
-                RecorderObserver.prototype.getUserLog = function () {
-                    return console;
-                };
-                RecorderObserver.prototype.addCommand = function (command, target, value, window, insertBeforeLastCommand) {
-                };
-                RecorderObserver.prototype.onUnloadDocument = function (doc) {
-                };
-                return RecorderObserver;
-            })();
-            Services.RecorderObserver = RecorderObserver;
-        })(Application.Services || (Application.Services = {}));
-        var Services = Application.Services;
-    })(ts.Application || (ts.Application = {}));
-    var Application = ts.Application;
-})(ts || (ts = {}));
-var ts;
-(function (ts) {
     (function (Models) {
         (function (Command) {
             var Repository = (function () {
@@ -481,11 +457,90 @@ var ts;
     })(ts.Application || (ts.Application = {}));
     var Application = ts.Application;
 })(ts || (ts = {}));
+var ts;
+(function (ts) {
+    (function (Application) {
+        (function (Services) {
+            var RecorderObserver = (function () {
+                function RecorderObserver() {
+                    this.recordingEnabled = true;
+                    this.isSidebar = false;
+                }
+                RecorderObserver.prototype.getUserLog = function () {
+                    return console;
+                };
+                RecorderObserver.prototype.addCommand = function (command, target, value, window, insertBeforeLastCommand) {
+                };
+                RecorderObserver.prototype.onUnloadDocument = function (doc) {
+                };
+                return RecorderObserver;
+            })();
+            Services.RecorderObserver = RecorderObserver;
+        })(Application.Services || (Application.Services = {}));
+        var Services = Application.Services;
+    })(ts.Application || (ts.Application = {}));
+    var Application = ts.Application;
+})(ts || (ts = {}));
+var ts;
+(function (ts) {
+    (function (Application) {
+        (function (Services) {
+            var SeleniumIDE = (function () {
+                function SeleniumIDE() {
+                    window.getBrowser = function () {
+                        return { 'selectedBrowser': { 'contentWindow': window } };
+                    };
+                    window.lastWindow = window;
+                    window.testCase = new window.TestCase;
+                    window.selenium = window.createSelenium(location.href, true);
 
-window.getBrowser = function () {
-    return { 'selectedBrowser': { 'contentWindow': window } };
-};
-window.lastWindow = window;
+                    this.testCase = window.testCase;
+                    this.selenium = window.selenium;
+
+                    this.selenium.browserbot.selectWindow(null);
+                    this.commandFactory = new window.CommandHandlerFactory();
+                    this.commandFactory.registerAll(this.selenium);
+                }
+                SeleniumIDE.prototype.getInterval = function () {
+                    return 1;
+                };
+                SeleniumIDE.prototype.start = function () {
+                    var _this = this;
+                    this.currentTest = new window.IDETestLoop(this.commandFactory, {});
+                    this.currentTest.getCommandInterval = function () {
+                        return _this.getInterval();
+                    };
+
+                    this.testCase.debugContext.reset();
+                    this.currentTest.start();
+                };
+
+                SeleniumIDE.loadFile = function (file) {
+                    return new Promise(function (resolve, reject) {
+                        var xhr = new XMLHttpRequest();
+                        xhr.open('GET', file);
+                        xhr.onreadystatechange = function () {
+                            if (xhr.readyState !== 4) {
+                                return;
+                            }
+                            if (xhr.status !== 0 && xhr.status !== 200) {
+                                return reject(SeleniumIDE.errorMessage + file);
+                            }
+                            window.Command.apiDocuments = new Array(xhr.responseXML.documentElement);
+                            resolve();
+                        };
+                        xhr.send(null);
+                    });
+                };
+                SeleniumIDE.errorMessage = 'selenium command xml load failed.\n';
+                return SeleniumIDE;
+            })();
+            Services.SeleniumIDE = SeleniumIDE;
+        })(Application.Services || (Application.Services = {}));
+        var Services = Application.Services;
+    })(ts.Application || (ts.Application = {}));
+    var Application = ts.Application;
+})(ts || (ts = {}));
 
 var globalPort;
 setInterval(function () {
@@ -496,8 +551,7 @@ setInterval(function () {
     var recorderObserver = new ts.Application.Services.RecorderObserver();
     var messageAddCommentRepository = new ts.Application.Models.Message.AddComment.Repository();
     var messageDispatcher = new ts.Application.Models.Message.Dispatcher();
-    var selenium = window.createSelenium(location.href, true);
-    selenium.browserbot.selectWindow(null);
+    var seleniumIDE = new ts.Application.Services.SeleniumIDE();
 
     chrome.extension.onConnect.addListener(function (port) {
         globalPort = port;

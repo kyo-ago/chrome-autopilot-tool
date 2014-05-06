@@ -16,10 +16,12 @@ var catchError = (messages: string[]) => {
 })).then((tabid: number) => {
     Promise.all([
         new Promise((resolve: () => any, reject: (errorMessage: string) => any) => {
-            ts.Application.Services.SeleniumIDE.loadFile(ts.Application.Services.Config.seleniumApiXML).then(resolve).catch(reject);
+            var file = chrome.runtime.getURL(ts.Application.Services.Config.seleniumApiXML);
+            ts.Application.Services.SeleniumIDE.loadFile(file).then(resolve).catch(reject);
         }),
         new Promise((resolve: () => any, reject: (errorMessage: string) => any) => {
-            (new ts.Application.Services.InjectScripts()).connect(tabid, ts.Application.Services.Config.injectScripts).then(resolve).catch(reject);
+            var injectScripts = ts.Application.Services.Config.injectScripts;
+            (new ts.Application.Services.InjectScripts()).connect(tabid, injectScripts).then(resolve).catch(reject);
         }),
         new Promise((resolve: () => any) => {
             angular.element(document).ready(resolve);

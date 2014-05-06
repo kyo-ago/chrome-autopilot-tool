@@ -607,7 +607,7 @@ var ts;
                     "src/js/selenium-ide/testCase.js",
                     "src/js/content_scripts.js"
                 ];
-                Config.seleniumApiXML = 'src/js/selenium-ide/iedoc-core.xml';
+                Config.seleniumApiXML = '/src/js/selenium-ide/iedoc-core.xml';
                 return Config;
             })();
             Services.Config = Config;
@@ -622,7 +622,34 @@ var ts;
         (function (Services) {
             var SeleniumIDE = (function () {
                 function SeleniumIDE() {
+                    window.getBrowser = function () {
+                        return { 'selectedBrowser': { 'contentWindow': window } };
+                    };
+                    window.lastWindow = window;
+                    window.testCase = new window.TestCase;
+                    window.selenium = window.createSelenium(location.href, true);
+
+                    this.testCase = window.testCase;
+                    this.selenium = window.selenium;
+
+                    this.selenium.browserbot.selectWindow(null);
+                    this.commandFactory = new window.CommandHandlerFactory();
+                    this.commandFactory.registerAll(this.selenium);
                 }
+                SeleniumIDE.prototype.getInterval = function () {
+                    return 1;
+                };
+                SeleniumIDE.prototype.start = function () {
+                    var _this = this;
+                    this.currentTest = new window.IDETestLoop(this.commandFactory, {});
+                    this.currentTest.getCommandInterval = function () {
+                        return _this.getInterval();
+                    };
+
+                    this.testCase.debugContext.reset();
+                    this.currentTest.start();
+                };
+
                 SeleniumIDE.loadFile = function (file) {
                     return new Promise(function (resolve, reject) {
                         var xhr = new XMLHttpRequest();
@@ -631,7 +658,7 @@ var ts;
                             if (xhr.readyState !== 4) {
                                 return;
                             }
-                            if (xhr.status !== 0 || xhr.status !== 200) {
+                            if (xhr.status !== 0 && xhr.status !== 200) {
                                 return reject(SeleniumIDE.errorMessage + file);
                             }
                             window.Command.apiDocuments = new Array(xhr.responseXML.documentElement);
@@ -658,10 +685,12 @@ var catchError = function (messages) {
 })).then(function (tabid) {
     Promise.all([
         new Promise(function (resolve, reject) {
-            ts.Application.Services.SeleniumIDE.loadFile(ts.Application.Services.Config.seleniumApiXML).then(resolve).catch(reject);
+            var file = chrome.runtime.getURL(ts.Application.Services.Config.seleniumApiXML);
+            ts.Application.Services.SeleniumIDE.loadFile(file).then(resolve).catch(reject);
         }),
         new Promise(function (resolve, reject) {
-            (new ts.Application.Services.InjectScripts()).connect(tabid, ts.Application.Services.Config.injectScripts).then(resolve).catch(reject);
+            var injectScripts = ts.Application.Services.Config.injectScripts;
+            (new ts.Application.Services.InjectScripts()).connect(tabid, injectScripts).then(resolve).catch(reject);
         }),
         new Promise(function (resolve) {
             angular.element(document).ready(resolve);
