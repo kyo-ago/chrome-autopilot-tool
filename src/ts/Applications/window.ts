@@ -5,12 +5,13 @@
 /// <reference path="./Services/TabManager.ts" />
 /// <reference path="./Services/InjectScripts.ts" />
 /// <reference path="./Services/Config.ts" />
-/// <reference path="./Services/SeleniumIDE.ts" />
+/// <reference path="./Services/SeleniumSender.ts" />
 
 var autopilotApp: ng.IModule;
 var catchError = (messages: string[]) => {
     alert([].concat(messages).join('\n'));
 };
+var applicationServicesSeleniumSeleniumSender: ts.Application.Services.SeleniumSender;
 (new Promise((resolve: (tabManager: ts.Application.Services.TabManager) => any, reject: (errorMessage: string) => any) => {
     new ts.Application.Services.TabManager((tabManager: ts.Application.Services.TabManager) => {
         var injectScripts = ts.Application.Services.Config.injectScripts;
@@ -20,7 +21,7 @@ var catchError = (messages: string[]) => {
     Promise.all([
         new Promise((resolve: () => any, reject: (errorMessage: string) => any) => {
             var file = chrome.runtime.getURL(ts.Application.Services.Config.seleniumApiXML);
-            ts.Application.Services.SeleniumIDE.loadFile(file).then(resolve).catch(reject);
+            ts.Application.Services.SeleniumSender.loadFile(file).then(resolve).catch(reject);
         }),
         new Promise((resolve: () => any) => {
             angular.element(document).ready(resolve);
@@ -29,6 +30,10 @@ var catchError = (messages: string[]) => {
         autopilotApp = angular.module('AutopilotApp', ['ui.sortable'])
             .factory('tabManager', () => {
                 return tabManager;
+            })
+            .factory('seleniumSender', (tabManager: ts.Application.Services.TabManager) => {
+                applicationServicesSeleniumSeleniumSender = new ts.Application.Services.SeleniumSender(tabManager);
+                return applicationServicesSeleniumSeleniumSender;
             })
             .factory('commandList', () => {
                 return new ts.Models.CommandList.Model();

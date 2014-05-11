@@ -91,6 +91,9 @@ module ts.Application.Services {
         getTabId () {
             return this.tab.id;
         }
+        getTabURL () {
+            return this.tab.url;
+        }
         postMessage (message: Object) {
             this.port.postMessage(message);
         }

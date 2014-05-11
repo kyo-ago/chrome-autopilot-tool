@@ -486,8 +486,8 @@ var ts;
 (function (ts) {
     (function (Application) {
         (function (Services) {
-            var SeleniumIDE = (function () {
-                function SeleniumIDE() {
+            var SeleniumReceiver = (function () {
+                function SeleniumReceiver() {
                     window.getBrowser = function () {
                         return {
                             'selectedBrowser': {
@@ -517,22 +517,21 @@ var ts;
 
                     this.testCase = window.testCase;
                     this.selenium = window.selenium;
-
                     this.selenium.browserbot.selectWindow(null);
                     this.commandFactory = new window.CommandHandlerFactory();
                     this.commandFactory.registerAll(this.selenium);
                 }
-                SeleniumIDE.prototype.getInterval = function () {
+                SeleniumReceiver.prototype.getInterval = function () {
                     return 1;
                 };
-                SeleniumIDE.prototype.addComment = function (commandList) {
+                SeleniumReceiver.prototype.addCommandList = function (commandList) {
                     var _this = this;
                     commandList.getList().forEach(function (command) {
                         var selCommand = new window.Command(command.type, command.target, command.value);
                         _this.testCase.commands.push(selCommand);
                     });
                 };
-                SeleniumIDE.prototype.start = function () {
+                SeleniumReceiver.prototype.start = function () {
                     var _this = this;
                     return new Promise(function (resolve) {
                         _this.currentTest = new window.IDETestLoop(_this.commandFactory, {
@@ -546,28 +545,9 @@ var ts;
                         _this.currentTest.start();
                     });
                 };
-
-                SeleniumIDE.loadFile = function (file) {
-                    return new Promise(function (resolve, reject) {
-                        var xhr = new XMLHttpRequest();
-                        xhr.open('GET', file);
-                        xhr.onreadystatechange = function () {
-                            if (xhr.readyState !== 4) {
-                                return;
-                            }
-                            if (xhr.status !== 0 && xhr.status !== 200) {
-                                return reject(SeleniumIDE.errorMessage + file);
-                            }
-                            window.Command.apiDocuments = new Array(xhr.responseXML.documentElement);
-                            resolve();
-                        };
-                        xhr.send(null);
-                    });
-                };
-                SeleniumIDE.errorMessage = 'selenium command xml load failed.\n';
-                return SeleniumIDE;
+                return SeleniumReceiver;
             })();
-            Services.SeleniumIDE = SeleniumIDE;
+            Services.SeleniumReceiver = SeleniumReceiver;
         })(Application.Services || (Application.Services = {}));
         var Services = Application.Services;
     })(ts.Application || (ts.Application = {}));
@@ -583,7 +563,7 @@ setInterval(function () {
     var recorderObserver = new ts.Application.Services.RecorderObserver();
     var messageAddCommentRepository = new ts.Application.Models.Message.AddComment.Repository();
     var messageDispatcher = new ts.Application.Models.Message.Dispatcher();
-    var seleniumIDE = new ts.Application.Services.SeleniumIDE();
+    var SeleniumReceiver = new ts.Application.Services.SeleniumReceiver();
 
     chrome.extension.onConnect.addListener(function (port) {
         globalPort = port;
@@ -604,8 +584,8 @@ setInterval(function () {
             messageDispatcher.dispatch(message, {
                 MessagePlayCommandListModel: function (message) {
                     Recorder.deregister(recorderObserver, window);
-                    seleniumIDE.addComment(message.commandList);
-                    seleniumIDE.start().then(function () {
+                    SeleniumReceiver.addCommandList(message.commandList);
+                    SeleniumReceiver.start().then(function () {
                         Recorder.register(recorderObserver, window);
                     });
                 }

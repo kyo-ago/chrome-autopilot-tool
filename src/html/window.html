@@ -10,9 +10,9 @@
 <div ng-controller="Autopilot">
     <ul ui-sortable ng-model="commandList.commands">
         <li ng-repeat="command in commandList.commands">
-            {{command.type}}
-            {{command.target}}
-            {{command.value}}
+            <input type="text" ng-model="command.type">
+            <input type="text" ng-model="command.target">
+            <input type="text" ng-model="command.value">
         </li>
     </ul>
     <input type="button" value="submit" ng-click="playAll()">
@@ -21,8 +21,20 @@
 <script src="/bower_components/jqueryui/ui/jquery-ui.js"></script>
 <script src="/bower_components/angular/angular.js"></script>
 <script src="/bower_components/angular-ui-sortable/sortable.js"></script>
+
+<script src="/src/js/selenium-ide/deferred.js"></script>
+<script src="/src/js/selenium-ide/htmlutils.js"></script>
 <script src="/src/js/selenium-ide/tools.js"></script>
 <script src="/src/js/selenium-ide/testCase.js"></script>
+<script src="/src/js/selenium-ide/selenium-atoms.js"></script>
+<script src="/src/js/selenium-ide/selenium-api.js"></script>
+<script src="/src/js/selenium-ide/selenium-browserbot.js"></script>
+<script src="/src/js/selenium-ide/selenium-commandhandlers.js"></script>
+<script src="/src/js/lib/chrome-extension-backed-selenium.js"></script>
+<script src="/src/js/selenium-ide/selenium-executionloop.js"></script>
+<script src="/src/js/selenium-ide/selenium-testrunner.js"></script>
+<script src="/src/js/selenium-ide/selenium-runner.js"></script>
+
 <script src="/src/js/window.js"></script>
 </body>
 </html>

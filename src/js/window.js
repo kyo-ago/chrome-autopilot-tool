@@ -234,6 +234,91 @@ var ts;
 })(ts || (ts = {}));
 var ts;
 (function (ts) {
+    (function (Models) {
+        (function (Command) {
+            var Repository = (function () {
+                function Repository() {
+                }
+                Repository.prototype.toObject = function (command) {
+                    return {
+                        'type': command.type,
+                        'target': command.target,
+                        'value': command.value
+                    };
+                };
+                Repository.prototype.fromObject = function (command) {
+                    return new Command.Model(command.type, command.target, command.value);
+                };
+                return Repository;
+            })();
+            Command.Repository = Repository;
+        })(Models.Command || (Models.Command = {}));
+        var Command = Models.Command;
+    })(ts.Models || (ts.Models = {}));
+    var Models = ts.Models;
+})(ts || (ts = {}));
+var ts;
+(function (ts) {
+    (function (Application) {
+        (function (Models) {
+            (function (Message) {
+                var Repository = (function () {
+                    function Repository() {
+                    }
+                    Repository.prototype.toObject = function (entity) {
+                        return {};
+                    };
+                    Repository.prototype.fromObject = function (object) {
+                        return new Message.Model();
+                    };
+                    return Repository;
+                })();
+                Message.Repository = Repository;
+            })(Models.Message || (Models.Message = {}));
+            var Message = Models.Message;
+        })(Application.Models || (Application.Models = {}));
+        var Models = Application.Models;
+    })(ts.Application || (ts.Application = {}));
+    var Application = ts.Application;
+})(ts || (ts = {}));
+var ts;
+(function (ts) {
+    (function (Application) {
+        (function (Models) {
+            (function (Message) {
+                (function (AddComment) {
+                    var Repository = (function (_super) {
+                        __extends(Repository, _super);
+                        function Repository() {
+                            _super.apply(this, arguments);
+                            this.commandRepository = new ts.Models.Command.Repository();
+                        }
+                        Repository.prototype.toObject = function (message) {
+                            return {
+                                'name': AddComment.Model.messageName,
+                                'command': this.commandRepository.toObject(message.command),
+                                'insertBeforeLastCommand': message.insertBeforeLastCommand
+                            };
+                        };
+                        Repository.prototype.fromObject = function (message) {
+                            var command = this.commandRepository.fromObject(message.command);
+                            var insertBeforeLastCommand = !!message.insertBeforeLastCommand;
+                            return new AddComment.Model(command, insertBeforeLastCommand);
+                        };
+                        return Repository;
+                    })(Message.Repository);
+                    AddComment.Repository = Repository;
+                })(Message.AddComment || (Message.AddComment = {}));
+                var AddComment = Message.AddComment;
+            })(Models.Message || (Models.Message = {}));
+            var Message = Models.Message;
+        })(Application.Models || (Application.Models = {}));
+        var Models = Application.Models;
+    })(ts.Application || (ts.Application = {}));
+    var Application = ts.Application;
+})(ts || (ts = {}));
+var ts;
+(function (ts) {
     (function (Base) {
         (function (EntityList) {
             var Repository = (function () {
@@ -263,31 +348,6 @@ var ts;
 var ts;
 (function (ts) {
     (function (Models) {
-        (function (Command) {
-            var Repository = (function () {
-                function Repository() {
-                }
-                Repository.prototype.toObject = function (command) {
-                    return {
-                        'type': command.type,
-                        'target': command.target,
-                        'value': command.value
-                    };
-                };
-                Repository.prototype.fromObject = function (command) {
-                    return new Command.Model(command.type, command.target, command.value);
-                };
-                return Repository;
-            })();
-            Command.Repository = Repository;
-        })(Models.Command || (Models.Command = {}));
-        var Command = Models.Command;
-    })(ts.Models || (ts.Models = {}));
-    var Models = ts.Models;
-})(ts || (ts = {}));
-var ts;
-(function (ts) {
-    (function (Models) {
         (function (CommandList) {
             var Repository = (function (_super) {
                 __extends(Repository, _super);
@@ -312,30 +372,6 @@ var ts;
         var CommandList = Models.CommandList;
     })(ts.Models || (ts.Models = {}));
     var Models = ts.Models;
-})(ts || (ts = {}));
-var ts;
-(function (ts) {
-    (function (Application) {
-        (function (Models) {
-            (function (Message) {
-                var Repository = (function () {
-                    function Repository() {
-                    }
-                    Repository.prototype.toObject = function (entity) {
-                        return {};
-                    };
-                    Repository.prototype.fromObject = function (object) {
-                        return new Message.Model();
-                    };
-                    return Repository;
-                })();
-                Message.Repository = Repository;
-            })(Models.Message || (Models.Message = {}));
-            var Message = Models.Message;
-        })(Application.Models || (Application.Models = {}));
-        var Models = Application.Models;
-    })(ts.Application || (ts.Application = {}));
-    var Application = ts.Application;
 })(ts || (ts = {}));
 var ts;
 (function (ts) {
@@ -388,42 +424,6 @@ var ts;
                     PlayCommandList.Repository = Repository;
                 })(Message.PlayCommandList || (Message.PlayCommandList = {}));
                 var PlayCommandList = Message.PlayCommandList;
-            })(Models.Message || (Models.Message = {}));
-            var Message = Models.Message;
-        })(Application.Models || (Application.Models = {}));
-        var Models = Application.Models;
-    })(ts.Application || (ts.Application = {}));
-    var Application = ts.Application;
-})(ts || (ts = {}));
-var ts;
-(function (ts) {
-    (function (Application) {
-        (function (Models) {
-            (function (Message) {
-                (function (AddComment) {
-                    var Repository = (function (_super) {
-                        __extends(Repository, _super);
-                        function Repository() {
-                            _super.apply(this, arguments);
-                            this.commandRepository = new ts.Models.Command.Repository();
-                        }
-                        Repository.prototype.toObject = function (message) {
-                            return {
-                                'name': AddComment.Model.messageName,
-                                'command': this.commandRepository.toObject(message.command),
-                                'insertBeforeLastCommand': message.insertBeforeLastCommand
-                            };
-                        };
-                        Repository.prototype.fromObject = function (message) {
-                            var command = this.commandRepository.fromObject(message.command);
-                            var insertBeforeLastCommand = !!message.insertBeforeLastCommand;
-                            return new AddComment.Model(command, insertBeforeLastCommand);
-                        };
-                        return Repository;
-                    })(Message.Repository);
-                    AddComment.Repository = Repository;
-                })(Message.AddComment || (Message.AddComment = {}));
-                var AddComment = Message.AddComment;
             })(Models.Message || (Models.Message = {}));
             var Message = Models.Message;
         })(Application.Models || (Application.Models = {}));
@@ -551,6 +551,9 @@ var ts;
                 TabManager.prototype.getTabId = function () {
                     return this.tab.id;
                 };
+                TabManager.prototype.getTabURL = function () {
+                    return this.tab.url;
+                };
                 TabManager.prototype.postMessage = function (message) {
                     this.port.postMessage(message);
                 };
@@ -569,16 +572,112 @@ var ts;
 var ts;
 (function (ts) {
     (function (Application) {
+        (function (Services) {
+            var SeleniumSender = (function () {
+                function SeleniumSender(tabManager) {
+                    this.tabManager = tabManager;
+                    window.getBrowser = function () {
+                        return {
+                            'selectedBrowser': {
+                                'contentWindow': window
+                            }
+                        };
+                    };
+                    window.lastWindow = window;
+                    window.testCase = new window.TestCase;
+                    window.selenium = new window.ChromeExtensionBackedSelenium(tabManager.getTabURL(), '');
+
+                    window.editor = {
+                        'app': {
+                            'getOptions': function () {
+                                return {
+                                    'timeout': 1
+                                };
+                            }
+                        },
+                        'view': {
+                            'rowUpdated': function () {
+                            },
+                            'scrollToRow': function () {
+                            }
+                        }
+                    };
+
+                    this.testCase = window.testCase;
+                    this.selenium = window.selenium;
+                    this.selenium.browserbot.selectWindow(null);
+                    this.commandFactory = new window.CommandHandlerFactory();
+                    this.commandFactory.registerAll(this.selenium);
+                }
+                SeleniumSender.prototype.getInterval = function () {
+                    return 1;
+                };
+                SeleniumSender.prototype.addCommandList = function (commandList) {
+                    var _this = this;
+                    commandList.getList().forEach(function (command) {
+                        var selCommand = new window.Command(command.type, command.target, command.value);
+                        _this.testCase.commands.push(selCommand);
+                    });
+                };
+                SeleniumSender.prototype.start = function () {
+                    var _this = this;
+                    return new Promise(function (resolve) {
+                        _this.currentTest = new window.IDETestLoop(_this.commandFactory, {
+                            'testComplete': resolve
+                        });
+                        _this.currentTest.getCommandInterval = function () {
+                            return _this.getInterval();
+                        };
+
+                        _this.testCase.debugContext.reset();
+                        _this.currentTest.start();
+                    });
+                };
+                SeleniumSender.prototype.execute = function (command, args, callback) {
+                    this.tabManager.postMessage({});
+                    debugger;
+                };
+
+                SeleniumSender.loadFile = function (file) {
+                    return new Promise(function (resolve, reject) {
+                        var xhr = new XMLHttpRequest();
+                        xhr.open('GET', file);
+                        xhr.onreadystatechange = function () {
+                            if (xhr.readyState !== 4) {
+                                return;
+                            }
+                            if (xhr.status !== 0 && xhr.status !== 200) {
+                                return reject(SeleniumSender.errorMessage + file);
+                            }
+                            window.Command.apiDocuments = new Array(xhr.responseXML.documentElement);
+                            resolve();
+                        };
+                        xhr.send(null);
+                    });
+                };
+                SeleniumSender.errorMessage = 'selenium command xml load failed.\n';
+                return SeleniumSender;
+            })();
+            Services.SeleniumSender = SeleniumSender;
+        })(Application.Services || (Application.Services = {}));
+        var Services = Application.Services;
+    })(ts.Application || (ts.Application = {}));
+    var Application = ts.Application;
+})(ts || (ts = {}));
+var ts;
+(function (ts) {
+    (function (Application) {
         (function (Controllers) {
             (function (Autopilot) {
                 var Controller = (function () {
-                    function Controller($scope, tabManager, commandList, messageDispatcher) {
-                        var _this = this;
-                        this.messagePlayCommandListRepository = new Application.Models.Message.PlayCommandList.Repository();
+                    function Controller($scope, tabManager, commandList, messageDispatcher, seleniumSender) {
                         $scope.commandList = commandList;
+
+                        $scope.commandList.add(new ts.Models.Command.Model('type', '//*[@id="inputtext"]', 'aaaaaaaa'));
+
                         $scope.playAll = function () {
-                            var message = new Application.Models.Message.PlayCommandList.Model($scope.commandList);
-                            tabManager.postMessage(_this.messagePlayCommandListRepository.toObject(message));
+                            seleniumSender.addCommandList($scope.commandList);
+                            seleniumSender.start();
                         };
                         tabManager.onMessage(function (message) {
                             messageDispatcher.dispatch(message, {
@@ -672,101 +771,11 @@ var ts;
     })(ts.Application || (ts.Application = {}));
     var Application = ts.Application;
 })(ts || (ts = {}));
-var ts;
-(function (ts) {
-    (function (Application) {
-        (function (Services) {
-            var SeleniumIDE = (function () {
-                function SeleniumIDE() {
-                    window.getBrowser = function () {
-                        return {
-                            'selectedBrowser': {
-                                'contentWindow': window
-                            }
-                        };
-                    };
-                    window.lastWindow = window;
-                    window.testCase = new window.TestCase;
-                    window.selenium = window.createSelenium(location.href, true);
-
-                    window.editor = {
-                        'app': {
-                            'getOptions': function () {
-                                return {
-                                    'timeout': 1
-                                };
-                            }
-                        },
-                        'view': {
-                            'rowUpdated': function () {
-                            },
-                            'scrollToRow': function () {
-                            }
-                        }
-                    };
-
-                    this.testCase = window.testCase;
-                    this.selenium = window.selenium;
-
-                    this.selenium.browserbot.selectWindow(null);
-                    this.commandFactory = new window.CommandHandlerFactory();
-                    this.commandFactory.registerAll(this.selenium);
-                }
-                SeleniumIDE.prototype.getInterval = function () {
-                    return 1;
-                };
-                SeleniumIDE.prototype.addComment = function (commandList) {
-                    var _this = this;
-                    commandList.getList().forEach(function (command) {
-                        var selCommand = new window.Command(command.type, command.target, command.value);
-                        _this.testCase.commands.push(selCommand);
-                    });
-                };
-                SeleniumIDE.prototype.start = function () {
-                    var _this = this;
-                    return new Promise(function (resolve) {
-                        _this.currentTest = new window.IDETestLoop(_this.commandFactory, {
-                            'testComplete': resolve
-                        });
-                        _this.currentTest.getCommandInterval = function () {
-                            return _this.getInterval();
-                        };
-
-                        _this.testCase.debugContext.reset();
-                        _this.currentTest.start();
-                    });
-                };
-
-                SeleniumIDE.loadFile = function (file) {
-                    return new Promise(function (resolve, reject) {
-                        var xhr = new XMLHttpRequest();
-                        xhr.open('GET', file);
-                        xhr.onreadystatechange = function () {
-                            if (xhr.readyState !== 4) {
-                                return;
-                            }
-                            if (xhr.status !== 0 && xhr.status !== 200) {
-                                return reject(SeleniumIDE.errorMessage + file);
-                            }
-                            window.Command.apiDocuments = new Array(xhr.responseXML.documentElement);
-                            resolve();
-                        };
-                        xhr.send(null);
-                    });
-                };
-                SeleniumIDE.errorMessage = 'selenium command xml load failed.\n';
-                return SeleniumIDE;
-            })();
-            Services.SeleniumIDE = SeleniumIDE;
-        })(Application.Services || (Application.Services = {}));
-        var Services = Application.Services;
-    })(ts.Application || (ts.Application = {}));
-    var Application = ts.Application;
-})(ts || (ts = {}));
 var autopilotApp;
 var catchError = function (messages) {
     alert([].concat(messages).join('\n'));
 };
+var applicationServicesSeleniumSeleniumSender;
 (new Promise(function (resolve, reject) {
     new ts.Application.Services.TabManager(function (tabManager) {
         var injectScripts = ts.Application.Services.Config.injectScripts;
@@ -776,7 +785,7 @@ var catchError = function (messages) {
     Promise.all([
         new Promise(function (resolve, reject) {
             var file = chrome.runtime.getURL(ts.Application.Services.Config.seleniumApiXML);
-            ts.Application.Services.SeleniumIDE.loadFile(file).then(resolve).catch(reject);
+            ts.Application.Services.SeleniumSender.loadFile(file).then(resolve).catch(reject);
         }),
         new Promise(function (resolve) {
             angular.element(document).ready(resolve);
@@ -784,6 +793,9 @@ var catchError = function (messages) {
     ]).then(function () {
         autopilotApp = angular.module('AutopilotApp', ['ui.sortable']).factory('tabManager', function () {
             return tabManager;
+        }).factory('seleniumSender', function (tabManager) {
+            applicationServicesSeleniumSeleniumSender = new ts.Application.Services.SeleniumSender(tabManager);
+            return applicationServicesSeleniumSeleniumSender;
         }).factory('commandList', function () {
             return new ts.Models.CommandList.Model();
         }).service('messageDispatcher', ts.Application.Models.Message.Dispatcher).controller('Autopilot', ts.Application.Controllers.Autopilot.Controller);

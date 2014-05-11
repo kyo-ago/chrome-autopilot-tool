@@ -4,7 +4,7 @@
 /// <reference path="./Models/Message/AddCommand/Repository.ts" />
 /// <reference path="./Models/Message/Dispatcher.ts" />
 /// <reference path="./Services/RecorderObserver.ts" />
-/// <reference path="./Services/SeleniumIDE.ts" />
+/// <reference path="./Services/SeleniumReceiver.ts" />
 
 declare module chrome.extension {
     var onConnect: chrome.runtime.ExtensionConnectEvent;
@@ -20,7 +20,7 @@ setInterval(() => {
     var recorderObserver = new ts.Application.Services.RecorderObserver();
     var messageAddCommentRepository = new ts.Application.Models.Message.AddComment.Repository();
     var messageDispatcher = new ts.Application.Models.Message.Dispatcher();
-    var seleniumIDE = new ts.Application.Services.SeleniumIDE();
+    var SeleniumReceiver = new ts.Application.Services.SeleniumReceiver();
 
     chrome.extension.onConnect.addListener((port: chrome.runtime.Port) => {
         globalPort = port;
@@ -41,8 +41,8 @@ setInterval(() => {
             messageDispatcher.dispatch(message, {
                 MessagePlayCommandListModel : (message: ts.Application.Models.Message.PlayCommandList.Model) => {
                     Recorder.deregister(recorderObserver, window);
-                    seleniumIDE.addComment(message.commandList);
-                    seleniumIDE.start().then(() => {
+                    SeleniumReceiver.addCommandList(message.commandList);
+                    SeleniumReceiver.start().then(() => {
                         Recorder.register(recorderObserver, window);
                     });
                 }
