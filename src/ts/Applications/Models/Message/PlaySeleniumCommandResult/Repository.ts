@@ -4,16 +4,14 @@
 
 module ts.Application.Models.Message.PlaySeleniumCommandResult {
     export class Repository extends Message.Repository {
-        repository = new SeleniumCommand.Repository();
-
         toObject (message: Model) {
             return {
                 'name' : Model.messageName,
-                'content' : this.repository.toObject(message.command)
+                'content' : message.command
             };
         }
         fromObject (message: Object) {
-            return new Model(this.repository.fromObject(message['content']));
+            return new Model(message['content']);
         }
     }
 }

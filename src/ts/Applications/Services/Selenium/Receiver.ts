@@ -9,13 +9,28 @@ module ts.Application.Services.Selenium {
         private errorMessage = 'missing command: ';
         execute (model: Models.SeleniumCommand.Model) {
             if (this.selenium[model.type]) {
-                return this.selenium[model.type].apply(this.selenium, model.args);
+                return this.exec(() => this.selenium[model.type].apply(this.selenium, model.args));
             }
             var commandName = 'do' + model.type.replace(/^\w/, w => w.toUpperCase());
             if (this.selenium[commandName]) {
-                return this.selenium[commandName].apply(this.selenium, model.args);
+                return this.exec(() => this.selenium[commandName].apply(this.selenium, model.args));
             }
-            throw new Error(this.errorMessage + JSON.stringify(model));
+            var errorMessage = this.errorMessage + JSON.stringify(model);
+            setTimeout(() => {
+                throw new Error(errorMessage);
+            });
+            return 'ERROR ' + errorMessage;
+        }
+        private exec (exec: () => any) {
+            try {
+                exec();
+                return 'OK';
+            } catch (e) {
+                setTimeout(() => {
+                    throw e;
+                });
+                return 'ERROR';
+            }
         }
     }
 }

@@ -21,15 +21,15 @@ module ts.Application.Models.Message {
 
         dispatch (message: any, dispatcher: DispatchMap) {
             if (message.name == AddComment.Model.messageName) {
-                dispatcher.MessageAddCommentModel(this.messageAddCommentModel.fromObject(message));
+                dispatcher.MessageAddCommentModel && dispatcher.MessageAddCommentModel(this.messageAddCommentModel.fromObject(message));
             } else if (message.name == PlayCommand.Model.messageName) {
-                dispatcher.MessagePlayCommandModel(this.messagePlayCommandModel.fromObject(message));
+                dispatcher.MessagePlayCommandModel && dispatcher.MessagePlayCommandModel(this.messagePlayCommandModel.fromObject(message));
             } else if (message.name == PlayCommandList.Model.messageName) {
-                dispatcher.MessagePlayCommandListModel(this.messagePlayCommandListModel.fromObject(message));
+                dispatcher.MessagePlayCommandListModel && dispatcher.MessagePlayCommandListModel(this.messagePlayCommandListModel.fromObject(message));
             } else if (message.name == PlaySeleniumCommandExecute.Model.messageName) {
-                dispatcher.MessagePlaySeleniumCommandExecuteModel(this.messagePlaySeleniumCommandExecuteModel.fromObject(message));
+                dispatcher.MessagePlaySeleniumCommandExecuteModel && dispatcher.MessagePlaySeleniumCommandExecuteModel(this.messagePlaySeleniumCommandExecuteModel.fromObject(message));
             } else if (message.name == PlaySeleniumCommandResult.Model.messageName) {
-                dispatcher.MessagePlaySeleniumCommandResultModel(this.messagePlaySeleniumCommandResultModel.fromObject(message));
+                dispatcher.MessagePlaySeleniumCommandResultModel && dispatcher.MessagePlaySeleniumCommandResultModel(this.messagePlaySeleniumCommandResultModel.fromObject(message));
             } else {
                 throw new Error('Invalid message: ' + JSON.stringify(message));
             }

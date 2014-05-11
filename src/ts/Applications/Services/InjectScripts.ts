@@ -23,9 +23,9 @@ module ts.Application.Services {
                 chrome.tabs.executeScript(tabid, {
                     'code' : 'this.extensionContentLoaded'
                 }, (result: any[]) => {
-    //                if (result && result.length && result[0]) {
-    //                    return resolve();
-    //                }
+                    if (result && result.length && result[0]) {
+                        return resolve();
+                    }
                     executeScript(injectScripts.shift());
                 });
             });

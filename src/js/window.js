@@ -635,16 +635,15 @@ var ts;
                         __extends(Repository, _super);
                         function Repository() {
                             _super.apply(this, arguments);
-                            this.repository = new Models.SeleniumCommand.Repository();
                         }
                         Repository.prototype.toObject = function (message) {
                             return {
                                 'name': PlaySeleniumCommandResult.Model.messageName,
-                                'content': this.repository.toObject(message.command)
+                                'content': message.command
                             };
                         };
                         Repository.prototype.fromObject = function (message) {
-                            return new PlaySeleniumCommandResult.Model(this.repository.fromObject(message['content']));
+                            return new PlaySeleniumCommandResult.Model(message['content']);
                         };
                         return Repository;
                     })(Message.Repository);
@@ -673,15 +672,15 @@ var ts;
                     }
                     Dispatcher.prototype.dispatch = function (message, dispatcher) {
                         if (message.name == Message.AddComment.Model.messageName) {
-                            dispatcher.MessageAddCommentModel(this.messageAddCommentModel.fromObject(message));
+                            dispatcher.MessageAddCommentModel && dispatcher.MessageAddCommentModel(this.messageAddCommentModel.fromObject(message));
                         } else if (message.name == Message.PlayCommand.Model.messageName) {
-                            dispatcher.MessagePlayCommandModel(this.messagePlayCommandModel.fromObject(message));
+                            dispatcher.MessagePlayCommandModel && dispatcher.MessagePlayCommandModel(this.messagePlayCommandModel.fromObject(message));
                         } else if (message.name == Message.PlayCommandList.Model.messageName) {
-                            dispatcher.MessagePlayCommandListModel(this.messagePlayCommandListModel.fromObject(message));
+                            dispatcher.MessagePlayCommandListModel && dispatcher.MessagePlayCommandListModel(this.messagePlayCommandListModel.fromObject(message));
                         } else if (message.name == Message.PlaySeleniumCommandExecute.Model.messageName) {
-                            dispatcher.MessagePlaySeleniumCommandExecuteModel(this.messagePlaySeleniumCommandExecuteModel.fromObject(message));
+                            dispatcher.MessagePlaySeleniumCommandExecuteModel && dispatcher.MessagePlaySeleniumCommandExecuteModel(this.messagePlaySeleniumCommandExecuteModel.fromObject(message));
                         } else if (message.name == Message.PlaySeleniumCommandResult.Model.messageName) {
-                            dispatcher.MessagePlaySeleniumCommandResultModel(this.messagePlaySeleniumCommandResultModel.fromObject(message));
+                            dispatcher.MessagePlaySeleniumCommandResultModel && dispatcher.MessagePlaySeleniumCommandResultModel(this.messagePlaySeleniumCommandResultModel.fromObject(message));
                         } else {
                             throw new Error('Invalid message: ' + JSON.stringify(message));
                         }
@@ -706,6 +705,9 @@ var ts;
                     this.initialize = function () {
                     };
                     this.onMessageListeners = [];
+                    this.onDisconnectListeners = [];
+                    this.onConnectListeners = [];
+                    this.closeMessage = 'Close test case?';
                     this.initialize = initialize;
                     this.getTab().then(function () {
                         _this.initialize(_this).then(function () {
@@ -753,6 +755,7 @@ var ts;
                         });
                     });
                 };
+
                 TabManager.prototype.connectTab = function () {
                     var _this = this;
                     this.port = chrome.tabs.connect(this.tab.id);
@@ -760,7 +763,7 @@ var ts;
                         if (_this.tab.id !== tabId) {
                             return;
                         }
-                        if (confirm('Close test case?')) {
+                        if (confirm(_this.closeMessage)) {
                             window.close();
                         }
                     });
@@ -779,8 +782,14 @@ var ts;
                     return new Promise(function (resolve, reject) {
                         _this.initialize(_this).then(function () {
                             _this.port = chrome.tabs.connect(_this.tab.id);
-                            _this.onMessageListeners.forEach(function (Listener) {
-                                return _this.port.onMessage.addListener(Listener);
+                            _this.onConnectListeners.forEach(function (listener) {
+                                return listener();
+                            });
+                            _this.onMessageListeners.forEach(function (listener) {
+                                return _this.port.onMessage.addListener(listener);
+                            });
+                            _this.onDisconnectListeners.forEach(function (listener) {
+                                return _this.port.onDisconnect.addListener(listener);
                             });
                             resolve();
                         }).catch(reject);
@@ -798,6 +807,13 @@ var ts;
                 TabManager.prototype.onMessage = function (callback) {
                     this.onMessageListeners.push(callback);
                     this.port.onMessage.addListener(callback);
+                };
+                TabManager.prototype.onConnect = function (callback) {
+                    this.onConnectListeners.push(callback);
+                };
+                TabManager.prototype.onDisconnect = function (callback) {
+                    this.onDisconnectListeners.push(callback);
+                    this.port.onDisconnect.addListener(callback);
                 };
                 return TabManager;
             })();
@@ -907,9 +923,23 @@ var ts;
                         this.tabManager = tabManager;
                         this.messageDispatcher = messageDispatcher;
                         this.messagePlaySeleniumCommandExecuteRepository = new Application.Models.Message.PlaySeleniumCommandExecute.Repository();
+                        window.shouldAbortCurrentCommand = function () {
+                            return true;
+                        };
+                        tabManager.onConnect(function () {
+                            window.shouldAbortCurrentCommand = function () {
+                                return true;
+                            };
+                        });
+                        tabManager.onDisconnect(function () {
+                            window.shouldAbortCurrentCommand = function () {
+                                return false;
+                            };
+                        });
                     }
                     Sender.prototype.addCommandList = function (commandList) {
                         var _this = this;
+                        this.testCase.commands = [];
                         commandList.getList().forEach(function (command) {
                             var selCommand = new window.Command(command.type, command.target, command.value);
                             _this.testCase.commands.push(selCommand);
@@ -946,9 +976,6 @@ var ts;
                 var Controller = (function () {
                     function Controller($scope, tabManager, commandList, messageDispatcher, seleniumSender) {
                         $scope.commandList = commandList;
-
-                        $scope.commandList.add(new ts.Models.Command.Model('type', '//*[@id="inputtext"]', 'aaaaaaaa'));
-
                         $scope.playAll = function () {
                             seleniumSender.addCommandList($scope.commandList);
                             seleniumSender.start();
@@ -1000,6 +1027,9 @@ var ts;
                         chrome.tabs.executeScript(tabid, {
                             'code': 'this.extensionContentLoaded'
                         }, function (result) {
+                            if (result && result.length && result[0]) {
+                                return resolve();
+                            }
                             executeScript(injectScripts.shift());
                         });
                     });

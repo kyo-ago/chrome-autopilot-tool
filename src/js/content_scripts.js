@@ -635,16 +635,15 @@ var ts;
                         __extends(Repository, _super);
                         function Repository() {
                             _super.apply(this, arguments);
-                            this.repository = new Models.SeleniumCommand.Repository();
                         }
                         Repository.prototype.toObject = function (message) {
                             return {
                                 'name': PlaySeleniumCommandResult.Model.messageName,
-                                'content': this.repository.toObject(message.command)
+                                'content': message.command
                             };
                         };
                         Repository.prototype.fromObject = function (message) {
-                            return new PlaySeleniumCommandResult.Model(this.repository.fromObject(message['content']));
+                            return new PlaySeleniumCommandResult.Model(message['content']);
                         };
                         return Repository;
                     })(Message.Repository);
@@ -673,15 +672,15 @@ var ts;
                     }
                     Dispatcher.prototype.dispatch = function (message, dispatcher) {
                         if (message.name == Message.AddComment.Model.messageName) {
-                            dispatcher.MessageAddCommentModel(this.messageAddCommentModel.fromObject(message));
+                            dispatcher.MessageAddCommentModel && dispatcher.MessageAddCommentModel(this.messageAddCommentModel.fromObject(message));
                         } else if (message.name == Message.PlayCommand.Model.messageName) {
-                            dispatcher.MessagePlayCommandModel(this.messagePlayCommandModel.fromObject(message));
+                            dispatcher.MessagePlayCommandModel && dispatcher.MessagePlayCommandModel(this.messagePlayCommandModel.fromObject(message));
                         } else if (message.name == Message.PlayCommandList.Model.messageName) {
-                            dispatcher.MessagePlayCommandListModel(this.messagePlayCommandListModel.fromObject(message));
+                            dispatcher.MessagePlayCommandListModel && dispatcher.MessagePlayCommandListModel(this.messagePlayCommandListModel.fromObject(message));
                         } else if (message.name == Message.PlaySeleniumCommandExecute.Model.messageName) {
-                            dispatcher.MessagePlaySeleniumCommandExecuteModel(this.messagePlaySeleniumCommandExecuteModel.fromObject(message));
+                            dispatcher.MessagePlaySeleniumCommandExecuteModel && dispatcher.MessagePlaySeleniumCommandExecuteModel(this.messagePlaySeleniumCommandExecuteModel.fromObject(message));
                         } else if (message.name == Message.PlaySeleniumCommandResult.Model.messageName) {
-                            dispatcher.MessagePlaySeleniumCommandResultModel(this.messagePlaySeleniumCommandResultModel.fromObject(message));
+                            dispatcher.MessagePlaySeleniumCommandResultModel && dispatcher.MessagePlaySeleniumCommandResultModel(this.messagePlaySeleniumCommandResultModel.fromObject(message));
                         } else {
                             throw new Error('Invalid message: ' + JSON.stringify(message));
                         }
@@ -820,16 +819,36 @@ var ts;
                         this.errorMessage = 'missing command: ';
                     }
                     Receiver.prototype.execute = function (model) {
+                        var _this = this;
                         if (this.selenium[model.type]) {
-                            return this.selenium[model.type].apply(this.selenium, model.args);
+                            return this.exec(function () {
+                                return _this.selenium[model.type].apply(_this.selenium, model.args);
+                            });
                         }
                         var commandName = 'do' + model.type.replace(/^\w/, function (w) {
                             return w.toUpperCase();
                         });
                         if (this.selenium[commandName]) {
-                            return this.selenium[commandName].apply(this.selenium, model.args);
+                            return this.exec(function () {
+                                return _this.selenium[commandName].apply(_this.selenium, model.args);
+                            });
                         }
-                        throw new Error(this.errorMessage + JSON.stringify(model));
+                        var errorMessage = this.errorMessage + JSON.stringify(model);
+                        setTimeout(function () {
+                            throw new Error(errorMessage);
+                        });
+                        return 'ERROR ' + errorMessage;
+                    };
+                    Receiver.prototype.exec = function (exec) {
+                        try  {
+                            exec();
+                            return 'OK';
+                        } catch (e) {
+                            setTimeout(function () {
+                                throw e;
+                            });
+                            return 'ERROR';
+                        }
                     };
                     return Receiver;
                 })(Selenium.Base);
@@ -843,13 +862,10 @@ var ts;
 })(ts || (ts = {}));
 
 var globalPort;
-setInterval(function () {
-    console.debug(undefined);
-}, 3000);
-
 (function () {
-    var recorderObserver = new ts.Application.Services.RecorderObserver();
+    var messagePlaySeleniumCommandResultRepository = new ts.Application.Models.Message.PlaySeleniumCommandResult.Repository();
     var messageAddCommentRepository = new ts.Application.Models.Message.AddComment.Repository();
+    var recorderObserver = new ts.Application.Services.RecorderObserver();
     var messageDispatcher = new ts.Application.Models.Message.Dispatcher();
     var SeleniumReceiver = new ts.Application.Services.Selenium.Receiver();
 
@@ -858,12 +874,14 @@ setInterval(function () {
         Recorder.register(recorderObserver, window);
         recorderObserver.addCommand = function (commandName, target, value, window, insertBeforeLastCommand) {
             var message = {
-                'command': {
-                    'type': commandName,
-                    'target': target,
-                    'value': value
-                },
-                'insertBeforeLastCommand': insertBeforeLastCommand
+                'content': {
+                    'command': {
+                        'type': commandName,
+                        'target': target,
+                        'value': value
+                    },
+                    'insertBeforeLastCommand': insertBeforeLastCommand
+                }
             };
             var addCommentMessage = messageAddCommentRepository.fromObject(message);
             port.postMessage(messageAddCommentRepository.toObject(addCommentMessage));
@@ -872,10 +890,10 @@ setInterval(function () {
             messageDispatcher.dispatch(message, {
                 MessagePlaySeleniumCommandExecuteModel: function (message) {
                     Recorder.deregister(recorderObserver, window);
-                    SeleniumReceiver.execute(message.command);
-                    SeleniumReceiver.start().then(function () {
-                        Recorder.register(recorderObserver, window);
-                    });
+                    var result = SeleniumReceiver.execute(message.command);
+                    Recorder.register(recorderObserver, window);
+                    var resultMessage = new ts.Application.Models.Message.PlaySeleniumCommandResult.Model(result);
+                    port.postMessage(messagePlaySeleniumCommandResultRepository.toObject(resultMessage));
                 }
             });
         });

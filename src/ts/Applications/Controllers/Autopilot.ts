@@ -19,9 +19,6 @@ module ts.Application.Controllers.Autopilot {
             seleniumSender: ts.Application.Services.Selenium.Sender
         ) {
             $scope.commandList = commandList;
-
-$scope.commandList.add(new ts.Models.Command.Model('type', '//*[@id="inputtext"]', 'aaaaaaaa'));
-
             $scope.playAll = () => {
                 seleniumSender.addCommandList($scope.commandList);
                 seleniumSender.start();

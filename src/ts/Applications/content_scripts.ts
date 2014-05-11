@@ -10,15 +10,11 @@ declare module chrome.extension {
     var onConnect: chrome.runtime.ExtensionConnectEvent;
 }
 
-var globalPort;
-setInterval(() => {
-    // break point(for debugger)
-    console.debug(undefined);
-}, 3000);
-
+var globalPort: chrome.runtime.Port;
 (() => {
-    var recorderObserver = new ts.Application.Services.RecorderObserver();
+    var messagePlaySeleniumCommandResultRepository = new ts.Application.Models.Message.PlaySeleniumCommandResult.Repository();
     var messageAddCommentRepository = new ts.Application.Models.Message.AddComment.Repository();
+    var recorderObserver = new ts.Application.Services.RecorderObserver();
     var messageDispatcher = new ts.Application.Models.Message.Dispatcher();
     var SeleniumReceiver = new ts.Application.Services.Selenium.Receiver();
 
@@ -27,12 +23,14 @@ setInterval(() => {
         Recorder.register(recorderObserver, window);
         recorderObserver.addCommand = (commandName: string, target: string, value: string, window: Window, insertBeforeLastCommand: boolean) => {
             var message = {
-                'command' : {
-                    'type' : commandName,
-                    'target' : target,
-                    'value' : value
-                },
-                'insertBeforeLastCommand' : insertBeforeLastCommand
+                'content' : {
+                    'command' : {
+                        'type' : commandName,
+                        'target' : target,
+                        'value' : value
+                    },
+                    'insertBeforeLastCommand' : insertBeforeLastCommand
+                }
             };
             var addCommentMessage = messageAddCommentRepository.fromObject(message);
             port.postMessage(messageAddCommentRepository.toObject(addCommentMessage));
@@ -41,10 +39,10 @@ setInterval(() => {
             messageDispatcher.dispatch(message, {
                 MessagePlaySeleniumCommandExecuteModel : (message: ts.Application.Models.Message.PlaySeleniumCommandExecute.Model) => {
                     Recorder.deregister(recorderObserver, window);
-                    SeleniumReceiver.execute(message.command);
-                    SeleniumReceiver.start().then(() => {
-                        Recorder.register(recorderObserver, window);
-                    });
+                    var result = SeleniumReceiver.execute(message.command);
+                    Recorder.register(recorderObserver, window);
+                    var resultMessage = new ts.Application.Models.Message.PlaySeleniumCommandResult.Model(result);
+                    port.postMessage(messagePlaySeleniumCommandResultRepository.toObject(resultMessage));
                 }
             });
         });

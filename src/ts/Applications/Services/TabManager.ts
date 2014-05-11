@@ -7,6 +7,8 @@ module ts.Application.Services {
         private port: chrome.runtime.Port;
         private initialize: Function = () => {};
         private onMessageListeners: Function[] = [];
+        private onDisconnectListeners: Function[] = [];
+        private onConnectListeners: Function[] = [];
 
         constructor (
             initialize: (tabManager: TabManager) => Promise<any>,
@@ -59,13 +61,14 @@ module ts.Application.Services {
                 });
             });
         }
+        private closeMessage = 'Close test case?';
         private connectTab () {
             this.port = chrome.tabs.connect(this.tab.id);
             chrome.tabs.onRemoved.addListener((tabId: number, removeInfo: chrome.tabs.TabRemoveInfo) => {
                 if (this.tab.id !== tabId) {
                     return;
                 }
-                if (confirm('Close test case?')) {
+                if (confirm(this.closeMessage)) {
                     window.close();
                 }
             });
@@ -83,7 +86,9 @@ module ts.Application.Services {
             return new Promise((resolve: () => any, reject: (errorMessage: string) => any) => {
                 this.initialize(this).then(() => {
                     this.port = chrome.tabs.connect(this.tab.id);
-                    this.onMessageListeners.forEach(Listener => this.port.onMessage.addListener(Listener));
+                    this.onConnectListeners.forEach(listener => listener());
+                    this.onMessageListeners.forEach(listener => this.port.onMessage.addListener(listener));
+                    this.onDisconnectListeners.forEach(listener => this.port.onDisconnect.addListener(listener));
                     resolve();
                 }).catch(reject);
             });
@@ -100,6 +105,13 @@ module ts.Application.Services {
         onMessage (callback: (message: Object) => any) {
             this.onMessageListeners.push(callback);
             this.port.onMessage.addListener(callback);
+        }
+        onConnect (callback: () => any) {
+            this.onConnectListeners.push(callback);
+        }
+        onDisconnect (callback: () => any) {
+            this.onDisconnectListeners.push(callback);
+            this.port.onDisconnect.addListener(callback);
         }
     }
 }
