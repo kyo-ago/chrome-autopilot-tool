@@ -291,18 +291,20 @@ var ts;
                         __extends(Repository, _super);
                         function Repository() {
                             _super.apply(this, arguments);
-                            this.commandRepository = new ts.Models.Command.Repository();
+                            this.repository = new ts.Models.Command.Repository();
                         }
                         Repository.prototype.toObject = function (message) {
                             return {
                                 'name': AddComment.Model.messageName,
-                                'command': this.commandRepository.toObject(message.command),
-                                'insertBeforeLastCommand': message.insertBeforeLastCommand
+                                'content': {
+                                    'command': this.repository.toObject(message.command),
+                                    'insertBeforeLastCommand': message.insertBeforeLastCommand
+                                }
                             };
                         };
                         Repository.prototype.fromObject = function (message) {
-                            var command = this.commandRepository.fromObject(message.command);
-                            var insertBeforeLastCommand = !!message.insertBeforeLastCommand;
+                            var command = this.repository.fromObject(message['content']['command']);
+                            var insertBeforeLastCommand = !!message['content']['insertBeforeLastCommand'];
                             return new AddComment.Model(command, insertBeforeLastCommand);
                         };
                         return Repository;
@@ -310,6 +312,64 @@ var ts;
                     AddComment.Repository = Repository;
                 })(Message.AddComment || (Message.AddComment = {}));
                 var AddComment = Message.AddComment;
+            })(Models.Message || (Models.Message = {}));
+            var Message = Models.Message;
+        })(Application.Models || (Application.Models = {}));
+        var Models = Application.Models;
+    })(ts.Application || (ts.Application = {}));
+    var Application = ts.Application;
+})(ts || (ts = {}));
+var ts;
+(function (ts) {
+    (function (Application) {
+        (function (Models) {
+            (function (Message) {
+                (function (PlayCommand) {
+                    var Model = (function (_super) {
+                        __extends(Model, _super);
+                        function Model(command) {
+                            _super.call(this);
+                            this.command = command;
+                        }
+                        Model.messageName = 'playCommand';
+                        return Model;
+                    })(Message.Model);
+                    PlayCommand.Model = Model;
+                })(Message.PlayCommand || (Message.PlayCommand = {}));
+                var PlayCommand = Message.PlayCommand;
+            })(Models.Message || (Models.Message = {}));
+            var Message = Models.Message;
+        })(Application.Models || (Application.Models = {}));
+        var Models = Application.Models;
+    })(ts.Application || (ts.Application = {}));
+    var Application = ts.Application;
+})(ts || (ts = {}));
+var ts;
+(function (ts) {
+    (function (Application) {
+        (function (Models) {
+            (function (Message) {
+                (function (PlayCommand) {
+                    var Repository = (function (_super) {
+                        __extends(Repository, _super);
+                        function Repository() {
+                            _super.apply(this, arguments);
+                            this.repository = new ts.Models.Command.Repository();
+                        }
+                        Repository.prototype.toObject = function (message) {
+                            return {
+                                'name': PlayCommand.Model.messageName,
+                                'content': this.repository.toObject(message.command)
+                            };
+                        };
+                        Repository.prototype.fromObject = function (message) {
+                            return new PlayCommand.Model(this.repository.fromObject(message['content']));
+                        };
+                        return Repository;
+                    })(Message.Repository);
+                    PlayCommand.Repository = Repository;
+                })(Message.PlayCommand || (Message.PlayCommand = {}));
+                var PlayCommand = Message.PlayCommand;
             })(Models.Message || (Models.Message = {}));
             var Message = Models.Message;
         })(Application.Models || (Application.Models = {}));
@@ -408,16 +468,16 @@ var ts;
                         __extends(Repository, _super);
                         function Repository() {
                             _super.apply(this, arguments);
-                            this.commandListRepository = new ts.Models.CommandList.Repository();
+                            this.repository = new ts.Models.CommandList.Repository();
                         }
                         Repository.prototype.toObject = function (message) {
                             return {
                                 'name': PlayCommandList.Model.messageName,
-                                'commandList': this.commandListRepository.toObject(message.commandList)
+                                'content': this.repository.toObject(message.commandList)
                             };
                         };
                         Repository.prototype.fromObject = function (message) {
-                            return new PlayCommandList.Model(this.commandListRepository.fromObject(message['commandList']));
+                            return new PlayCommandList.Model(this.repository.fromObject(message['content']));
                         };
                         return Repository;
                     })(Message.Repository);
@@ -435,17 +495,195 @@ var ts;
 (function (ts) {
     (function (Application) {
         (function (Models) {
+            (function (SeleniumCommand) {
+                var Model = (function (_super) {
+                    __extends(Model, _super);
+                    function Model(type, args) {
+                        if (typeof type === "undefined") { type = ''; }
+                        if (typeof args === "undefined") { args = []; }
+                        _super.call(this);
+                        this.type = type;
+                        this.args = args;
+                    }
+                    return Model;
+                })(ts.Base.Entity.Model);
+                SeleniumCommand.Model = Model;
+            })(Models.SeleniumCommand || (Models.SeleniumCommand = {}));
+            var SeleniumCommand = Models.SeleniumCommand;
+        })(Application.Models || (Application.Models = {}));
+        var Models = Application.Models;
+    })(ts.Application || (ts.Application = {}));
+    var Application = ts.Application;
+})(ts || (ts = {}));
+var ts;
+(function (ts) {
+    (function (Application) {
+        (function (Models) {
+            (function (SeleniumCommand) {
+                var Repository = (function () {
+                    function Repository() {
+                    }
+                    Repository.prototype.toObject = function (command) {
+                        return {
+                            'type': command.type,
+                            'args': command.args
+                        };
+                    };
+                    Repository.prototype.fromObject = function (command) {
+                        return new SeleniumCommand.Model(command.type, command.args);
+                    };
+                    return Repository;
+                })();
+                SeleniumCommand.Repository = Repository;
+            })(Models.SeleniumCommand || (Models.SeleniumCommand = {}));
+            var SeleniumCommand = Models.SeleniumCommand;
+        })(Application.Models || (Application.Models = {}));
+        var Models = Application.Models;
+    })(ts.Application || (ts.Application = {}));
+    var Application = ts.Application;
+})(ts || (ts = {}));
+var ts;
+(function (ts) {
+    (function (Application) {
+        (function (Models) {
+            (function (Message) {
+                (function (PlaySeleniumCommandExecute) {
+                    var Model = (function (_super) {
+                        __extends(Model, _super);
+                        function Model(command) {
+                            _super.call(this);
+                            this.command = command;
+                        }
+                        Model.messageName = 'playSeleniumCommandExecute';
+                        return Model;
+                    })(Message.Model);
+                    PlaySeleniumCommandExecute.Model = Model;
+                })(Message.PlaySeleniumCommandExecute || (Message.PlaySeleniumCommandExecute = {}));
+                var PlaySeleniumCommandExecute = Message.PlaySeleniumCommandExecute;
+            })(Models.Message || (Models.Message = {}));
+            var Message = Models.Message;
+        })(Application.Models || (Application.Models = {}));
+        var Models = Application.Models;
+    })(ts.Application || (ts.Application = {}));
+    var Application = ts.Application;
+})(ts || (ts = {}));
+var ts;
+(function (ts) {
+    (function (Application) {
+        (function (Models) {
+            (function (Message) {
+                (function (PlaySeleniumCommandExecute) {
+                    var Repository = (function (_super) {
+                        __extends(Repository, _super);
+                        function Repository() {
+                            _super.apply(this, arguments);
+                            this.repository = new Models.SeleniumCommand.Repository();
+                        }
+                        Repository.prototype.toObject = function (message) {
+                            return {
+                                'name': PlaySeleniumCommandExecute.Model.messageName,
+                                'content': this.repository.toObject(message.command)
+                            };
+                        };
+                        Repository.prototype.fromObject = function (message) {
+                            return new PlaySeleniumCommandExecute.Model(this.repository.fromObject(message['content']));
+                        };
+                        return Repository;
+                    })(Message.Repository);
+                    PlaySeleniumCommandExecute.Repository = Repository;
+                })(Message.PlaySeleniumCommandExecute || (Message.PlaySeleniumCommandExecute = {}));
+                var PlaySeleniumCommandExecute = Message.PlaySeleniumCommandExecute;
+            })(Models.Message || (Models.Message = {}));
+            var Message = Models.Message;
+        })(Application.Models || (Application.Models = {}));
+        var Models = Application.Models;
+    })(ts.Application || (ts.Application = {}));
+    var Application = ts.Application;
+})(ts || (ts = {}));
+var ts;
+(function (ts) {
+    (function (Application) {
+        (function (Models) {
+            (function (Message) {
+                (function (PlaySeleniumCommandResult) {
+                    var Model = (function (_super) {
+                        __extends(Model, _super);
+                        function Model(command) {
+                            _super.call(this);
+                            this.command = command;
+                        }
+                        Model.messageName = 'playSeleniumCommandResult';
+                        return Model;
+                    })(Message.Model);
+                    PlaySeleniumCommandResult.Model = Model;
+                })(Message.PlaySeleniumCommandResult || (Message.PlaySeleniumCommandResult = {}));
+                var PlaySeleniumCommandResult = Message.PlaySeleniumCommandResult;
+            })(Models.Message || (Models.Message = {}));
+            var Message = Models.Message;
+        })(Application.Models || (Application.Models = {}));
+        var Models = Application.Models;
+    })(ts.Application || (ts.Application = {}));
+    var Application = ts.Application;
+})(ts || (ts = {}));
+var ts;
+(function (ts) {
+    (function (Application) {
+        (function (Models) {
+            (function (Message) {
+                (function (PlaySeleniumCommandResult) {
+                    var Repository = (function (_super) {
+                        __extends(Repository, _super);
+                        function Repository() {
+                            _super.apply(this, arguments);
+                            this.repository = new Models.SeleniumCommand.Repository();
+                        }
+                        Repository.prototype.toObject = function (message) {
+                            return {
+                                'name': PlaySeleniumCommandResult.Model.messageName,
+                                'content': this.repository.toObject(message.command)
+                            };
+                        };
+                        Repository.prototype.fromObject = function (message) {
+                            return new PlaySeleniumCommandResult.Model(this.repository.fromObject(message['content']));
+                        };
+                        return Repository;
+                    })(Message.Repository);
+                    PlaySeleniumCommandResult.Repository = Repository;
+                })(Message.PlaySeleniumCommandResult || (Message.PlaySeleniumCommandResult = {}));
+                var PlaySeleniumCommandResult = Message.PlaySeleniumCommandResult;
+            })(Models.Message || (Models.Message = {}));
+            var Message = Models.Message;
+        })(Application.Models || (Application.Models = {}));
+        var Models = Application.Models;
+    })(ts.Application || (ts.Application = {}));
+    var Application = ts.Application;
+})(ts || (ts = {}));
+var ts;
+(function (ts) {
+    (function (Application) {
+        (function (Models) {
             (function (Message) {
                 var Dispatcher = (function () {
                     function Dispatcher() {
                         this.messageAddCommentModel = new Message.AddComment.Repository();
+                        this.messagePlayCommandModel = new Message.PlayCommand.Repository();
                         this.messagePlayCommandListModel = new Message.PlayCommandList.Repository();
+                        this.messagePlaySeleniumCommandExecuteModel = new Message.PlaySeleniumCommandExecute.Repository();
+                        this.messagePlaySeleniumCommandResultModel = new Message.PlaySeleniumCommandResult.Repository();
                     }
                     Dispatcher.prototype.dispatch = function (message, dispatcher) {
                         if (message.name == Message.AddComment.Model.messageName) {
                             dispatcher.MessageAddCommentModel(this.messageAddCommentModel.fromObject(message));
+                        } else if (message.name == Message.PlayCommand.Model.messageName) {
+                            dispatcher.MessagePlayCommandModel(this.messagePlayCommandModel.fromObject(message));
                         } else if (message.name == Message.PlayCommandList.Model.messageName) {
                             dispatcher.MessagePlayCommandListModel(this.messagePlayCommandListModel.fromObject(message));
+                        } else if (message.name == Message.PlaySeleniumCommandExecute.Model.messageName) {
+                            dispatcher.MessagePlaySeleniumCommandExecuteModel(this.messagePlaySeleniumCommandExecuteModel.fromObject(message));
+                        } else if (message.name == Message.PlaySeleniumCommandResult.Model.messageName) {
+                            dispatcher.MessagePlaySeleniumCommandResultModel(this.messagePlaySeleniumCommandResultModel.fromObject(message));
+                        } else {
+                            throw new Error('Invalid message: ' + JSON.stringify(message));
                         }
                     };
                     return Dispatcher;
@@ -573,92 +811,128 @@ var ts;
 (function (ts) {
     (function (Application) {
         (function (Services) {
-            var SeleniumSender = (function () {
-                function SeleniumSender(tabManager) {
-                    this.tabManager = tabManager;
-                    window.getBrowser = function () {
-                        return {
-                            'selectedBrowser': {
-                                'contentWindow': window
-                            }
+            (function (Selenium) {
+                var Base = (function () {
+                    function Base(callback) {
+                        window.getBrowser = function () {
+                            return {
+                                'selectedBrowser': {
+                                    'contentWindow': window
+                                }
+                            };
                         };
-                    };
-                    window.lastWindow = window;
-                    window.testCase = new window.TestCase;
-                    window.selenium = new window.ChromeExtensionBackedSelenium(tabManager.getTabURL(), '');
+                        window.lastWindow = window;
+                        window.testCase = new window.TestCase;
+                        window.selenium = callback();
 
-                    window.editor = {
-                        'app': {
-                            'getOptions': function () {
-                                return {
-                                    'timeout': 1
-                                };
-                            }
-                        },
-                        'view': {
-                            'rowUpdated': function () {
+                        window.editor = {
+                            'app': {
+                                'getOptions': function () {
+                                    return {
+                                        'timeout': 1
+                                    };
+                                }
                             },
-                            'scrollToRow': function () {
+                            'view': {
+                                'rowUpdated': function () {
+                                },
+                                'scrollToRow': function () {
+                                }
                             }
-                        }
+                        };
+
+                        this.testCase = window.testCase;
+                        this.selenium = window.selenium;
+                        this.selenium.browserbot.selectWindow(null);
+                        this.commandFactory = new window.CommandHandlerFactory();
+                        this.commandFactory.registerAll(this.selenium);
+                    }
+                    Base.prototype.getInterval = function () {
+                        return 1;
+                    };
+                    Base.prototype.start = function () {
+                        var _this = this;
+                        return new Promise(function (resolve) {
+                            _this.currentTest = new window.IDETestLoop(_this.commandFactory, {
+                                'testComplete': resolve
+                            });
+                            _this.currentTest.getCommandInterval = function () {
+                                return _this.getInterval();
+                            };
+
+                            _this.testCase.debugContext.reset();
+                            _this.currentTest.start();
+                        });
                     };
 
-                    this.testCase = window.testCase;
-                    this.selenium = window.selenium;
-                    this.selenium.browserbot.selectWindow(null);
-                    this.commandFactory = new window.CommandHandlerFactory();
-                    this.commandFactory.registerAll(this.selenium);
-                }
-                SeleniumSender.prototype.getInterval = function () {
-                    return 1;
-                };
-                SeleniumSender.prototype.addCommandList = function (commandList) {
-                    var _this = this;
-                    commandList.getList().forEach(function (command) {
-                        var selCommand = new window.Command(command.type, command.target, command.value);
-                        _this.testCase.commands.push(selCommand);
-                    });
-                };
-                SeleniumSender.prototype.start = function () {
-                    var _this = this;
-                    return new Promise(function (resolve) {
-                        _this.currentTest = new window.IDETestLoop(_this.commandFactory, {
-                            'testComplete': resolve
+                    Base.loadFile = function (file) {
+                        return new Promise(function (resolve, reject) {
+                            var xhr = new XMLHttpRequest();
+                            xhr.open('GET', file);
+                            xhr.onreadystatechange = function () {
+                                if (xhr.readyState !== 4) {
+                                    return;
+                                }
+                                if (xhr.status !== 0 && xhr.status !== 200) {
+                                    return reject(Base.errorMessage + file);
+                                }
+                                window.Command.apiDocuments = new Array(xhr.responseXML.documentElement);
+                                resolve();
+                            };
+                            xhr.send(null);
                         });
-                        _this.currentTest.getCommandInterval = function () {
-                            return _this.getInterval();
-                        };
-
-                        _this.testCase.debugContext.reset();
-                        _this.currentTest.start();
-                    });
-                };
-                SeleniumSender.prototype.execute = function (command, args, callback) {
-                    this.tabManager.postMessage({});
-                    debugger;
-                };
-
-                SeleniumSender.loadFile = function (file) {
-                    return new Promise(function (resolve, reject) {
-                        var xhr = new XMLHttpRequest();
-                        xhr.open('GET', file);
-                        xhr.onreadystatechange = function () {
-                            if (xhr.readyState !== 4) {
-                                return;
-                            }
-                            if (xhr.status !== 0 && xhr.status !== 200) {
-                                return reject(SeleniumSender.errorMessage + file);
-                            }
-                            window.Command.apiDocuments = new Array(xhr.responseXML.documentElement);
-                            resolve();
-                        };
-                        xhr.send(null);
-                    });
-                };
-                SeleniumSender.errorMessage = 'selenium command xml load failed.\n';
-                return SeleniumSender;
-            })();
-            Services.SeleniumSender = SeleniumSender;
+                    };
+                    Base.errorMessage = 'selenium command xml load failed.\n';
+                    return Base;
+                })();
+                Selenium.Base = Base;
+            })(Services.Selenium || (Services.Selenium = {}));
+            var Selenium = Services.Selenium;
+        })(Application.Services || (Application.Services = {}));
+        var Services = Application.Services;
+    })(ts.Application || (ts.Application = {}));
+    var Application = ts.Application;
+})(ts || (ts = {}));
+var ts;
+(function (ts) {
+    (function (Application) {
+        (function (Services) {
+            (function (Selenium) {
+                var Sender = (function (_super) {
+                    __extends(Sender, _super);
+                    function Sender(tabManager, messageDispatcher) {
+                        _super.call(this, function () {
+                            return new window.ChromeExtensionBackedSelenium(tabManager.getTabURL(), '');
+                        });
+                        this.tabManager = tabManager;
+                        this.messageDispatcher = messageDispatcher;
+                        this.messagePlaySeleniumCommandExecuteRepository = new Application.Models.Message.PlaySeleniumCommandExecute.Repository();
+                    }
+                    Sender.prototype.addCommandList = function (commandList) {
+                        var _this = this;
+                        commandList.getList().forEach(function (command) {
+                            var selCommand = new window.Command(command.type, command.target, command.value);
+                            _this.testCase.commands.push(selCommand);
+                        });
+                    };
+                    Sender.prototype.execute = function (command, args, callback) {
+                        var _this = this;
+                        var model = new Application.Models.SeleniumCommand.Model(command, args);
+                        var message = new Application.Models.Message.PlaySeleniumCommandExecute.Model(model);
+                        this.tabManager.postMessage(this.messagePlaySeleniumCommandExecuteRepository.toObject(message));
+                        this.tabManager.onMessage(function (message) {
+                            _this.messageDispatcher.dispatch(message, {
+                                MessagePlaySeleniumCommandResultModel: function (message) {
+                                    return callback('OK', true);
+                                }
+                            });
+                        });
+                    };
+                    return Sender;
+                })(Selenium.Base);
+                Selenium.Sender = Sender;
+            })(Services.Selenium || (Services.Selenium = {}));
+            var Selenium = Services.Selenium;
         })(Application.Services || (Application.Services = {}));
         var Services = Application.Services;
     })(ts.Application || (ts.Application = {}));
@@ -775,7 +1049,7 @@ var autopilotApp;
 var catchError = function (messages) {
     alert([].concat(messages).join('\n'));
 };
-var applicationServicesSeleniumSeleniumSender;
+var applicationServicesSeleniumSender;
 (new Promise(function (resolve, reject) {
     new ts.Application.Services.TabManager(function (tabManager) {
         var injectScripts = ts.Application.Services.Config.injectScripts;
@@ -785,7 +1059,7 @@ var applicationServicesSeleniumSeleniumSender;
     Promise.all([
         new Promise(function (resolve, reject) {
             var file = chrome.runtime.getURL(ts.Application.Services.Config.seleniumApiXML);
-            ts.Application.Services.SeleniumSender.loadFile(file).then(resolve).catch(reject);
+            ts.Application.Services.Selenium.Sender.loadFile(file).then(resolve).catch(reject);
         }),
         new Promise(function (resolve) {
             angular.element(document).ready(resolve);
@@ -793,12 +1067,12 @@ var applicationServicesSeleniumSeleniumSender;
     ]).then(function () {
         autopilotApp = angular.module('AutopilotApp', ['ui.sortable']).factory('tabManager', function () {
             return tabManager;
-        }).factory('seleniumSender', function (tabManager) {
-            applicationServicesSeleniumSeleniumSender = new ts.Application.Services.SeleniumSender(tabManager);
-            return applicationServicesSeleniumSeleniumSender;
+        }).service('messageDispatcher', ts.Application.Models.Message.Dispatcher).factory('seleniumSender', function (tabManager, messageDispatcher) {
+            applicationServicesSeleniumSender = new ts.Application.Services.Selenium.Sender(tabManager, messageDispatcher);
+            return applicationServicesSeleniumSender;
         }).factory('commandList', function () {
             return new ts.Models.CommandList.Model();
-        }).service('messageDispatcher', ts.Application.Models.Message.Dispatcher).controller('Autopilot', ts.Application.Controllers.Autopilot.Controller);
+        }).controller('Autopilot', ts.Application.Controllers.Autopilot.Controller);
         angular.bootstrap(document, ['AutopilotApp']);
     }).catch(catchError);
 }).catch(catchError);

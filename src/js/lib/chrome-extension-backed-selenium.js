@@ -189,7 +189,7 @@ ChromeExtensionBackedSelenium.prototype.remoteControlCommand = function(verb, ar
     //TODO handle timeout stuff: timeout(@default_timeout_in_seconds) do
 //  alert("Sending server request: " + requestData);
     return new Deferred(function(deferred) {
-        applicationServicesSeleniumSeleniumSender.execute(verb, args, function (response, success) {
+        applicationServicesSeleniumSender.execute(verb, args, function (response, success) {
             if (success) {
                 if (response.substr(0, 2) === 'OK') {
                     deferred.resolve(response.substr(3)); //strip "OK," from response

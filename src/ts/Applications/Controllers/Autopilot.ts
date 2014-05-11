@@ -3,7 +3,7 @@
 /// <reference path="../Models/Message/AddCommand/Model.ts" />
 /// <reference path="../Models/Message/Dispatcher.ts" />
 /// <reference path="../Services/TabManager.ts" />
-/// <reference path="../Services/SeleniumSender.ts" />
+/// <reference path="../Services/Selenium/Sender.ts" />
 
 module ts.Application.Controllers.Autopilot {
     export interface Scope extends ng.IScope {
@@ -16,7 +16,7 @@ module ts.Application.Controllers.Autopilot {
             tabManager: Services.TabManager,
             commandList: ts.Models.CommandList.Model,
             messageDispatcher: Models.Message.Dispatcher,
-            seleniumSender: ts.Application.Services.SeleniumSender
+            seleniumSender: ts.Application.Services.Selenium.Sender
         ) {
             $scope.commandList = commandList;
 

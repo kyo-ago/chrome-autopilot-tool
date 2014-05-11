@@ -5,13 +5,13 @@
 /// <reference path="./Services/TabManager.ts" />
 /// <reference path="./Services/InjectScripts.ts" />
 /// <reference path="./Services/Config.ts" />
-/// <reference path="./Services/SeleniumSender.ts" />
+/// <reference path="./Services/Selenium/Sender.ts" />
 
 var autopilotApp: ng.IModule;
 var catchError = (messages: string[]) => {
     alert([].concat(messages).join('\n'));
 };
-var applicationServicesSeleniumSeleniumSender: ts.Application.Services.SeleniumSender;
+var applicationServicesSeleniumSender: ts.Application.Services.Selenium.Sender;
 (new Promise((resolve: (tabManager: ts.Application.Services.TabManager) => any, reject: (errorMessage: string) => any) => {
     new ts.Application.Services.TabManager((tabManager: ts.Application.Services.TabManager) => {
         var injectScripts = ts.Application.Services.Config.injectScripts;
@@ -21,7 +21,7 @@ var applicationServicesSeleniumSeleniumSender: ts.Application.Services.SeleniumS
     Promise.all([
         new Promise((resolve: () => any, reject: (errorMessage: string) => any) => {
             var file = chrome.runtime.getURL(ts.Application.Services.Config.seleniumApiXML);
-            ts.Application.Services.SeleniumSender.loadFile(file).then(resolve).catch(reject);
+            ts.Application.Services.Selenium.Sender.loadFile(file).then(resolve).catch(reject);
         }),
         new Promise((resolve: () => any) => {
             angular.element(document).ready(resolve);
@@ -31,14 +31,14 @@ var applicationServicesSeleniumSeleniumSender: ts.Application.Services.SeleniumS
             .factory('tabManager', () => {
                 return tabManager;
             })
-            .factory('seleniumSender', (tabManager: ts.Application.Services.TabManager) => {
-                applicationServicesSeleniumSeleniumSender = new ts.Application.Services.SeleniumSender(tabManager);
-                return applicationServicesSeleniumSeleniumSender;
+            .service('messageDispatcher', ts.Application.Models.Message.Dispatcher)
+            .factory('seleniumSender', (tabManager: ts.Application.Services.TabManager, messageDispatcher: ts.Application.Models.Message.Dispatcher) => {
+                applicationServicesSeleniumSender = new ts.Application.Services.Selenium.Sender(tabManager, messageDispatcher);
+                return applicationServicesSeleniumSender;
             })
             .factory('commandList', () => {
                 return new ts.Models.CommandList.Model();
             })
-            .service('messageDispatcher', ts.Application.Models.Message.Dispatcher)
             .controller('Autopilot', ts.Application.Controllers.Autopilot.Controller)
         ;
         angular.bootstrap(document, ['AutopilotApp']);

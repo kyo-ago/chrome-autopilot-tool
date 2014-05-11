@@ -1,15 +1,15 @@
-/// <reference path="../../../../Models/CommandList/Repository.ts" />
+/// <reference path="../../../Models/SeleniumCommand/Repository.ts" />
 /// <reference path="../Repository.ts" />
 /// <reference path="./Model.ts" />
 
-module ts.Application.Models.Message.PlayCommandList {
+module ts.Application.Models.Message.PlaySeleniumCommandResult {
     export class Repository extends Message.Repository {
-        repository = new ts.Models.CommandList.Repository();
+        repository = new SeleniumCommand.Repository();
 
         toObject (message: Model) {
             return {
                 'name' : Model.messageName,
-                'content' : this.repository.toObject(message.commandList)
+                'content' : this.repository.toObject(message.command)
             };
         }
         fromObject (message: Object) {

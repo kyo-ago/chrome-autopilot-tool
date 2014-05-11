@@ -1,15 +1,13 @@
-/// <reference path="../../DefinitelyTyped/es6-promises/es6-promises.d.ts" />
-/// <reference path="../../Models/CommandList/Model.ts" />
-/// <reference path="./TabManager.ts" />
+/// <reference path="../../../DefinitelyTyped/es6-promises/es6-promises.d.ts" />
 
-module ts.Application.Services {
-    export class SeleniumSender {
+module ts.Application.Services.Selenium {
+    export class Base {
         selenium: any;
         commandFactory: any;
         currentTest: any;
         testCase: any;
 
-        constructor (private tabManager: Services.TabManager) {
+        constructor (callback: () => any) {
             // for selenium-runner
             (<any>window).getBrowser = () => {
                 return {
@@ -20,7 +18,7 @@ module ts.Application.Services {
             };
             (<any>window).lastWindow = window;
             (<any>window).testCase = new (<any>window).TestCase;
-            (<any>window).selenium = new (<any>window).ChromeExtensionBackedSelenium(tabManager.getTabURL(), '');
+            (<any>window).selenium = callback();
 
             (<any>window).editor = {
                 'app' : {
@@ -45,12 +43,6 @@ module ts.Application.Services {
         getInterval () {
             return 1;
         }
-        addCommandList (commandList: ts.Models.CommandList.Model) {
-            commandList.getList().forEach((command) => {
-                var selCommand = new (<any>window).Command(command.type, command.target, command.value);
-                this.testCase.commands.push(selCommand);
-            });
-        }
         start () {
             return new Promise((resolve: () => any) => {
                 this.currentTest = new (<any>window).IDETestLoop(this.commandFactory, {
@@ -64,10 +56,6 @@ module ts.Application.Services {
                 this.currentTest.start();
             });
         }
-        execute(command: string, args: string[], callback: (response: string, result: boolean) => any) {
-            this.tabManager.postMessage({});
-            debugger;
-        }
 
         private static errorMessage = 'selenium command xml load failed.\n';
         static loadFile (file: string) {
@@ -79,7 +67,7 @@ module ts.Application.Services {
                         return;
                     }
                     if (xhr.status !== 0 && xhr.status !== 200) {
-                        return reject(SeleniumSender.errorMessage + file);
+                        return reject(Base.errorMessage + file);
                     }
                     (<any>window).Command.apiDocuments = new Array(xhr.responseXML.documentElement);
                     resolve();
