@@ -1,11 +1,13 @@
-/// <reference path="../DefinitelyTyped/angularjs/angular.d.ts" />
-/// <reference path="../DefinitelyTyped/es6-promises/es6-promises.d.ts" />
-/// <reference path="../DefinitelyTyped/chrome/chrome.d.ts" />
-/// <reference path="./Controllers/Autopilot.ts" />
-/// <reference path="./Services/TabManager.ts" />
-/// <reference path="./Services/InjectScripts.ts" />
-/// <reference path="./Services/Config.ts" />
-/// <reference path="./Services/Selenium/Sender.ts" />
+/// <reference path="DefinitelyTyped/angularjs/angular.d.ts" />
+/// <reference path="DefinitelyTyped/es6-promises/es6-promises.d.ts" />
+/// <reference path="DefinitelyTyped/chrome/chrome.d.ts" />
+/// <reference path="Applications/Controllers/Autopilot.ts" />
+/// <reference path="Applications/Services/TabManager.ts" />
+/// <reference path="Applications/Services/InjectScripts.ts" />
+/// <reference path="Applications/Services/Config.ts" />
+/// <reference path="Applications/Services/Selenium/Sender.ts" />
+
+var calledTabId = location.hash.replace(/^#/, '');
 
 var autopilotApp: ng.IModule;
 var catchError = (messages: string[]) => {
@@ -13,7 +15,7 @@ var catchError = (messages: string[]) => {
 };
 var applicationServicesSeleniumSender: ts.Application.Services.Selenium.Sender;
 (new Promise((resolve: (tabManager: ts.Application.Services.TabManager) => any, reject: (errorMessage: string) => any) => {
-    new ts.Application.Services.TabManager((tabManager: ts.Application.Services.TabManager) => {
+    new ts.Application.Services.TabManager(calledTabId, (tabManager: ts.Application.Services.TabManager) => {
         var injectScripts = ts.Application.Services.Config.injectScripts;
         return ts.Application.Services.InjectScripts.connect(tabManager.getTabId(), injectScripts);
     }, resolve, reject);

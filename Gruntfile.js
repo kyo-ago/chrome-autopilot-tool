@@ -6,17 +6,17 @@ module.exports = function(grunt) {
         pkg: pkg,
         typescript: {
             content_scripts : {
-                src : ['src/ts/Applications/content_scripts.ts'],
+                src : ['src/ts/content_scripts.ts'],
                 dest : 'src/js/content_scripts.js',
                 options : { target: 'es5' }
             },
-            popup : {
-                src : ['src/ts/Applications/popup.ts'],
-                dest : 'src/js/popup.js',
+            background : {
+                src : ['src/ts/background.ts'],
+                dest : 'src/js/background.js',
                 options : { target: 'es5' }
             },
             window : {
-                src : ['src/ts/Applications/window.ts'],
+                src : ['src/ts/window.ts'],
                 dest : 'src/js/window.js',
                 options : { target: 'es5' }
             }

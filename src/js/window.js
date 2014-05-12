@@ -949,7 +949,7 @@ var ts;
                         var _this = this;
                         var model = new Application.Models.SeleniumCommand.Model(command, args);
                         var message = new Application.Models.Message.PlaySeleniumCommandExecute.Model(model);
-                        this.tabManager.postMessage(this.messagePlaySeleniumCommandExecuteRepository.toObject(message));
+
                         this.tabManager.onMessage(function (message) {
                             _this.messageDispatcher.dispatch(message, {
                                 MessagePlaySeleniumCommandResultModel: function (message) {
@@ -957,6 +957,7 @@ var ts;
                                 }
                             });
                         });
+                        this.tabManager.postMessage(this.messagePlaySeleniumCommandExecuteRepository.toObject(message));
                     };
                     return Sender;
                 })(Selenium.Base);
@@ -1075,6 +1076,10 @@ var ts;
     })(ts.Application || (ts.Application = {}));
     var Application = ts.Application;
 })(ts || (ts = {}));
+chrome.runtime.onConnect.addListener(function () {
+    return console.log(arguments);
+});
+
 var autopilotApp;
 var catchError = function (messages) {
     alert([].concat(messages).join('\n'));

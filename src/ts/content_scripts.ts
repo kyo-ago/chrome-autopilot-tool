@@ -1,10 +1,10 @@
-/// <reference path="../DefinitelyTyped/Selenium/recorder.d.ts" />
-/// <reference path="../DefinitelyTyped/chrome/chrome.d.ts" />
-/// <reference path="../Models/Command/Model.ts" />
-/// <reference path="./Models/SeleniumCommand/Model.ts" />
-/// <reference path="./Models/Message/Dispatcher.ts" />
-/// <reference path="./Services/RecorderObserver.ts" />
-/// <reference path="./Services/Selenium/Receiver.ts" />
+/// <reference path="DefinitelyTyped/Selenium/recorder.d.ts" />
+/// <reference path="DefinitelyTyped/chrome/chrome.d.ts" />
+/// <reference path="Models/Command/Model.ts" />
+/// <reference path="Applications/Models/SeleniumCommand/Model.ts" />
+/// <reference path="Applications/Models/Message/Dispatcher.ts" />
+/// <reference path="Applications/Services/RecorderObserver.ts" />
+/// <reference path="Applications/Services/Selenium/Receiver.ts" />
 
 declare module chrome.extension {
     var onConnect: chrome.runtime.ExtensionConnectEvent;
