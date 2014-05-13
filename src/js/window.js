@@ -700,7 +700,7 @@ var ts;
     (function (Application) {
         (function (Services) {
             var TabManager = (function () {
-                function TabManager(initialize, resolve, reject) {
+                function TabManager(calledTabId, initialize, resolve, reject) {
                     var _this = this;
                     this.initialize = function () {
                     };
@@ -709,49 +709,25 @@ var ts;
                     this.onConnectListeners = [];
                     this.closeMessage = 'Close test case?';
                     this.initialize = initialize;
-                    this.getTab().then(function () {
+                    this.getTab(calledTabId).then(function (tab) {
+                        _this.tab = tab;
                         _this.initialize(_this).then(function () {
                             _this.connectTab();
                             resolve(_this);
                         }).catch(reject);
                     }).catch(reject);
                 }
-                TabManager.prototype.getTab = function () {
-                    var _this = this;
+                TabManager.prototype.getTab = function (calledTabId) {
                     return new Promise(function (resolve, rejectAll) {
                         var reject = function () {
                             rejectAll('Security Error.\ndoes not run on "chrome://" page.\n');
                         };
-                        chrome.tabs.query({
-                            'active': true,
-                            'windowType': 'normal',
-                            'lastFocusedWindow': true
-                        }, function (tabs) {
-                            _this.tab = tabs[0];
-                            if (_this.tab && _this.tab.id) {
-                                chrome.storage.local.set({
-                                    'lastFocusedWindowId': _this.tab.windowId,
-                                    'lastFocusedWindowUrl': _this.tab.url
-                                });
-                                resolve();
-                                return;
+                        chrome.tabs.get(parseInt(calledTabId), function (tab) {
+                            if (tab && tab.id) {
+                                resolve(tab);
+                            } else {
+                                reject();
                             }
-                            chrome.storage.local.get(['lastFocusedWindowId', 'lastFocusedWindowUrl'], function (lastFocusedWindow) {
-                                if (!lastFocusedWindow['lastFocusedWindowId']) {
-                                    return reject();
-                                }
-                                chrome.tabs.query({
-                                    'active': true,
-                                    'url': lastFocusedWindow['lastFocusedWindowUrl'],
-                                    'windowId': lastFocusedWindow['lastFocusedWindowId']
-                                }, function (tabs) {
-                                    _this.tab = tabs[0];
-                                    if (_this.tab) {
-                                        return resolve();
-                                    }
-                                    return reject();
-                                });
-                            });
                         });
                     });
                 };
@@ -803,6 +779,9 @@ var ts;
                 };
                 TabManager.prototype.postMessage = function (message) {
                     this.port.postMessage(message);
+                };
+                TabManager.prototype.sendMessage = function (message, callback) {
+                    chrome.tabs.sendMessage(this.tab.id, message, callback);
                 };
                 TabManager.prototype.onMessage = function (callback) {
                     this.onMessageListeners.push(callback);
@@ -949,15 +928,13 @@ var ts;
                         var _this = this;
                         var model = new Application.Models.SeleniumCommand.Model(command, args);
                         var message = new Application.Models.Message.PlaySeleniumCommandExecute.Model(model);
-
-                        this.tabManager.onMessage(function (message) {
+                        this.tabManager.sendMessage(this.messagePlaySeleniumCommandExecuteRepository.toObject(message), function (message) {
                             _this.messageDispatcher.dispatch(message, {
                                 MessagePlaySeleniumCommandResultModel: function (message) {
                                     return callback('OK', true);
                                 }
                             });
                         });
-                        this.tabManager.postMessage(this.messagePlaySeleniumCommandExecuteRepository.toObject(message));
                     };
                     return Sender;
                 })(Selenium.Base);
@@ -1076,9 +1053,7 @@ var ts;
     })(ts.Application || (ts.Application = {}));
     var Application = ts.Application;
 })(ts || (ts = {}));
-chrome.runtime.onConnect.addListener(function () {
-    return console.log(arguments);
-});
+var calledTabId = location.hash.replace(/^#/, '');
 
 var autopilotApp;
 var catchError = function (messages) {
@@ -1086,7 +1061,7 @@ var catchError = function (messages) {
 };
 var applicationServicesSeleniumSender;
 (new Promise(function (resolve, reject) {
-    new ts.Application.Services.TabManager(function (tabManager) {
+    new ts.Application.Services.TabManager(calledTabId, function (tabManager) {
         var injectScripts = ts.Application.Services.Config.injectScripts;
         return ts.Application.Services.InjectScripts.connect(tabManager.getTabId(), injectScripts);
     }, resolve, reject);

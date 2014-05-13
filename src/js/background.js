@@ -10,23 +10,6 @@ chrome.browserAction.onClicked.addListener(function (calledTab) {
             'width': 300
         }, function (win) {
             localStorage['windowId'] = win.id;
-            if (!win.tabs || !win.tabs.length) {
-                return;
-            }
-            var postCalledTabId = function (tab) {
-                if (tab.status === 'complete') {
-                    chrome.tabs.connect(tab.id, {
-                        'name': calledTab.id + ''
-                    });
-                    return;
-                }
-                setTimeout(function () {
-                    return postCalledTabId(tab);
-                }, 100);
-            };
-            win.tabs.forEach(function (tab) {
-                return postCalledTabId(tab);
-            });
         });
     };
     var windowId = localStorage['windowId'] - 0;

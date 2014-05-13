@@ -886,14 +886,14 @@ var globalPort;
             var addCommentMessage = messageAddCommentRepository.fromObject(message);
             port.postMessage(messageAddCommentRepository.toObject(addCommentMessage));
         };
-        port.onMessage.addListener(function (message) {
+        chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
             messageDispatcher.dispatch(message, {
                 MessagePlaySeleniumCommandExecuteModel: function (message) {
                     Recorder.deregister(recorderObserver, window);
                     var result = SeleniumReceiver.execute(message.command);
                     Recorder.register(recorderObserver, window);
                     var resultMessage = new ts.Application.Models.Message.PlaySeleniumCommandResult.Model(result);
-                    port.postMessage(messagePlaySeleniumCommandResultRepository.toObject(resultMessage));
+                    sendResponse(messagePlaySeleniumCommandResultRepository.toObject(resultMessage));
                 }
             });
         });

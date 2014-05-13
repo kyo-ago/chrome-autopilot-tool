@@ -27,13 +27,11 @@ module ts.Application.Services.Selenium {
         execute(command: string, args: string[], callback: (response: string, result: boolean) => any) {
             var model = new Models.SeleniumCommand.Model(command, args);
             var message = new Models.Message.PlaySeleniumCommandExecute.Model(model);
-            // コマンドを実行する毎にイベントハンドラーが設定されるのでまずい
-            this.tabManager.onMessage((message: Object) => {
+            this.tabManager.sendMessage(this.messagePlaySeleniumCommandExecuteRepository.toObject(message), (message) => {
                 this.messageDispatcher.dispatch(message, {
                     MessagePlaySeleniumCommandResultModel : (message: Models.Message.PlaySeleniumCommandResult.Model) => callback('OK', true)
                 });
             });
-            this.tabManager.postMessage(this.messagePlaySeleniumCommandExecuteRepository.toObject(message));
         }
     }
 }

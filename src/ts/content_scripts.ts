@@ -35,14 +35,14 @@ var globalPort: chrome.runtime.Port;
             var addCommentMessage = messageAddCommentRepository.fromObject(message);
             port.postMessage(messageAddCommentRepository.toObject(addCommentMessage));
         };
-        port.onMessage.addListener((message: Object) => {
+        chrome.runtime.onMessage.addListener((message: Object, sender: chrome.runtime.MessageSender, sendResponse: (message: Object) => any) => {
             messageDispatcher.dispatch(message, {
                 MessagePlaySeleniumCommandExecuteModel : (message: ts.Application.Models.Message.PlaySeleniumCommandExecute.Model) => {
                     Recorder.deregister(recorderObserver, window);
                     var result = SeleniumReceiver.execute(message.command);
                     Recorder.register(recorderObserver, window);
                     var resultMessage = new ts.Application.Models.Message.PlaySeleniumCommandResult.Model(result);
-                    port.postMessage(messagePlaySeleniumCommandResultRepository.toObject(resultMessage));
+                    sendResponse(messagePlaySeleniumCommandResultRepository.toObject(resultMessage));
                 }
             });
         });

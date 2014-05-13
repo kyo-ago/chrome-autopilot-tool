@@ -78,8 +78,10 @@ module ts.Application.Services {
             return this.tab.url;
         }
         postMessage (message: Object) {
-            // chrome.tabs.sendMessageで通信してcallback受け取る
             this.port.postMessage(message);
+        }
+        sendMessage (message: Object, callback: (message: Object) => any) {
+            chrome.tabs.sendMessage(this.tab.id, message, callback);
         }
         onMessage (callback: (message: Object) => any) {
             this.onMessageListeners.push(callback);
