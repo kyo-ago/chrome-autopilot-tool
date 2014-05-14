@@ -735,6 +735,10 @@ var ts;
                 TabManager.prototype.connectTab = function () {
                     var _this = this;
                     this.port = chrome.tabs.connect(this.tab.id);
+                    this.port.onDisconnect.addListener(function () {
+                        _this.port = null;
+                        delete _this.port;
+                    });
                     chrome.tabs.onRemoved.addListener(function (tabId, removeInfo) {
                         if (_this.tab.id !== tabId) {
                             return;
@@ -743,13 +747,22 @@ var ts;
                             window.close();
                         }
                     });
+                    var updated = false;
                     chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
                         if (_this.tab.id !== tabId) {
                             return;
                         }
-                        if (changeInfo.status !== 'complete') {
+                        _this.port = null;
+                        delete _this.port;
+                        if (changeInfo.status === 'complete') {
+                            updated = false;
                             return;
                         }
+                        if (updated) {
+                            return;
+                        }
+                        updated = true;
+
                         _this.reloadTab();
                     });
                 };
@@ -781,7 +794,24 @@ var ts;
                     this.port.postMessage(message);
                 };
                 TabManager.prototype.sendMessage = function (message, callback) {
-                    chrome.tabs.sendMessage(this.tab.id, message, callback);
+                    var _this = this;
+                    chrome.tabs.sendMessage(this.tab.id, message, function (message) {
+                        var interval = setInterval(function () {
+                            if (!_this.port) {
+                                return;
+                            }
+                            if (_this.tab.status !== 'complete') {
+                                return;
+                            }
+                            clearInterval(interval);
+
+                            message = {
+                                'name': 'playSeleniumCommandResult',
+                                'content': 'OK'
+                            };
+                            callback(message);
+                        }, 100);
+                    });
                 };
                 TabManager.prototype.onMessage = function (callback) {
                     this.onMessageListeners.push(callback);
@@ -903,11 +933,11 @@ var ts;
                         this.messageDispatcher = messageDispatcher;
                         this.messagePlaySeleniumCommandExecuteRepository = new Application.Models.Message.PlaySeleniumCommandExecute.Repository();
                         window.shouldAbortCurrentCommand = function () {
-                            return true;
+                            return false;
                         };
                         tabManager.onConnect(function () {
                             window.shouldAbortCurrentCommand = function () {
-                                return true;
+                                return false;
                             };
                         });
                         tabManager.onDisconnect(function () {
@@ -990,6 +1020,7 @@ var ts;
                     return new Promise(function (resolve) {
                         var executeScript = function (injectScript) {
                             chrome.tabs.executeScript(tabid, {
+                                'runAt': 'document_start',
                                 'file': injectScript
                             }, function () {
                                 if (injectScripts.length) {

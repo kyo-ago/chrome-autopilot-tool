@@ -900,5 +900,8 @@ var globalPort;
         port.onDisconnect.addListener(function () {
             Recorder.deregister(recorderObserver, window);
         });
+        window.onunload = function () {
+            port = null;
+        };
     });
 })();

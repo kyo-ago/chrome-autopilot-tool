@@ -42,6 +42,10 @@ module ts.Application.Services {
         private closeMessage = 'Close test case?';
         private connectTab () {
             this.port = chrome.tabs.connect(this.tab.id);
+            this.port.onDisconnect.addListener(() => {
+                this.port = null;
+                delete this.port;
+            });
             chrome.tabs.onRemoved.addListener((tabId: number, removeInfo: chrome.tabs.TabRemoveInfo) => {
                 if (this.tab.id !== tabId) {
                     return;
@@ -50,13 +54,22 @@ module ts.Application.Services {
                     window.close();
                 }
             });
+            var updated = false;
             chrome.tabs.onUpdated.addListener((tabId: number, changeInfo: chrome.tabs.TabChangeInfo, tab: chrome.tabs.Tab) => {
                 if (this.tab.id !== tabId) {
                     return;
                 }
-                if (changeInfo.status !== 'complete') {
+                this.port = null;
+                delete this.port;
+                if (changeInfo.status === 'complete') {
+                    updated = false;
                     return;
                 }
+                if (updated) {
+                    return;
+                }
+                updated = true;
+
                 this.reloadTab();
             });
         }
@@ -81,7 +94,23 @@ module ts.Application.Services {
             this.port.postMessage(message);
         }
         sendMessage (message: Object, callback: (message: Object) => any) {
-            chrome.tabs.sendMessage(this.tab.id, message, callback);
+            chrome.tabs.sendMessage(this.tab.id, message, (message) => {
+                var interval = setInterval(() => {
+                    if (!this.port) {
+                        return;
+                    }
+                    if (this.tab.status !== 'complete') {
+                        return;
+                    }
+                    clearInterval(interval);
+                    //page reloading
+                    message = {
+                        'name' : 'playSeleniumCommandResult',
+                        'content' : 'OK'
+                    };
+                    callback(message);
+                }, 100);
+            });
         }
         onMessage (callback: (message: Object) => any) {
             this.onMessageListeners.push(callback);

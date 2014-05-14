@@ -9,9 +9,9 @@ module ts.Application.Services.Selenium {
         private messagePlaySeleniumCommandExecuteRepository = new Models.Message.PlaySeleniumCommandExecute.Repository();
         constructor (private tabManager: Services.TabManager, private messageDispatcher: ts.Application.Models.Message.Dispatcher) {
             super(() => new (<any>window).ChromeExtensionBackedSelenium(tabManager.getTabURL(), ''));
-            (<any>window).shouldAbortCurrentCommand = () => true;
+            (<any>window).shouldAbortCurrentCommand = () => false;
             tabManager.onConnect(() => {
-                (<any>window).shouldAbortCurrentCommand = () => true;
+                (<any>window).shouldAbortCurrentCommand = () => false;
             });
             tabManager.onDisconnect(() => {
                 (<any>window).shouldAbortCurrentCommand = () => false;

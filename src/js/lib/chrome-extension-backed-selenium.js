@@ -145,19 +145,17 @@ function chromeExtensionBackedSeleniumFnBuilder(cmd, argsLen) {
             //TODO return a promise
             var self = this;
             var cmdArgs = Array.prototype.slice.call(arguments);
-            this.waitingForRemoteResult = true;
-            function invokeCommand() {
-                return self.remoteControlCommand(cmd, cmdArgs).done(function(response) {
-                    self.waitingForRemoteResult = false;
-                    //TODO do something with the response
-                    //alert("Received response to " + cmd + ": " + response);
-                }).fail(function(response) {
-                    self.waitingForRemoteResult = false;
-                    //alert("Received response to " + cmd + ": " + response);
-                });
-            }
-
-            return invokeCommand();
+            var deferred = self.remoteControlCommand(cmd, cmdArgs).done(function(response) {
+                self.waitingForRemoteResult = false;
+                //TODO do something with the response
+                //alert("Received response to " + cmd + ": " + response);
+            }).fail(function(response) {
+                self.waitingForRemoteResult = false;
+                //alert("Received response to " + cmd + ": " + response);
+            });
+            return function () {
+                return !deferred.isPending();
+            };
         };
     }
     //There is no difference between this and the above fn, except the argument list
@@ -166,19 +164,17 @@ function chromeExtensionBackedSeleniumFnBuilder(cmd, argsLen) {
         //TODO return a promise
         var self = this;
         var cmdArgs = Array.prototype.slice.call(arguments);
-        this.waitingForRemoteResult = true;
-        function invokeCommand() {
-            return self.remoteControlCommand(cmd, cmdArgs).done(function(response) {
-                self.waitingForRemoteResult = false;
-                //TODO do something with the response
-                //alert("Received response to " + cmd + ": " + response);
-            }).fail(function(response) {
-                self.waitingForRemoteResult = false;
-                //alert("Received response to " + cmd + ": " + response);
-            });
-        }
-
-        return invokeCommand();
+        var deferred = self.remoteControlCommand(cmd, cmdArgs).done(function(response) {
+            self.waitingForRemoteResult = false;
+            //TODO do something with the response
+            //alert("Received response to " + cmd + ": " + response);
+        }).fail(function(response) {
+            self.waitingForRemoteResult = false;
+            //alert("Received response to " + cmd + ": " + response);
+        });
+        return function () {
+            return !deferred.isPending();
+        };
     };
 }
 

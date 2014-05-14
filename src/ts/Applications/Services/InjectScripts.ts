@@ -8,6 +8,7 @@ module ts.Application.Services {
             return new Promise((resolve: () => any) => {
                 var executeScript = (injectScript: string) => {
                     chrome.tabs.executeScript(tabid, {
+                        'runAt' : 'document_start',
                         'file' : injectScript
                     }, () => {
                         if (injectScripts.length) {

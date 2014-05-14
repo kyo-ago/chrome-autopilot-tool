@@ -49,5 +49,8 @@ var globalPort: chrome.runtime.Port;
         port.onDisconnect.addListener(() => {
             Recorder.deregister(recorderObserver, window);
         });
+        window.onunload = () => {
+            port = null;
+        }
     });
 })();
