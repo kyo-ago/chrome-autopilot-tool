@@ -1,5 +1,6 @@
 /// <reference path="../../DefinitelyTyped/es6-promises/es6-promises.d.ts" />
 /// <reference path="../../DefinitelyTyped/chrome/chrome.d.ts" />
+/// <reference path="../Models/Message/PlaySeleniumCommandResult/Repository.ts" />
 
 module ts.Application.Services {
     export class TabManager {
@@ -9,6 +10,7 @@ module ts.Application.Services {
         private onMessageListeners: Function[] = [];
         private onDisconnectListeners: Function[] = [];
         private onConnectListeners: Function[] = [];
+        private sendMessageResponseInterval = 100;
 
         constructor (
             calledTabId: string,
@@ -94,7 +96,7 @@ module ts.Application.Services {
             this.port.postMessage(message);
         }
         sendMessage (message: Object, callback: (message: Object) => any) {
-            chrome.tabs.sendMessage(this.tab.id, message, (message) => {
+            chrome.tabs.sendMessage(this.tab.id, message, (result) => {
                 var interval = setInterval(() => {
                     if (!this.port) {
                         return;
@@ -103,13 +105,9 @@ module ts.Application.Services {
                         return;
                     }
                     clearInterval(interval);
-                    //page reloading
-                    message = {
-                        'name' : 'playSeleniumCommandResult',
-                        'content' : 'OK'
-                    };
-                    callback(message);
-                }, 100);
+                    var message = new Models.Message.PlaySeleniumCommandResult.Model(result);
+                    callback(message.command);
+                }, this.sendMessageResponseInterval);
             });
         }
         onMessage (callback: (message: Object) => any) {

@@ -7,6 +7,7 @@ module ts.Application.Services {
             var injectScripts = injectScripts_.slice();
             return new Promise((resolve: () => any) => {
                 var executeScript = (injectScript: string) => {
+                    //コードをxhrでキャッシュしてfileではなく、codeで渡してユーザ動作をブロックしつつ実行できないか
                     chrome.tabs.executeScript(tabid, {
                         'runAt' : 'document_start',
                         'file' : injectScript

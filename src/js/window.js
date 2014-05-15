@@ -609,6 +609,7 @@ var ts;
                     var Model = (function (_super) {
                         __extends(Model, _super);
                         function Model(command) {
+                            if (typeof command === "undefined") { command = 'OK'; }
                             _super.call(this);
                             this.command = command;
                         }
@@ -707,6 +708,7 @@ var ts;
                     this.onMessageListeners = [];
                     this.onDisconnectListeners = [];
                     this.onConnectListeners = [];
+                    this.sendMessageResponseInterval = 100;
                     this.closeMessage = 'Close test case?';
                     this.initialize = initialize;
                     this.getTab(calledTabId).then(function (tab) {
@@ -795,7 +797,7 @@ var ts;
                 };
                 TabManager.prototype.sendMessage = function (message, callback) {
                     var _this = this;
-                    chrome.tabs.sendMessage(this.tab.id, message, function (message) {
+                    chrome.tabs.sendMessage(this.tab.id, message, function (result) {
                         var interval = setInterval(function () {
                             if (!_this.port) {
                                 return;
@@ -804,13 +806,9 @@ var ts;
                                 return;
                             }
                             clearInterval(interval);
-
-                            message = {
-                                'name': 'playSeleniumCommandResult',
-                                'content': 'OK'
-                            };
-                            callback(message);
-                        }, 100);
+                            var message = new Application.Models.Message.PlaySeleniumCommandResult.Model(result);
+                            callback(message.command);
+                        }, _this.sendMessageResponseInterval);
                     });
                 };
                 TabManager.prototype.onMessage = function (callback) {
@@ -984,6 +982,9 @@ var ts;
                 var Controller = (function () {
                     function Controller($scope, tabManager, commandList, messageDispatcher, seleniumSender) {
                         $scope.commandList = commandList;
+
+                        $scope.commandList.add(new ts.Models.Command.Model('type', '//*[@id="inputtext"]', 'aaaa'));
+
                         $scope.playAll = function () {
                             seleniumSender.addCommandList($scope.commandList);
                             seleniumSender.start();

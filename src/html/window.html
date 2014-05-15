@@ -5,17 +5,32 @@
     <link rel="stylesheet" href="/bower_components/jqueryui/themes/base/jquery-ui.css" />
     <link rel="stylesheet" href="/bower_components/jqueryui/themes/base/jquery.ui.base.css" />
     <link rel="stylesheet" href="/bower_components/angular/angular-csp.css" />
+    <link rel="stylesheet" href="/src/css/window.css" />
 </head>
 <body>
 <div ng-controller="Autopilot">
-    <ul ui-sortable ng-model="commandList.commands">
+    <div class="baseURL"><span>Base URL</span><input type="text"></div>
+    <div class="testControl">
+        <input type="range">
+        <img src="/src/img/play_all.png">
+        <img src="/src/img/play_current.png">
+        <img src="/src/img/stop.png">
+        <img src="/src/img/play_one.png">
+        <div class="rec">
+            <img src="/src/img/rec_start.png">
+            <img src="/src/img/rec_stop.png">
+        </div>
+    </div>
+    <ul class="commandGrid" ui-sortable ng-model="commandList.commands">
         <li ng-repeat="command in commandList.commands">
-            <input type="text" ng-model="command.type">
-            <input type="text" ng-model="command.target">
-            <input type="text" ng-model="command.value">
+            <input class="type" type="text" ng-model="command.type">
+            <input class="target" type="text" ng-model="command.target">
+            <input class="value" type="text" ng-model="command.value">
+            <input type="button" value="del" ng-click="commandList.remove(command)">
         </li>
     </ul>
-    <input type="button" value="submit" ng-click="playAll()">
+    <input type="button" value="add" ng-click="">
+    <input type="button" value="playAll" ng-click="playAll()">
 </div>
 <script src="/bower_components/jQuery/dist/jquery.js"></script>
 <script src="/bower_components/jqueryui/ui/jquery-ui.js"></script>
