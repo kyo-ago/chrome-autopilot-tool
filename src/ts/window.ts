@@ -6,6 +6,7 @@
 /// <reference path="Applications/Services/InjectScripts.ts" />
 /// <reference path="Applications/Services/Config.ts" />
 /// <reference path="Applications/Services/Selenium/Sender.ts" />
+/// <reference path="Applications/Models/CommandGrid/Model.ts" />
 
 var calledTabId = location.hash.replace(/^#/, '');
 
@@ -38,8 +39,8 @@ var applicationServicesSeleniumSender: ts.Application.Services.Selenium.Sender;
                 applicationServicesSeleniumSender = new ts.Application.Services.Selenium.Sender(tabManager, messageDispatcher);
                 return applicationServicesSeleniumSender;
             })
-            .factory('commandList', () => {
-                return new ts.Models.CommandList.Model();
+            .factory('commandGrid', () => {
+                return new ts.Application.Models.CommandGrid.Model();
             })
             .controller('Autopilot', ts.Application.Controllers.Autopilot.Controller)
         ;

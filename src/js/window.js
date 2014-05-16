@@ -97,46 +97,6 @@ var ts;
 })(ts || (ts = {}));
 var ts;
 (function (ts) {
-    (function (Base) {
-        (function (EntityList) {
-            var Model = (function (_super) {
-                __extends(Model, _super);
-                function Model(list) {
-                    this.list = list;
-                    _super.call(this);
-                }
-                Model.prototype.add = function (entity) {
-                    this.list.push(entity);
-                };
-                Model.prototype.getList = function () {
-                    return this.list;
-                };
-                Model.prototype.splice = function (index, entity) {
-                    this.list.splice(index, 1, entity);
-                };
-                Model.prototype.replace = function (identity, entity) {
-                    this.list = this.list.map(function (e) {
-                        return e.identity.eq(identity) ? entity : e;
-                    });
-                };
-                Model.prototype.remove = function (entity) {
-                    this.list = this.list.filter(function (e) {
-                        return !e.eq(entity);
-                    });
-                };
-                Model.prototype.clear = function () {
-                    this.list = [];
-                };
-                return Model;
-            })(Base.Entity.Model);
-            EntityList.Model = Model;
-        })(Base.EntityList || (Base.EntityList = {}));
-        var EntityList = Base.EntityList;
-    })(ts.Base || (ts.Base = {}));
-    var Base = ts.Base;
-})(ts || (ts = {}));
-var ts;
-(function (ts) {
     (function (Models) {
         (function (Command) {
             var Model = (function (_super) {
@@ -155,34 +115,6 @@ var ts;
             Command.Model = Model;
         })(Models.Command || (Models.Command = {}));
         var Command = Models.Command;
-    })(ts.Models || (ts.Models = {}));
-    var Models = ts.Models;
-})(ts || (ts = {}));
-var ts;
-(function (ts) {
-    (function (Models) {
-        (function (CommandList) {
-            var Model = (function (_super) {
-                __extends(Model, _super);
-                function Model(commands, name, url) {
-                    if (typeof commands === "undefined") { commands = []; }
-                    if (typeof name === "undefined") { name = ''; }
-                    if (typeof url === "undefined") { url = ''; }
-                    _super.call(this, commands);
-                    this.commands = commands;
-                    this.name = name;
-                    this.url = url;
-                }
-                Model.prototype.clear = function () {
-                    this.name = '';
-                    this.url = '';
-                    _super.prototype.clear.call(this);
-                };
-                return Model;
-            })(ts.Base.EntityList.Model);
-            CommandList.Model = Model;
-        })(Models.CommandList || (Models.CommandList = {}));
-        var CommandList = Models.CommandList;
     })(ts.Models || (ts.Models = {}));
     var Models = ts.Models;
 })(ts || (ts = {}));
@@ -381,6 +313,47 @@ var ts;
 (function (ts) {
     (function (Base) {
         (function (EntityList) {
+            var Model = (function (_super) {
+                __extends(Model, _super);
+                function Model(list) {
+                    if (typeof list === "undefined") { list = []; }
+                    this.list = list;
+                    _super.call(this);
+                }
+                Model.prototype.add = function (entity) {
+                    this.list.push(entity);
+                };
+                Model.prototype.getList = function () {
+                    return this.list;
+                };
+                Model.prototype.splice = function (index, entity) {
+                    this.list.splice(index, 1, entity);
+                };
+                Model.prototype.replace = function (identity, entity) {
+                    this.list = this.list.map(function (e) {
+                        return e.identity.eq(identity) ? entity : e;
+                    });
+                };
+                Model.prototype.remove = function (entity) {
+                    this.list = this.list.filter(function (e) {
+                        return !e.eq(entity);
+                    });
+                };
+                Model.prototype.clear = function () {
+                    this.list = [];
+                };
+                return Model;
+            })(Base.Entity.Model);
+            EntityList.Model = Model;
+        })(Base.EntityList || (Base.EntityList = {}));
+        var EntityList = Base.EntityList;
+    })(ts.Base || (ts.Base = {}));
+    var Base = ts.Base;
+})(ts || (ts = {}));
+var ts;
+(function (ts) {
+    (function (Base) {
+        (function (EntityList) {
             var Repository = (function () {
                 function Repository(entityRepository) {
                     this.entityRepository = entityRepository;
@@ -404,6 +377,34 @@ var ts;
         var EntityList = Base.EntityList;
     })(ts.Base || (ts.Base = {}));
     var Base = ts.Base;
+})(ts || (ts = {}));
+var ts;
+(function (ts) {
+    (function (Models) {
+        (function (CommandList) {
+            var Model = (function (_super) {
+                __extends(Model, _super);
+                function Model(commands, name, url) {
+                    if (typeof commands === "undefined") { commands = []; }
+                    if (typeof name === "undefined") { name = ''; }
+                    if (typeof url === "undefined") { url = ''; }
+                    _super.call(this, commands);
+                    this.commands = commands;
+                    this.name = name;
+                    this.url = url;
+                }
+                Model.prototype.clear = function () {
+                    this.name = '';
+                    this.url = '';
+                    _super.prototype.clear.call(this);
+                };
+                return Model;
+            })(ts.Base.EntityList.Model);
+            CommandList.Model = Model;
+        })(Models.CommandList || (Models.CommandList = {}));
+        var CommandList = Models.CommandList;
+    })(ts.Models || (ts.Models = {}));
+    var Models = ts.Models;
 })(ts || (ts = {}));
 var ts;
 (function (ts) {
@@ -977,23 +978,53 @@ var ts;
 var ts;
 (function (ts) {
     (function (Application) {
+        (function (Models) {
+            (function (CommandGrid) {
+                var Model = (function (_super) {
+                    __extends(Model, _super);
+                    function Model() {
+                        _super.apply(this, arguments);
+                    }
+                    Model.prototype.getCommandList = function () {
+                        var commands = this.getList().filter(function (command) {
+                            return !!command.type;
+                        });
+                        var commandList = new ts.Models.CommandList.Model(commands);
+                        return commandList;
+                    };
+                    return Model;
+                })(ts.Base.EntityList.Model);
+                CommandGrid.Model = Model;
+            })(Models.CommandGrid || (Models.CommandGrid = {}));
+            var CommandGrid = Models.CommandGrid;
+        })(Application.Models || (Application.Models = {}));
+        var Models = Application.Models;
+    })(ts.Application || (ts.Application = {}));
+    var Application = ts.Application;
+})(ts || (ts = {}));
+var ts;
+(function (ts) {
+    (function (Application) {
         (function (Controllers) {
             (function (Autopilot) {
                 var Controller = (function () {
-                    function Controller($scope, tabManager, commandList, messageDispatcher, seleniumSender) {
-                        $scope.commandList = commandList;
+                    function Controller($scope, tabManager, commandGrid, messageDispatcher, seleniumSender) {
+                        $scope.commandGrid = commandGrid;
 
-                        $scope.commandList.add(new ts.Models.Command.Model('type', '//*[@id="inputtext"]', 'aaaa'));
+                        $scope.commandGrid.add(new ts.Models.Command.Model('type', '//*[@id="inputtext"]', 'aaaa'));
 
                         $scope.playAll = function () {
-                            seleniumSender.addCommandList($scope.commandList);
+                            seleniumSender.addCommandList($scope.commandGrid.getCommandList());
                             seleniumSender.start();
+                        };
+                        $scope.addCommand = function () {
+                            $scope.commandGrid.add(new ts.Models.Command.Model());
                         };
                         tabManager.onMessage(function (message) {
                             messageDispatcher.dispatch(message, {
                                 MessageAddCommentModel: function (message) {
                                     $scope.$apply(function () {
-                                        $scope.commandList.add(message.command);
+                                        $scope.commandGrid.add(message.command);
                                     });
                                 }
                             });
@@ -1112,8 +1143,8 @@ var applicationServicesSeleniumSender;
         }).service('messageDispatcher', ts.Application.Models.Message.Dispatcher).factory('seleniumSender', function (tabManager, messageDispatcher) {
             applicationServicesSeleniumSender = new ts.Application.Services.Selenium.Sender(tabManager, messageDispatcher);
             return applicationServicesSeleniumSender;
-        }).factory('commandList', function () {
-            return new ts.Models.CommandList.Model();
+        }).factory('commandGrid', function () {
+            return new ts.Application.Models.CommandGrid.Model();
         }).controller('Autopilot', ts.Application.Controllers.Autopilot.Controller);
         angular.bootstrap(document, ['AutopilotApp']);
     }).catch(catchError);

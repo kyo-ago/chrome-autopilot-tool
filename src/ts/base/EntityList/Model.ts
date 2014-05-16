@@ -5,7 +5,7 @@ module ts.Base.EntityList {
     export class Model<E extends Entity.Model> extends Entity.Model {
         list: E[];
 
-        constructor(list: E[]) {
+        constructor(list: E[] = []) {
             this.list = list;
             super();
         }

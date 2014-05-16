@@ -3,6 +3,22 @@ html, body, div, span, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, co
 .baseURL {
 }
 .testControl {
+  .play, .rec {
+    display: inline-block;
+  }
+  .rec {
+    position: absolute;
+    right: 0;
+    img {
+      position: absolute;
+      right: 0;
+    }
+  }
+  .range {
+    width: 7em;
+  }
+}
+.testControl {
   .rec{}
 }
 .commandGrid {

@@ -340,6 +340,7 @@ var ts;
             var Model = (function (_super) {
                 __extends(Model, _super);
                 function Model(list) {
+                    if (typeof list === "undefined") { list = []; }
                     this.list = list;
                     _super.call(this);
                 }
@@ -609,6 +610,7 @@ var ts;
                     var Model = (function (_super) {
                         __extends(Model, _super);
                         function Model(command) {
+                            if (typeof command === "undefined") { command = 'OK'; }
                             _super.call(this);
                             this.command = command;
                         }

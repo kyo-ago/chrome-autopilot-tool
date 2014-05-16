@@ -27,5 +27,16 @@ table {
   border-collapse: collapse;
   border-spacing: 0; }
 
+.testControl .play, .testControl .rec {
+  display: inline-block; }
+.testControl .rec {
+  position: absolute;
+  right: 0; }
+  .testControl .rec img {
+    position: absolute;
+    right: 0; }
+.testControl .range {
+  width: 7em; }
+
 .commandGrid .type, .commandGrid .value {
   width: 5em; }
