@@ -27,8 +27,16 @@ table {
   border-collapse: collapse;
   border-spacing: 0; }
 
+[role="button"] {
+  cursor: pointer; }
+
+.baseURL .urlInput {
+  width: 70%; }
+
 .testControl .play, .testControl .rec {
   display: inline-block; }
+.testControl .play img {
+  margin-left: 0.5em; }
 .testControl .rec {
   position: absolute;
   right: 0; }
@@ -40,3 +48,13 @@ table {
 
 .commandGrid .type, .commandGrid .value {
   width: 5em; }
+.commandGrid .type {
+  width: 20%; }
+.commandGrid .target {
+  width: 30%; }
+.commandGrid .value {
+  width: 30%; }
+.commandGrid .delete {
+  position: absolute;
+  right: 0;
+  width: 10%; }

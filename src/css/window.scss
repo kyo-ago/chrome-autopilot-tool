@@ -1,34 +1,51 @@
 html, body, div, span, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, code, img, q, dl, dt, dd, ol, ul, li, form, label, table, caption, tbody, tfoot, thead, tr, th, td { margin: 0; padding: 0; border: 0; outline: 0; font-size: 100%; vertical-align: baseline; background: transparent; } body { line-height: 1; } ol, ul { list-style: none; } blockquote, q { quotes: none; } blockquote:before, blockquote:after, q:before, q:after { content: ''; content: none; } :focus { outline: 0; } table { border-collapse: collapse; border-spacing: 0; }
 
+@mixin positionright {
+  position: absolute;
+  right: 0;
+}
+
+[role="button"] {
+  cursor: pointer;
+}
+
 .baseURL {
+  .urlInput {
+    width: 70%;
+  }
 }
 .testControl {
   .play, .rec {
     display: inline-block;
   }
+  .play img {
+    margin-left: 0.5em;
+  }
   .rec {
-    position: absolute;
-    right: 0;
+    @include positionright;
     img {
-      position: absolute;
-      right: 0;
+      @include positionright;
     }
   }
   .range {
     width: 7em;
   }
 }
-.testControl {
-  .rec{}
-}
 .commandGrid {
   .type, .value {
     width: 5em;
   }
   .type {
+    width: 20%;
   }
   .target {
+    width: 30%;
   }
   .value {
+    width: 30%;
+  }
+  .delete {
+    @include positionright;
+    width: 10%;
   }
 }

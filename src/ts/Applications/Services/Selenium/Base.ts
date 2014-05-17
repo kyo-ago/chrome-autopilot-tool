@@ -6,6 +6,7 @@ module ts.Application.Services.Selenium {
         commandFactory: any;
         currentTest: any;
         testCase: any;
+        interval: number = 1;
 
         constructor (callback: () => any) {
             // for selenium-runner
@@ -24,7 +25,7 @@ module ts.Application.Services.Selenium {
                 'app' : {
                     'getOptions' : () => {
                         return {
-                            'timeout' : 1
+                            'timeout' : this.interval
                         };
                     }
                 },
@@ -41,7 +42,7 @@ module ts.Application.Services.Selenium {
             this.commandFactory.registerAll(this.selenium);
         }
         getInterval () {
-            return 1;
+            return this.interval;
         }
         start () {
             return new Promise((resolve: () => any) => {

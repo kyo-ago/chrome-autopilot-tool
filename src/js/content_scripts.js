@@ -728,6 +728,8 @@ var ts;
             (function (Selenium) {
                 var Base = (function () {
                     function Base(callback) {
+                        var _this = this;
+                        this.interval = 1;
                         window.getBrowser = function () {
                             return {
                                 'selectedBrowser': {
@@ -743,7 +745,7 @@ var ts;
                             'app': {
                                 'getOptions': function () {
                                     return {
-                                        'timeout': 1
+                                        'timeout': _this.interval
                                     };
                                 }
                             },
@@ -762,7 +764,7 @@ var ts;
                         this.commandFactory.registerAll(this.selenium);
                     }
                     Base.prototype.getInterval = function () {
-                        return 1;
+                        return this.interval;
                     };
                     Base.prototype.start = function () {
                         var _this = this;

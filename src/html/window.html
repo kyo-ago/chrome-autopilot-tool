@@ -9,18 +9,18 @@
 </head>
 <body>
 <div ng-controller="Autopilot">
-    <div class="baseURL"><span>Base URL</span><input type="text"></div>
+    <div class="baseURL"><span>Base URL</span><input type="text" class="urlInput" ng-model="baseURL"></div>
     <div class="testControl">
         <div class="play">
-            <input class="range" type="range">
-            <img src="/src/img/panel/play_all.png" ng-click="playAll()">
-            <img src="/src/img/panel/play_current.png">
-            <img src="/src/img/panel/stop.png">
-            <img src="/src/img/panel/play_one.png">
+            <input class="range" type="range" ng-model="playSpeed" min="0" max="100" ng-change="changeSpeed()">
+            <a role="button" ng-click="playAll()"><img src="/src/img/panel/play_all.png"></a>
+            <a role="button"><img src="/src/img/panel/play_current.png"></a>
+            <a role="button"><img src="/src/img/panel/stop.png"></a>
+            <a role="button"><img src="/src/img/panel/play_one.png"></a>
         </div>
         <div class="rec">
-            <img src="/src/img/panel/rec_start.png">
-            <img src="/src/img/panel/rec_stop.png">
+            <a role="button" ng-click="startRecording()" ng-show="!recordingStatus"><img src="/src/img/panel/rec_start.png"></a>
+            <a role="button" ng-click="stopRecording()" ng-show="recordingStatus"><img src="/src/img/panel/rec_stop.png"></a>
         </div>
     </div>
     <ul class="commandGrid" ui-sortable ng-model="commandGrid.list">
@@ -28,7 +28,7 @@
             <input class="type" type="text" ng-model="command.type">
             <input class="target" type="text" ng-model="command.target">
             <input class="value" type="text" ng-model="command.value">
-            <input type="button" value="del" ng-click="commandGrid.remove(command)">
+            <input class="delete" type="button" value="del" ng-click="deleteCommand(command)">
         </li>
     </ul>
     <input type="button" value="add" ng-click="addCommand()">

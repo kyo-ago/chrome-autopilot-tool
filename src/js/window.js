@@ -838,6 +838,8 @@ var ts;
             (function (Selenium) {
                 var Base = (function () {
                     function Base(callback) {
+                        var _this = this;
+                        this.interval = 1;
                         window.getBrowser = function () {
                             return {
                                 'selectedBrowser': {
@@ -853,7 +855,7 @@ var ts;
                             'app': {
                                 'getOptions': function () {
                                     return {
-                                        'timeout': 1
+                                        'timeout': _this.interval
                                     };
                                 }
                             },
@@ -872,7 +874,7 @@ var ts;
                         this.commandFactory.registerAll(this.selenium);
                     }
                     Base.prototype.getInterval = function () {
-                        return 1;
+                        return this.interval;
                     };
                     Base.prototype.start = function () {
                         var _this = this;
@@ -1010,6 +1012,7 @@ var ts;
                 var Controller = (function () {
                     function Controller($scope, tabManager, commandGrid, messageDispatcher, seleniumSender) {
                         $scope.commandGrid = commandGrid;
+                        $scope.playSpeed = '100';
 
                         $scope.commandGrid.add(new ts.Models.Command.Model('type', '//*[@id="inputtext"]', 'aaaa'));
 
@@ -1017,13 +1020,33 @@ var ts;
                             seleniumSender.addCommandList($scope.commandGrid.getCommandList());
                             seleniumSender.start();
                         };
+                        $scope.changeSpeed = function () {
+                            seleniumSender.interval = parseInt($scope.playSpeed);
+                        };
                         $scope.addCommand = function () {
                             $scope.commandGrid.add(new ts.Models.Command.Model());
+                        };
+                        $scope.deleteCommand = function (command) {
+                            $scope.commandGrid.remove(command);
+                        };
+                        $scope.recordingStatus = true;
+                        $scope.startRecording = function () {
+                            $scope.recordingStatus = true;
+                        };
+                        $scope.stopRecording = function () {
+                            $scope.recordingStatus = false;
                         };
                         tabManager.onMessage(function (message) {
                             messageDispatcher.dispatch(message, {
                                 MessageAddCommentModel: function (message) {
+                                    if (!$scope.recordingStatus) {
+                                        return;
+                                    }
                                     $scope.$apply(function () {
+                                        if (!$scope.commandGrid.getList().length) {
+                                            $scope.baseURL = tabManager.getTabURL();
+                                            $scope.commandGrid.add(new ts.Models.Command.Model('open', '', $scope.baseURL));
+                                        }
                                         $scope.commandGrid.add(message.command);
                                     });
                                 }
