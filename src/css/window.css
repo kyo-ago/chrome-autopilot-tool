@@ -48,6 +48,8 @@ table {
 
 .commandGrid .type, .commandGrid .value {
   width: 5em; }
+.commandGrid .draggable {
+  cursor: move; }
 .commandGrid .type {
   width: 20%; }
 .commandGrid .target {

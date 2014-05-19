@@ -35,6 +35,9 @@ html, body, div, span, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, co
   .type, .value {
     width: 5em;
   }
+  .draggable {
+    cursor: move;
+  }
   .type {
     width: 20%;
   }

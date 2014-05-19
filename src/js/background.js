@@ -1,3 +1,4 @@
+/// <reference path="DefinitelyTyped/chrome/chrome.d.ts" />
 chrome.browserAction.onClicked.addListener(function (calledTab) {
     var createWindow = function () {
         chrome.windows.create({

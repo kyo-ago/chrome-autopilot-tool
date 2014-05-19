@@ -5,14 +5,22 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "directories": {
+    "test": "test/"
+  },
   "author": "@kyo_ago",
   "license": "GPL2",
   "devDependencies": {
-    "power-assert": "^0.6.1",
+    "power-assert": "^0.7.2",
     "grunt": "^0.4.4",
     "grunt-version": "^0.3.0",
-    "grunt-contrib-compress": "^0.8.0",
-    "grunt-este-watch": "^0.1.15",
-    "grunt-typescript": "^0.3.4"
+    "espower-loader": "^0.7.0",
+    "intelli-espower-loader": "^0.1.0",
+    "gulp-espower": "^0.7.0",
+    "gulp": "^3.6.2",
+    "gulp-tsc": "^0.8.0",
+    "gulp-mocha": "^0.4.1",
+    "gulp-grunt": "^0.4.1",
+    "gulp-zip": "^0.3.4"
   }
 }

@@ -14,6 +14,8 @@ module ts.Application.Controllers.Autopilot {
         startRecording: () => any;
         stopRecording: () => any;
         changeSpeed: () => any;
+        playCurrent: () => any;
+        playStop: () => any;
         recordingStatus: boolean;
         baseURL: string;
         playSpeed: string;
@@ -48,6 +50,12 @@ module ts.Application.Controllers.Autopilot {
             };
             $scope.stopRecording = () => {
                 $scope.recordingStatus = false;
+            };
+            $scope.playCurrent = () => {
+                //@TODO
+            };
+            $scope.playStop = () => {
+                //@TODO
             };
             tabManager.onMessage((message: Object) => {
                 messageDispatcher.dispatch(message, {

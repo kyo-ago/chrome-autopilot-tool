@@ -50,6 +50,7 @@ var ts;
     })(ts.UUID || (ts.UUID = {}));
     var UUID = ts.UUID;
 })(ts || (ts = {}));
+/// <reference path="UUID" />
 var ts;
 (function (ts) {
     (function (Base) {
@@ -67,6 +68,7 @@ var ts;
     })(ts.Base || (ts.Base = {}));
     var Base = ts.Base;
 })(ts || (ts = {}));
+/// <reference path="../Identity" />
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -95,6 +97,7 @@ var ts;
     })(ts.Base || (ts.Base = {}));
     var Base = ts.Base;
 })(ts || (ts = {}));
+/// <reference path="../../Base/Entity/Model.ts" />
 var ts;
 (function (ts) {
     (function (Models) {
@@ -118,6 +121,7 @@ var ts;
     })(ts.Models || (ts.Models = {}));
     var Models = ts.Models;
 })(ts || (ts = {}));
+/// <reference path="../../../Base/Entity/Model.ts" />
 var ts;
 (function (ts) {
     (function (Application) {
@@ -142,6 +146,9 @@ var ts;
     })(ts.Application || (ts.Application = {}));
     var Application = ts.Application;
 })(ts || (ts = {}));
+/// <reference path="./Model.ts" />
+/// <reference path="../../Base/Entity/Repository.ts" />
+/// <reference path="./Model.ts" />
 var ts;
 (function (ts) {
     (function (Models) {
@@ -167,6 +174,7 @@ var ts;
     })(ts.Models || (ts.Models = {}));
     var Models = ts.Models;
 })(ts || (ts = {}));
+/// <reference path="../../../Base/Entity/Model.ts" />
 var ts;
 (function (ts) {
     (function (Application) {
@@ -187,6 +195,8 @@ var ts;
     })(ts.Application || (ts.Application = {}));
     var Application = ts.Application;
 })(ts || (ts = {}));
+/// <reference path="../../../Base/Entity/Repository.ts" />
+/// <reference path="./Model.ts" />
 var ts;
 (function (ts) {
     (function (Application) {
@@ -211,6 +221,8 @@ var ts;
     })(ts.Application || (ts.Application = {}));
     var Application = ts.Application;
 })(ts || (ts = {}));
+/// <reference path="../../../../Models/Command/Model.ts" />
+/// <reference path="../Model.ts" />
 var ts;
 (function (ts) {
     (function (Application) {
@@ -237,6 +249,9 @@ var ts;
     })(ts.Application || (ts.Application = {}));
     var Application = ts.Application;
 })(ts || (ts = {}));
+/// <reference path="../../../../Models/Command/Repository.ts" />
+/// <reference path="../Repository.ts" />
+/// <reference path="./Model.ts" />
 var ts;
 (function (ts) {
     (function (Application) {
@@ -275,6 +290,8 @@ var ts;
     })(ts.Application || (ts.Application = {}));
     var Application = ts.Application;
 })(ts || (ts = {}));
+/// <reference path="../../../../Models/Command/Model.ts" />
+/// <reference path="../Model.ts" />
 var ts;
 (function (ts) {
     (function (Application) {
@@ -300,6 +317,9 @@ var ts;
     })(ts.Application || (ts.Application = {}));
     var Application = ts.Application;
 })(ts || (ts = {}));
+/// <reference path="../../../../Models/Command/Repository.ts" />
+/// <reference path="../Repository.ts" />
+/// <reference path="./Model.ts" />
 var ts;
 (function (ts) {
     (function (Application) {
@@ -333,6 +353,8 @@ var ts;
     })(ts.Application || (ts.Application = {}));
     var Application = ts.Application;
 })(ts || (ts = {}));
+/// <reference path="../Identity" />
+/// <reference path="../Entity/Model.ts" />
 var ts;
 (function (ts) {
     (function (Base) {
@@ -374,6 +396,8 @@ var ts;
     })(ts.Base || (ts.Base = {}));
     var Base = ts.Base;
 })(ts || (ts = {}));
+/// <reference path="./Model.ts" />
+/// <reference path="../Entity/Repository.ts" />
 var ts;
 (function (ts) {
     (function (Base) {
@@ -402,6 +426,8 @@ var ts;
     })(ts.Base || (ts.Base = {}));
     var Base = ts.Base;
 })(ts || (ts = {}));
+/// <reference path="../../Base/EntityList/Model.ts" />
+/// <reference path="../Command/Model.ts" />
 var ts;
 (function (ts) {
     (function (Models) {
@@ -430,6 +456,9 @@ var ts;
     })(ts.Models || (ts.Models = {}));
     var Models = ts.Models;
 })(ts || (ts = {}));
+/// <reference path="../../Base/EntityList/Repository.ts" />
+/// <reference path="../Command/Repository.ts" />
+/// <reference path="./Model.ts" />
 var ts;
 (function (ts) {
     (function (Models) {
@@ -458,6 +487,8 @@ var ts;
     })(ts.Models || (ts.Models = {}));
     var Models = ts.Models;
 })(ts || (ts = {}));
+/// <reference path="../../../../Models/CommandList/Model.ts" />
+/// <reference path="../Model.ts" />
 var ts;
 (function (ts) {
     (function (Application) {
@@ -483,6 +514,9 @@ var ts;
     })(ts.Application || (ts.Application = {}));
     var Application = ts.Application;
 })(ts || (ts = {}));
+/// <reference path="../../../../Models/CommandList/Repository.ts" />
+/// <reference path="../Repository.ts" />
+/// <reference path="./Model.ts" />
 var ts;
 (function (ts) {
     (function (Application) {
@@ -516,6 +550,8 @@ var ts;
     })(ts.Application || (ts.Application = {}));
     var Application = ts.Application;
 })(ts || (ts = {}));
+/// <reference path="../../../Base/Entity/Repository.ts" />
+/// <reference path="./Model.ts" />
 var ts;
 (function (ts) {
     (function (Application) {
@@ -543,6 +579,8 @@ var ts;
     })(ts.Application || (ts.Application = {}));
     var Application = ts.Application;
 })(ts || (ts = {}));
+/// <reference path="../../../Models/SeleniumCommand/Model.ts" />
+/// <reference path="../Model.ts" />
 var ts;
 (function (ts) {
     (function (Application) {
@@ -568,6 +606,9 @@ var ts;
     })(ts.Application || (ts.Application = {}));
     var Application = ts.Application;
 })(ts || (ts = {}));
+/// <reference path="../../../Models/SeleniumCommand/Repository.ts" />
+/// <reference path="../Repository.ts" />
+/// <reference path="./Model.ts" />
 var ts;
 (function (ts) {
     (function (Application) {
@@ -601,6 +642,8 @@ var ts;
     })(ts.Application || (ts.Application = {}));
     var Application = ts.Application;
 })(ts || (ts = {}));
+/// <reference path="../../../Models/SeleniumCommand/Model.ts" />
+/// <reference path="../Model.ts" />
 var ts;
 (function (ts) {
     (function (Application) {
@@ -609,6 +652,7 @@ var ts;
                 (function (PlaySeleniumCommandResult) {
                     var Model = (function (_super) {
                         __extends(Model, _super);
+                        //page reloading
                         function Model(command) {
                             if (typeof command === "undefined") { command = 'OK'; }
                             _super.call(this);
@@ -627,6 +671,9 @@ var ts;
     })(ts.Application || (ts.Application = {}));
     var Application = ts.Application;
 })(ts || (ts = {}));
+/// <reference path="../../../Models/SeleniumCommand/Repository.ts" />
+/// <reference path="../Repository.ts" />
+/// <reference path="./Model.ts" />
 var ts;
 (function (ts) {
     (function (Application) {
@@ -659,6 +706,11 @@ var ts;
     })(ts.Application || (ts.Application = {}));
     var Application = ts.Application;
 })(ts || (ts = {}));
+/// <reference path="./AddCommand/Repository.ts" />
+/// <reference path="./PlayCommand/Repository.ts" />
+/// <reference path="./PlayCommandList/Repository.ts" />
+/// <reference path="./PlaySeleniumCommandExecute/Repository.ts" />
+/// <reference path="./PlaySeleniumCommandResult/Repository.ts" />
 var ts;
 (function (ts) {
     (function (Application) {
@@ -721,6 +773,7 @@ var ts;
     })(ts.Application || (ts.Application = {}));
     var Application = ts.Application;
 })(ts || (ts = {}));
+/// <reference path="../../../DefinitelyTyped/es6-promises/es6-promises.d.ts" />
 var ts;
 (function (ts) {
     (function (Application) {
@@ -730,6 +783,7 @@ var ts;
                     function Base(callback) {
                         var _this = this;
                         this.interval = 1;
+                        // for selenium-runner
                         window.getBrowser = function () {
                             return {
                                 'selectedBrowser': {
@@ -809,6 +863,8 @@ var ts;
     })(ts.Application || (ts.Application = {}));
     var Application = ts.Application;
 })(ts || (ts = {}));
+/// <reference path="../../Models/SeleniumCommand/Model.ts" />
+/// <reference path="./Base.ts" />
 var ts;
 (function (ts) {
     (function (Application) {
@@ -864,6 +920,13 @@ var ts;
     })(ts.Application || (ts.Application = {}));
     var Application = ts.Application;
 })(ts || (ts = {}));
+/// <reference path="DefinitelyTyped/Selenium/recorder.d.ts" />
+/// <reference path="DefinitelyTyped/chrome/chrome.d.ts" />
+/// <reference path="Models/Command/Model.ts" />
+/// <reference path="Applications/Models/SeleniumCommand/Model.ts" />
+/// <reference path="Applications/Models/Message/Dispatcher.ts" />
+/// <reference path="Applications/Services/RecorderObserver.ts" />
+/// <reference path="Applications/Services/Selenium/Receiver.ts" />
 
 var globalPort;
 (function () {

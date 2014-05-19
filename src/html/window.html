@@ -14,9 +14,8 @@
         <div class="play">
             <input class="range" type="range" ng-model="playSpeed" min="0" max="100" ng-change="changeSpeed()">
             <a role="button" ng-click="playAll()"><img src="/src/img/panel/play_all.png"></a>
-            <a role="button"><img src="/src/img/panel/play_current.png"></a>
-            <a role="button"><img src="/src/img/panel/stop.png"></a>
-            <a role="button"><img src="/src/img/panel/play_one.png"></a>
+            <a role="button" ng-click="playCurrent()"><img src="/src/img/panel/play_current.png"></a>
+            <a role="button" ng-click="playStop()"><img src="/src/img/panel/stop.png"></a>
         </div>
         <div class="rec">
             <a role="button" ng-click="startRecording()" ng-show="!recordingStatus"><img src="/src/img/panel/rec_start.png"></a>
@@ -25,6 +24,7 @@
     </div>
     <ul class="commandGrid" ui-sortable ng-model="commandGrid.list">
         <li ng-repeat="command in commandGrid.getList()">
+            <span class="draggable">〓</span>
             <input class="type" type="text" ng-model="command.type">
             <input class="target" type="text" ng-model="command.target">
             <input class="value" type="text" ng-model="command.value">
