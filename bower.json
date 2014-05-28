@@ -12,9 +12,6 @@
     "test",
     "tests"
   ],
-  "devDependencies": {
-    "power-assert": "~0.6.1"
-  },
   "dependencies": {
     "angular": "~1.2.16",
     "jQuery": "~2.1.0",

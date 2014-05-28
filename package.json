@@ -3,24 +3,28 @@
   "version": "0.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "karma start"
   },
   "directories": {
     "test": "test/"
   },
   "author": "@kyo_ago",
-  "license": "GPL2",
+  "license": "GPL3",
   "devDependencies": {
-    "power-assert": "^0.7.2",
     "grunt": "^0.4.4",
     "grunt-version": "^0.3.0",
-    "espower-loader": "^0.7.0",
-    "intelli-espower-loader": "^0.1.0",
     "gulp-espower": "^0.7.0",
     "gulp": "^3.6.2",
     "gulp-tsc": "^0.8.0",
     "gulp-mocha": "^0.4.1",
     "gulp-grunt": "^0.4.1",
-    "gulp-zip": "^0.3.4"
+    "gulp-zip": "^0.3.4",
+    "mocha": "^1.19.0",
+    "event-stream": "^3.1.5",
+    "run-sequence": "^0.3.6",
+    "gulp-plumber": "^0.6.1"
+  },
+  "dependencies": {
+    "expect.js": "^0.3.1"
   }
 }
