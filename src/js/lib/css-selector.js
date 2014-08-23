@@ -27,11 +27,11 @@ function getCssSelector () {
                 }
             }
             var tagName = (element.prefix ? element.prefix + ":" : "") + element.localName;
-            var pathIndex = (index ? "[" + (index+1) + "]" : "");
+            var pathIndex = (index ? ":nth-child(" + (index+1) + ")" : "");
             paths.splice(0, 0, tagName + pathIndex);
         }
 
-        return paths.length ? "/" + paths.join("/") : null;
+        return paths.length ? " " + paths.join(" ") : null;
     };
     return main;
 }
