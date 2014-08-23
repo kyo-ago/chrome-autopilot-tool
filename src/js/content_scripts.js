@@ -439,7 +439,6 @@ var ts;
                     if (typeof name === "undefined") { name = ''; }
                     if (typeof url === "undefined") { url = ''; }
                     _super.call(this, commands);
-                    this.commands = commands;
                     this.name = name;
                     this.url = url;
                 }

@@ -19,7 +19,7 @@ function Recorder(window) {
 	this.window = window;
 	this.observers = [];
 	this.attach();
-    this.xpath = getXPath();
+    this.cssSelector = getCssSelector();
     this.registerUnloadListener();
 }
 
@@ -162,11 +162,11 @@ Recorder.prototype.record = function(command, target, value, insertBeforeLastCom
 };
 
 Recorder.prototype.findLocator = function(element) {
-    return this.xpath.getElementXPath(element);
+    return this.cssSelector.getElementSelector(element);
 };
 
 Recorder.prototype.findLocators = function(element) {
-    return this.xpath.getElementXPath(element);
+    return this.cssSelector.getElementSelector(element);
 };
 
 Recorder.prototype.deregister = function(observer) {

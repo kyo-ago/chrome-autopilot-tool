@@ -414,7 +414,6 @@ var ts;
                     if (typeof name === "undefined") { name = ''; }
                     if (typeof url === "undefined") { url = ''; }
                     _super.call(this, commands);
-                    this.commands = commands;
                     this.name = name;
                     this.url = url;
                 }
@@ -1191,6 +1190,7 @@ var ts;
                 }
                 Config.injectScripts = [
                     "src/js/lib/xpath.js",
+                    "src/js/lib/css-selector.js",
                     "src/js/selenium-ide/tools.js",
                     "src/js/selenium-ide/htmlutils.js",
                     "src/js/selenium-ide/selenium-browserdetect.js",

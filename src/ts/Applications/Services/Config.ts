@@ -2,6 +2,7 @@ module ts.Application.Services {
     export class Config {
         static injectScripts = [
             "src/js/lib/xpath.js",
+            "src/js/lib/css-selector.js",
             "src/js/selenium-ide/tools.js",
             "src/js/selenium-ide/htmlutils.js",
             "src/js/selenium-ide/selenium-browserdetect.js",
