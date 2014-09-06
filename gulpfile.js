@@ -22,7 +22,7 @@ gulp.task('zip', function () {
 gulp.task('compile', function () {
     return merge.apply(this, ['background', 'content_scripts', 'window'].map(function (name) {
         return gulp.src('src/ts/'+name+'.ts')
-            .pipe(typescript({ out: name+'.js', 'sourcemap' : name+'.map' }))
+            .pipe(typescript({ out: name+'.js' }))
             .pipe(gulp.dest('src/js/'))
     }));
 });

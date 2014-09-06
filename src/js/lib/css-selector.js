@@ -11,7 +11,8 @@ function getCssSelector () {
         if (element && element.id) {
             return '#' + element.id
         }
-        return main.getElementTreeSelector(element);
+        var selector = main.getElementTreeSelector(element);
+        return selector ? 'css=' + selector : selector;
     };
 
     main.getElementTreeSelector = function (element) {
@@ -31,7 +32,7 @@ function getCssSelector () {
             paths.splice(0, 0, tagName + pathIndex);
         }
 
-        return paths.length ? " " + paths.join(" ") : null;
+        return paths.length ? paths.join(" ") : null;
     };
     return main;
 }

@@ -6165,8 +6165,6 @@ jQuery.getText = getText;
 jQuery.isXMLDoc = isXML;
 jQuery.contains = contains;
 
-return;
-
 window.Sizzle = Sizzle;
 
 })();

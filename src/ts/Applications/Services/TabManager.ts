@@ -97,6 +97,9 @@ module ts.Application.Services {
         }
         sendMessage (message: Object, callback: (message: Object) => any) {
             chrome.tabs.sendMessage(this.tab.id, message, (result) => {
+                if (!result) {
+                    return;
+                }
                 var interval = setInterval(() => {
                     if (!this.port) {
                         return;
