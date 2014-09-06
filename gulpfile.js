@@ -20,19 +20,11 @@ gulp.task('zip', function () {
     ;
 });
 gulp.task('compile', function () {
-    return merge(
-        gulp.src('src/ts/background.ts')
-            .pipe(typescript({ out: 'background.js' }))
+    return merge.apply(this, ['background', 'content_scripts', 'window'].map(function (name) {
+        return gulp.src('src/ts/'+name+'.ts')
+            .pipe(typescript({ out: name+'.js', 'sourcemap' : name+'.map' }))
             .pipe(gulp.dest('src/js/'))
-        ,
-        gulp.src('src/ts/content_scripts.ts')
-            .pipe(typescript({ out: 'content_scripts.js' }))
-            .pipe(gulp.dest('src/js/'))
-        ,
-        gulp.src('src/ts/window.ts')
-            .pipe(typescript({ out: 'window.js' }))
-            .pipe(gulp.dest('src/js/'))
-    );
+    }));
 });
 gulp.task('test:compile', function () {
     return gulp.src('test/ts/**/*.ts')
@@ -55,6 +47,7 @@ gulp.task('test', ['test:init'], function () {
     ;
 });
 gulp.task('watch', function() {
+    runSequence('compile');
     return gulp.watch('test/ts/**/*.js').on('change', function (file) {
 //        var out = path.join(path.dirname(file['path']), path.basename(file['path'], '.ts') + '.xxx');
         return gulp.src(file['path'])

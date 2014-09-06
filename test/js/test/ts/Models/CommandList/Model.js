@@ -1,9 +1,7 @@
 /// <reference path="../../../../src/ts/Models/CommandList/Model.ts" />
-/// <reference path="../../DefinitelyTyped/chai/chai.d.ts" />
+/// <reference path="../../DefinitelyTyped/expect.js/expect.js.d.ts" />
 /// <reference path="../../DefinitelyTyped/mocha/mocha.d.ts" />
 "use strict";
-var expect = chai.expect;
-
 describe('ts.Models.CommandList', function () {
     it('new', function () {
         new ts.Models.CommandList.Model();

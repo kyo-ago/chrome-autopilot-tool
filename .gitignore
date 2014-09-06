@@ -1,4 +1,8 @@
 src/ts/**/*.js
 src/ts/**/*.js.map
+
 test/ts/**/*.js
 test/ts/**/*.js.map
+
+src/js/*.js
+src/js/*.js.map
