@@ -12,6 +12,9 @@ declare module chrome.extension {
 
 var globalPort: chrome.runtime.Port;
 (() => {
+    if ('undefined' === typeof chrome) {
+        return;
+    }
     var messagePlaySeleniumCommandResultRepository = new ts.Application.Models.Message.PlaySeleniumCommandResult.Repository();
     var messageAddCommentRepository = new ts.Application.Models.Message.AddComment.Repository();
     var recorderObserver = new ts.Application.Services.RecorderObserver();

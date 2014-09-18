@@ -28,12 +28,12 @@ gulp.task('compile', function () {
 });
 gulp.task('test:compile', function () {
     return gulp.src('test/ts/**/*.ts')
-        .pipe(typescript({ module : 'commonjs' }))
+        .pipe(typescript())
         .pipe(gulp.dest('test/js/'))
     ;
 });
 gulp.task('power-assert', function () {
-    return gulp.src('./test/*.js')
+    return gulp.src('./test/**/*.js')
         .pipe(espower())
         .pipe(gulp.dest('./powered-test/'))
     ;
@@ -42,7 +42,7 @@ gulp.task('test:init', function () {
     runSequence('test:compile', 'power-assert');
 });
 gulp.task('test', ['test:init'], function () {
-    return gulp.src('./powered-test/*.js')
+    return gulp.src('./powered-test/js/test/ts/**/*.js')
         .pipe(mocha())
     ;
 });

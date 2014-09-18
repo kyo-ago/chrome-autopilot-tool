@@ -6,3 +6,4 @@ test/ts/**/*.js.map
 
 src/js/*.js
 src/js/*.js.map
+powered-test
