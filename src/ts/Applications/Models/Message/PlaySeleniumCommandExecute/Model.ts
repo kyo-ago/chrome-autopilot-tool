@@ -1,4 +1,4 @@
-/// <reference path="../../../Models/SeleniumCommand/Model.ts" />
+/// <reference path="../../SeleniumCommand/Model.ts" />
 /// <reference path="../Model.ts" />
 
 module ts.Application.Models.Message.PlaySeleniumCommandExecute {

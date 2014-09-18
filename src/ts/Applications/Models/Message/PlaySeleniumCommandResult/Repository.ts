@@ -1,4 +1,4 @@
-/// <reference path="../../../Models/SeleniumCommand/Repository.ts" />
+/// <reference path="../../SeleniumCommand/Repository.ts" />
 /// <reference path="../Repository.ts" />
 /// <reference path="./Model.ts" />
 

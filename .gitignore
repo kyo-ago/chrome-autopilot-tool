@@ -1,9 +1,6 @@
-src/ts/**/*.js
-src/ts/**/*.js.map
+test/**/*.js
+test/**/*.js.map
 
-test/ts/**/*.js
-test/ts/**/*.js.map
-
-src/js/*.js
-src/js/*.js.map
+extension/bower_components
+node_modules
 powered-test

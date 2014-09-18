@@ -6,10 +6,10 @@
     "version": "0.0.0",
     "browser_action": {
         "default_title": "Chrome autopilot tool",
-        "default_icon": "src/img/icon128.png"
+        "default_icon": "img/icon128.png"
     },
     "background": {
-        "scripts": ["src/js/background.js"],
+        "scripts": ["js/background.js"],
         "persistent": false
     },
     "permissions": [
@@ -18,9 +18,9 @@
         "tabs"
     ],
     "icons": {
-        "48": "src/img/icon128.png"
+        "48": "img/icon128.png"
     },
     "web_accessible_resources": [
-        "/src/js/selenium-ide/iedoc-core.xml"
+        "/js/selenium-ide/iedoc-core.xml"
     ]
 }

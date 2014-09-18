@@ -6,7 +6,6 @@ module ts.Application.Services {
     export class TabManager {
         private tab: chrome.tabs.Tab;
         private port: chrome.runtime.Port;
-        private initialize: Function = () => {};
         private onMessageListeners: Function[] = [];
         private onDisconnectListeners: Function[] = [];
         private onConnectListeners: Function[] = [];
@@ -14,11 +13,10 @@ module ts.Application.Services {
 
         constructor (
             calledTabId: string,
-            initialize: (tabManager: TabManager) => Promise<any>,
+            private initialize: (tabManager: TabManager) => Promise<any>,
             resolve: (tabManager: TabManager) => any,
             reject: (errorMessage: string) => any
         ) {
-            this.initialize = initialize;
             this.getTab(calledTabId).then((tab: chrome.tabs.Tab) => {
                 this.tab = tab;
                 this.initialize(this).then(() => {

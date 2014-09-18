@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="/bower_components/jqueryui/themes/base/jquery-ui.css" />
     <link rel="stylesheet" href="/bower_components/jqueryui/themes/base/jquery.ui.base.css" />
     <link rel="stylesheet" href="/bower_components/angular/angular-csp.css" />
-    <link rel="stylesheet" href="/src/css/window.css" />
+    <link rel="stylesheet" href="/css/window.css" />
 </head>
 <body>
 <div ng-controller="Autopilot">
@@ -13,13 +13,13 @@
     <div class="testControl">
         <div class="play">
             <input class="range" type="range" ng-model="playSpeed" min="0" max="100" ng-change="changeSpeed()">
-            <a role="button" ng-click="playAll()"><img src="/src/img/panel/play_all.png"></a>
-            <a role="button" ng-click="playCurrent()"><img src="/src/img/panel/play_current.png"></a>
-            <a role="button" ng-click="playStop()"><img src="/src/img/panel/stop.png"></a>
+            <a role="button" ng-click="playAll()"><img src="/img/panel/play_all.png"></a>
+            <a role="button" ng-click="playCurrent()"><img src="/img/panel/play_current.png"></a>
+            <a role="button" ng-click="playStop()"><img src="/img/panel/stop.png"></a>
         </div>
         <div class="rec">
-            <a role="button" ng-click="startRecording()" ng-show="!recordingStatus"><img src="/src/img/panel/rec_start.png"></a>
-            <a role="button" ng-click="stopRecording()" ng-show="recordingStatus"><img src="/src/img/panel/rec_stop.png"></a>
+            <a role="button" ng-click="startRecording()" ng-show="!recordingStatus"><img src="/img/panel/rec_start.png"></a>
+            <a role="button" ng-click="stopRecording()" ng-show="recordingStatus"><img src="/img/panel/rec_stop.png"></a>
         </div>
     </div>
     <ul class="commandGrid" ui-sortable ng-model="commandGrid.list">
@@ -38,19 +38,19 @@
 <script src="/bower_components/angular/angular.js"></script>
 <script src="/bower_components/angular-ui-sortable/sortable.js"></script>
 
-<script src="/src/js/selenium-ide/deferred.js"></script>
-<script src="/src/js/selenium-ide/htmlutils.js"></script>
-<script src="/src/js/selenium-ide/tools.js"></script>
-<script src="/src/js/selenium-ide/testCase.js"></script>
-<script src="/src/js/selenium-ide/selenium-atoms.js"></script>
-<script src="/src/js/selenium-ide/selenium-api.js"></script>
-<script src="/src/js/selenium-ide/selenium-browserbot.js"></script>
-<script src="/src/js/selenium-ide/selenium-commandhandlers.js"></script>
-<script src="/src/js/lib/chrome-extension-backed-selenium.js"></script>
-<script src="/src/js/selenium-ide/selenium-executionloop.js"></script>
-<script src="/src/js/selenium-ide/selenium-testrunner.js"></script>
-<script src="/src/js/selenium-ide/selenium-runner.js"></script>
+<script src="/js/selenium-ide/deferred.js"></script>
+<script src="/js/selenium-ide/htmlutils.js"></script>
+<script src="/js/selenium-ide/tools.js"></script>
+<script src="/js/selenium-ide/testCase.js"></script>
+<script src="/js/selenium-ide/selenium-atoms.js"></script>
+<script src="/js/selenium-ide/selenium-api.js"></script>
+<script src="/js/selenium-ide/selenium-browserbot.js"></script>
+<script src="/js/selenium-ide/selenium-commandhandlers.js"></script>
+<script src="/js/lib/chrome-extension-backed-selenium.js"></script>
+<script src="/js/selenium-ide/selenium-executionloop.js"></script>
+<script src="/js/selenium-ide/selenium-testrunner.js"></script>
+<script src="/js/selenium-ide/selenium-runner.js"></script>
 
-<script src="/src/js/window.js"></script>
+<script src="/js/window.js"></script>
 </body>
 </html>

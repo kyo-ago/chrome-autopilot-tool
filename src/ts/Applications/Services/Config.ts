@@ -1,23 +1,23 @@
 module ts.Application.Services {
     export class Config {
         static injectScripts = [
-            "src/js/lib/xpath.js",
-            "src/js/lib/css-selector.js",
-            "src/js/selenium-ide/tools.js",
-            "src/js/selenium-ide/htmlutils.js",
-            "src/js/selenium-ide/selenium-browserdetect.js",
-            "src/js/selenium-ide/selenium-atoms.js",
-            "src/js/selenium-ide/selenium-browserbot.js",
-            "src/js/selenium-ide/selenium-api.js",
-            "src/js/selenium-ide/selenium-executionloop.js",
-            "src/js/selenium-ide/selenium-testrunner.js",
-            "src/js/selenium-ide/selenium-commandhandlers.js",
-            "src/js/selenium-ide/selenium-runner.js",
-            "src/js/selenium-ide/recorder.js",
-            "src/js/selenium-ide/recorder-handlers.js",
-            "src/js/selenium-ide/testCase.js",
-            "src/js/content_scripts.js"
+            "js/lib/xpath.js",
+            "js/lib/css-selector.js",
+            "js/selenium-ide/tools.js",
+            "js/selenium-ide/htmlutils.js",
+            "js/selenium-ide/selenium-browserdetect.js",
+            "js/selenium-ide/selenium-atoms.js",
+            "js/selenium-ide/selenium-browserbot.js",
+            "js/selenium-ide/selenium-api.js",
+            "js/selenium-ide/selenium-executionloop.js",
+            "js/selenium-ide/selenium-testrunner.js",
+            "js/selenium-ide/selenium-commandhandlers.js",
+            "js/selenium-ide/selenium-runner.js",
+            "js/selenium-ide/recorder.js",
+            "js/selenium-ide/recorder-handlers.js",
+            "js/selenium-ide/testCase.js",
+            "js/content_scripts.js"
         ];
-        static seleniumApiXML = '/src/js/selenium-ide/iedoc-core.xml';
+        static seleniumApiXML = '/js/selenium-ide/iedoc-core.xml';
     }
 }

@@ -16,13 +16,15 @@
     "gulp-espower": "^0.7.0",
     "gulp": "^3.6.2",
     "gulp-tsc": "^0.8.0",
-    "gulp-mocha": "^0.4.1",
     "gulp-grunt": "^0.4.1",
     "gulp-zip": "^0.3.4",
     "mocha": "^1.19.0",
     "event-stream": "^3.1.5",
     "run-sequence": "^0.3.6",
-    "gulp-plumber": "^0.6.1"
+    "gulp-plumber": "^0.6.1",
+    "karma": "^0.12.23",
+    "karma-mocha": "^0.1.9",
+    "karma-phantomjs-launcher": "^0.1.4"
   },
   "dependencies": {
     "expect.js": "^0.3.1"
