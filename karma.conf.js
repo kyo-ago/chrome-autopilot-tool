@@ -15,8 +15,10 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
+        'extension/bower_components/power-assert/build/power-assert.js',
         'extension/js/*.js',
-        'test/js/test/**/*.js'
+        'tmp/powered-test/**/*.js',
+        'tmp/powered-test/*.js'
     ],
 
 

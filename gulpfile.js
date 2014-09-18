@@ -6,6 +6,7 @@ var espower = require("gulp-espower");
 var zip = require('gulp-zip');
 var runSequence = require('run-sequence');
 var plumber = require('gulp-plumber');
+var rm = require( 'gulp-rm' )
 var karma = require('karma').server;
 require('gulp-grunt')(gulp);
 
@@ -38,19 +39,25 @@ gulp.task('test:compile', function () {
         .pipe(gulp.dest('tmp/test/'))
     ;
 });
-gulp.task('power-assert', function () {
-    return gulp.src(['./tmp/test/*.js', './tmp/test/**/*.js'])
+gulp.task('test:power-assert', function () {
+    return gulp.src(['./tmp/test/*.js', './tmp/test/test/**/*.js'])
         .pipe(espower())
         .pipe(gulp.dest('./tmp/powered-test/'))
     ;
 });
-gulp.task('test:init', function () {
-    runSequence('test:compile', 'power-assert');
+gulp.task('test:karma', function (done) {
+    karma.start({
+        configFile: __dirname + '/karma.conf.js',
+        singleRun: true
+    }, done);
 });
-gulp.task('test', ['test:init'], function (done) {
-//    karma.start({
-//        singleRun: true
-//    }, done);
+gulp.task('test:clean', function () {
+    return gulp.src(['./tmp/**/*', './tmp/*', './tmp/'], { read: false })
+        .pipe(rm())
+    ;
+});
+gulp.task('test', function () {
+    runSequence('test:compile', 'test:power-assert', 'test:karma', 'test:clean');
 });
 gulp.task('watch', function() {
     runSequence('compile');

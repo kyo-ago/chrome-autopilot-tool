@@ -24,7 +24,8 @@
     "gulp-plumber": "^0.6.1",
     "karma": "^0.12.23",
     "karma-mocha": "^0.1.9",
-    "karma-phantomjs-launcher": "^0.1.4"
+    "karma-phantomjs-launcher": "^0.1.4",
+    "gulp-rm": "^0.2.0"
   },
   "dependencies": {
     "expect.js": "^0.3.1"
