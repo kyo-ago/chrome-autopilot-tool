@@ -1,6 +1,3 @@
-test/**/*.js
-test/**/*.js.map
-
 extension/bower_components
 node_modules
-powered-test
+tmp

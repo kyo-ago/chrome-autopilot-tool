@@ -1,5 +1,5 @@
-var ts;
-(function (ts) {
+var Cat;
+(function (Cat) {
     (function (_UUID) {
         var InvalidUUIDFormat = (function () {
             function InvalidUUIDFormat() {
@@ -47,16 +47,16 @@ var ts;
             return UUID;
         })();
         _UUID.UUID = UUID;
-    })(ts.UUID || (ts.UUID = {}));
-    var UUID = ts.UUID;
-})(ts || (ts = {}));
+    })(Cat.UUID || (Cat.UUID = {}));
+    var UUID = Cat.UUID;
+})(Cat || (Cat = {}));
 /// <reference path="UUID" />
-var ts;
-(function (ts) {
+var Cat;
+(function (Cat) {
     (function (Base) {
         var Identity = (function () {
             function Identity(uuid) {
-                if (typeof uuid === "undefined") { uuid = new ts.UUID.UUID; }
+                if (typeof uuid === "undefined") { uuid = new Cat.UUID.UUID; }
                 this.uuid = uuid;
             }
             Identity.prototype.eq = function (e) {
@@ -65,9 +65,9 @@ var ts;
             return Identity;
         })();
         Base.Identity = Identity;
-    })(ts.Base || (ts.Base = {}));
-    var Base = ts.Base;
-})(ts || (ts = {}));
+    })(Cat.Base || (Cat.Base = {}));
+    var Base = Cat.Base;
+})(Cat || (Cat = {}));
 /// <reference path="../Identity" />
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -75,14 +75,14 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-var ts;
-(function (ts) {
+var Cat;
+(function (Cat) {
     (function (Base) {
         (function (Entity) {
             var Model = (function (_super) {
                 __extends(Model, _super);
                 function Model(identity) {
-                    if (typeof identity === "undefined") { identity = new Base.Identity(new ts.UUID.UUID); }
+                    if (typeof identity === "undefined") { identity = new Base.Identity(new Cat.UUID.UUID); }
                     _super.call(this, identity.uuid);
                     this.identity = identity;
                 }
@@ -94,12 +94,12 @@ var ts;
             Entity.Model = Model;
         })(Base.Entity || (Base.Entity = {}));
         var Entity = Base.Entity;
-    })(ts.Base || (ts.Base = {}));
-    var Base = ts.Base;
-})(ts || (ts = {}));
+    })(Cat.Base || (Cat.Base = {}));
+    var Base = Cat.Base;
+})(Cat || (Cat = {}));
 /// <reference path="../../Base/Entity/Model.ts" />
-var ts;
-(function (ts) {
+var Cat;
+(function (Cat) {
     (function (Models) {
         (function (Command) {
             var Model = (function (_super) {
@@ -114,16 +114,16 @@ var ts;
                     this.value = value;
                 }
                 return Model;
-            })(ts.Base.Entity.Model);
+            })(Cat.Base.Entity.Model);
             Command.Model = Model;
         })(Models.Command || (Models.Command = {}));
         var Command = Models.Command;
-    })(ts.Models || (ts.Models = {}));
-    var Models = ts.Models;
-})(ts || (ts = {}));
+    })(Cat.Models || (Cat.Models = {}));
+    var Models = Cat.Models;
+})(Cat || (Cat = {}));
 /// <reference path="../../../Base/Entity/Model.ts" />
-var ts;
-(function (ts) {
+var Cat;
+(function (Cat) {
     (function (Application) {
         (function (Models) {
             (function (Message) {
@@ -133,19 +133,19 @@ var ts;
                         _super.apply(this, arguments);
                     }
                     return Model;
-                })(ts.Base.Entity.Model);
+                })(Cat.Base.Entity.Model);
                 Message.Model = Model;
             })(Models.Message || (Models.Message = {}));
             var Message = Models.Message;
         })(Application.Models || (Application.Models = {}));
         var Models = Application.Models;
-    })(ts.Application || (ts.Application = {}));
-    var Application = ts.Application;
-})(ts || (ts = {}));
+    })(Cat.Application || (Cat.Application = {}));
+    var Application = Cat.Application;
+})(Cat || (Cat = {}));
 /// <reference path="../../../../Models/Command/Model.ts" />
 /// <reference path="../Model.ts" />
-var ts;
-(function (ts) {
+var Cat;
+(function (Cat) {
     (function (Application) {
         (function (Models) {
             (function (Message) {
@@ -167,14 +167,14 @@ var ts;
             var Message = Models.Message;
         })(Application.Models || (Application.Models = {}));
         var Models = Application.Models;
-    })(ts.Application || (ts.Application = {}));
-    var Application = ts.Application;
-})(ts || (ts = {}));
+    })(Cat.Application || (Cat.Application = {}));
+    var Application = Cat.Application;
+})(Cat || (Cat = {}));
 /// <reference path="./Model.ts" />
 /// <reference path="../../Base/Entity/Repository.ts" />
 /// <reference path="./Model.ts" />
-var ts;
-(function (ts) {
+var Cat;
+(function (Cat) {
     (function (Models) {
         (function (Command) {
             var Repository = (function () {
@@ -195,13 +195,13 @@ var ts;
             Command.Repository = Repository;
         })(Models.Command || (Models.Command = {}));
         var Command = Models.Command;
-    })(ts.Models || (ts.Models = {}));
-    var Models = ts.Models;
-})(ts || (ts = {}));
+    })(Cat.Models || (Cat.Models = {}));
+    var Models = Cat.Models;
+})(Cat || (Cat = {}));
 /// <reference path="../../../Base/Entity/Repository.ts" />
 /// <reference path="./Model.ts" />
-var ts;
-(function (ts) {
+var Cat;
+(function (Cat) {
     (function (Application) {
         (function (Models) {
             (function (Message) {
@@ -221,14 +221,14 @@ var ts;
             var Message = Models.Message;
         })(Application.Models || (Application.Models = {}));
         var Models = Application.Models;
-    })(ts.Application || (ts.Application = {}));
-    var Application = ts.Application;
-})(ts || (ts = {}));
+    })(Cat.Application || (Cat.Application = {}));
+    var Application = Cat.Application;
+})(Cat || (Cat = {}));
 /// <reference path="../../../../Models/Command/Repository.ts" />
 /// <reference path="../Repository.ts" />
 /// <reference path="./Model.ts" />
-var ts;
-(function (ts) {
+var Cat;
+(function (Cat) {
     (function (Application) {
         (function (Models) {
             (function (Message) {
@@ -237,7 +237,7 @@ var ts;
                         __extends(Repository, _super);
                         function Repository() {
                             _super.apply(this, arguments);
-                            this.repository = new ts.Models.Command.Repository();
+                            this.repository = new Cat.Models.Command.Repository();
                         }
                         Repository.prototype.toObject = function (message) {
                             return {
@@ -262,13 +262,13 @@ var ts;
             var Message = Models.Message;
         })(Application.Models || (Application.Models = {}));
         var Models = Application.Models;
-    })(ts.Application || (ts.Application = {}));
-    var Application = ts.Application;
-})(ts || (ts = {}));
+    })(Cat.Application || (Cat.Application = {}));
+    var Application = Cat.Application;
+})(Cat || (Cat = {}));
 /// <reference path="../../../../Models/Command/Model.ts" />
 /// <reference path="../Model.ts" />
-var ts;
-(function (ts) {
+var Cat;
+(function (Cat) {
     (function (Application) {
         (function (Models) {
             (function (Message) {
@@ -289,14 +289,14 @@ var ts;
             var Message = Models.Message;
         })(Application.Models || (Application.Models = {}));
         var Models = Application.Models;
-    })(ts.Application || (ts.Application = {}));
-    var Application = ts.Application;
-})(ts || (ts = {}));
+    })(Cat.Application || (Cat.Application = {}));
+    var Application = Cat.Application;
+})(Cat || (Cat = {}));
 /// <reference path="../../../../Models/Command/Repository.ts" />
 /// <reference path="../Repository.ts" />
 /// <reference path="./Model.ts" />
-var ts;
-(function (ts) {
+var Cat;
+(function (Cat) {
     (function (Application) {
         (function (Models) {
             (function (Message) {
@@ -305,7 +305,7 @@ var ts;
                         __extends(Repository, _super);
                         function Repository() {
                             _super.apply(this, arguments);
-                            this.repository = new ts.Models.Command.Repository();
+                            this.repository = new Cat.Models.Command.Repository();
                         }
                         Repository.prototype.toObject = function (message) {
                             return {
@@ -325,13 +325,13 @@ var ts;
             var Message = Models.Message;
         })(Application.Models || (Application.Models = {}));
         var Models = Application.Models;
-    })(ts.Application || (ts.Application = {}));
-    var Application = ts.Application;
-})(ts || (ts = {}));
+    })(Cat.Application || (Cat.Application = {}));
+    var Application = Cat.Application;
+})(Cat || (Cat = {}));
 /// <reference path="../Identity" />
 /// <reference path="../Entity/Model.ts" />
-var ts;
-(function (ts) {
+var Cat;
+(function (Cat) {
     (function (Base) {
         (function (EntityList) {
             var Model = (function (_super) {
@@ -368,13 +368,13 @@ var ts;
             EntityList.Model = Model;
         })(Base.EntityList || (Base.EntityList = {}));
         var EntityList = Base.EntityList;
-    })(ts.Base || (ts.Base = {}));
-    var Base = ts.Base;
-})(ts || (ts = {}));
+    })(Cat.Base || (Cat.Base = {}));
+    var Base = Cat.Base;
+})(Cat || (Cat = {}));
 /// <reference path="./Model.ts" />
 /// <reference path="../Entity/Repository.ts" />
-var ts;
-(function (ts) {
+var Cat;
+(function (Cat) {
     (function (Base) {
         (function (EntityList) {
             var Repository = (function () {
@@ -398,13 +398,13 @@ var ts;
             EntityList.Repository = Repository;
         })(Base.EntityList || (Base.EntityList = {}));
         var EntityList = Base.EntityList;
-    })(ts.Base || (ts.Base = {}));
-    var Base = ts.Base;
-})(ts || (ts = {}));
+    })(Cat.Base || (Cat.Base = {}));
+    var Base = Cat.Base;
+})(Cat || (Cat = {}));
 /// <reference path="../../Base/EntityList/Model.ts" />
 /// <reference path="../Command/Model.ts" />
-var ts;
-(function (ts) {
+var Cat;
+(function (Cat) {
     (function (Models) {
         (function (CommandList) {
             var Model = (function (_super) {
@@ -423,18 +423,18 @@ var ts;
                     _super.prototype.clear.call(this);
                 };
                 return Model;
-            })(ts.Base.EntityList.Model);
+            })(Cat.Base.EntityList.Model);
             CommandList.Model = Model;
         })(Models.CommandList || (Models.CommandList = {}));
         var CommandList = Models.CommandList;
-    })(ts.Models || (ts.Models = {}));
-    var Models = ts.Models;
-})(ts || (ts = {}));
+    })(Cat.Models || (Cat.Models = {}));
+    var Models = Cat.Models;
+})(Cat || (Cat = {}));
 /// <reference path="../../Base/EntityList/Repository.ts" />
 /// <reference path="../Command/Repository.ts" />
 /// <reference path="./Model.ts" />
-var ts;
-(function (ts) {
+var Cat;
+(function (Cat) {
     (function (Models) {
         (function (CommandList) {
             var Repository = (function (_super) {
@@ -454,17 +454,17 @@ var ts;
                     return new CommandList.Model(commandListObject, commandList['name'], commandList['url']);
                 };
                 return Repository;
-            })(ts.Base.EntityList.Repository);
+            })(Cat.Base.EntityList.Repository);
             CommandList.Repository = Repository;
         })(Models.CommandList || (Models.CommandList = {}));
         var CommandList = Models.CommandList;
-    })(ts.Models || (ts.Models = {}));
-    var Models = ts.Models;
-})(ts || (ts = {}));
+    })(Cat.Models || (Cat.Models = {}));
+    var Models = Cat.Models;
+})(Cat || (Cat = {}));
 /// <reference path="../../../../Models/CommandList/Model.ts" />
 /// <reference path="../Model.ts" />
-var ts;
-(function (ts) {
+var Cat;
+(function (Cat) {
     (function (Application) {
         (function (Models) {
             (function (Message) {
@@ -485,14 +485,14 @@ var ts;
             var Message = Models.Message;
         })(Application.Models || (Application.Models = {}));
         var Models = Application.Models;
-    })(ts.Application || (ts.Application = {}));
-    var Application = ts.Application;
-})(ts || (ts = {}));
+    })(Cat.Application || (Cat.Application = {}));
+    var Application = Cat.Application;
+})(Cat || (Cat = {}));
 /// <reference path="../../../../Models/CommandList/Repository.ts" />
 /// <reference path="../Repository.ts" />
 /// <reference path="./Model.ts" />
-var ts;
-(function (ts) {
+var Cat;
+(function (Cat) {
     (function (Application) {
         (function (Models) {
             (function (Message) {
@@ -501,7 +501,7 @@ var ts;
                         __extends(Repository, _super);
                         function Repository() {
                             _super.apply(this, arguments);
-                            this.repository = new ts.Models.CommandList.Repository();
+                            this.repository = new Cat.Models.CommandList.Repository();
                         }
                         Repository.prototype.toObject = function (message) {
                             return {
@@ -521,12 +521,12 @@ var ts;
             var Message = Models.Message;
         })(Application.Models || (Application.Models = {}));
         var Models = Application.Models;
-    })(ts.Application || (ts.Application = {}));
-    var Application = ts.Application;
-})(ts || (ts = {}));
+    })(Cat.Application || (Cat.Application = {}));
+    var Application = Cat.Application;
+})(Cat || (Cat = {}));
 /// <reference path="../../../Base/Entity/Model.ts" />
-var ts;
-(function (ts) {
+var Cat;
+(function (Cat) {
     (function (Application) {
         (function (Models) {
             (function (SeleniumCommand) {
@@ -540,19 +540,19 @@ var ts;
                         this.args = args;
                     }
                     return Model;
-                })(ts.Base.Entity.Model);
+                })(Cat.Base.Entity.Model);
                 SeleniumCommand.Model = Model;
             })(Models.SeleniumCommand || (Models.SeleniumCommand = {}));
             var SeleniumCommand = Models.SeleniumCommand;
         })(Application.Models || (Application.Models = {}));
         var Models = Application.Models;
-    })(ts.Application || (ts.Application = {}));
-    var Application = ts.Application;
-})(ts || (ts = {}));
+    })(Cat.Application || (Cat.Application = {}));
+    var Application = Cat.Application;
+})(Cat || (Cat = {}));
 /// <reference path="../../../Base/Entity/Repository.ts" />
 /// <reference path="./Model.ts" />
-var ts;
-(function (ts) {
+var Cat;
+(function (Cat) {
     (function (Application) {
         (function (Models) {
             (function (SeleniumCommand) {
@@ -575,13 +575,13 @@ var ts;
             var SeleniumCommand = Models.SeleniumCommand;
         })(Application.Models || (Application.Models = {}));
         var Models = Application.Models;
-    })(ts.Application || (ts.Application = {}));
-    var Application = ts.Application;
-})(ts || (ts = {}));
+    })(Cat.Application || (Cat.Application = {}));
+    var Application = Cat.Application;
+})(Cat || (Cat = {}));
 /// <reference path="../../SeleniumCommand/Model.ts" />
 /// <reference path="../Model.ts" />
-var ts;
-(function (ts) {
+var Cat;
+(function (Cat) {
     (function (Application) {
         (function (Models) {
             (function (Message) {
@@ -602,14 +602,14 @@ var ts;
             var Message = Models.Message;
         })(Application.Models || (Application.Models = {}));
         var Models = Application.Models;
-    })(ts.Application || (ts.Application = {}));
-    var Application = ts.Application;
-})(ts || (ts = {}));
+    })(Cat.Application || (Cat.Application = {}));
+    var Application = Cat.Application;
+})(Cat || (Cat = {}));
 /// <reference path="../../SeleniumCommand/Repository.ts" />
 /// <reference path="../Repository.ts" />
 /// <reference path="./Model.ts" />
-var ts;
-(function (ts) {
+var Cat;
+(function (Cat) {
     (function (Application) {
         (function (Models) {
             (function (Message) {
@@ -638,13 +638,13 @@ var ts;
             var Message = Models.Message;
         })(Application.Models || (Application.Models = {}));
         var Models = Application.Models;
-    })(ts.Application || (ts.Application = {}));
-    var Application = ts.Application;
-})(ts || (ts = {}));
-/// <reference path="../../../Models/SeleniumCommand/Model.ts" />
+    })(Cat.Application || (Cat.Application = {}));
+    var Application = Cat.Application;
+})(Cat || (Cat = {}));
+/// <reference path="../../SeleniumCommand/Model.ts" />
 /// <reference path="../Model.ts" />
-var ts;
-(function (ts) {
+var Cat;
+(function (Cat) {
     (function (Application) {
         (function (Models) {
             (function (Message) {
@@ -667,14 +667,14 @@ var ts;
             var Message = Models.Message;
         })(Application.Models || (Application.Models = {}));
         var Models = Application.Models;
-    })(ts.Application || (ts.Application = {}));
-    var Application = ts.Application;
-})(ts || (ts = {}));
+    })(Cat.Application || (Cat.Application = {}));
+    var Application = Cat.Application;
+})(Cat || (Cat = {}));
 /// <reference path="../../SeleniumCommand/Repository.ts" />
 /// <reference path="../Repository.ts" />
 /// <reference path="./Model.ts" />
-var ts;
-(function (ts) {
+var Cat;
+(function (Cat) {
     (function (Application) {
         (function (Models) {
             (function (Message) {
@@ -702,16 +702,16 @@ var ts;
             var Message = Models.Message;
         })(Application.Models || (Application.Models = {}));
         var Models = Application.Models;
-    })(ts.Application || (ts.Application = {}));
-    var Application = ts.Application;
-})(ts || (ts = {}));
+    })(Cat.Application || (Cat.Application = {}));
+    var Application = Cat.Application;
+})(Cat || (Cat = {}));
 /// <reference path="./AddCommand/Repository.ts" />
 /// <reference path="./PlayCommand/Repository.ts" />
 /// <reference path="./PlayCommandList/Repository.ts" />
 /// <reference path="./PlaySeleniumCommandExecute/Repository.ts" />
 /// <reference path="./PlaySeleniumCommandResult/Repository.ts" />
-var ts;
-(function (ts) {
+var Cat;
+(function (Cat) {
     (function (Application) {
         (function (Models) {
             (function (Message) {
@@ -745,14 +745,14 @@ var ts;
             var Message = Models.Message;
         })(Application.Models || (Application.Models = {}));
         var Models = Application.Models;
-    })(ts.Application || (ts.Application = {}));
-    var Application = ts.Application;
-})(ts || (ts = {}));
+    })(Cat.Application || (Cat.Application = {}));
+    var Application = Cat.Application;
+})(Cat || (Cat = {}));
 /// <reference path="../../DefinitelyTyped/es6-promises/es6-promises.d.ts" />
 /// <reference path="../../DefinitelyTyped/chrome/chrome.d.ts" />
 /// <reference path="../Models/Message/PlaySeleniumCommandResult/Repository.ts" />
-var ts;
-(function (ts) {
+var Cat;
+(function (Cat) {
     (function (Application) {
         (function (Services) {
             var TabManager = (function () {
@@ -883,12 +883,12 @@ var ts;
             Services.TabManager = TabManager;
         })(Application.Services || (Application.Services = {}));
         var Services = Application.Services;
-    })(ts.Application || (ts.Application = {}));
-    var Application = ts.Application;
-})(ts || (ts = {}));
+    })(Cat.Application || (Cat.Application = {}));
+    var Application = Cat.Application;
+})(Cat || (Cat = {}));
 /// <reference path="../../../DefinitelyTyped/es6-promises/es6-promises.d.ts" />
-var ts;
-(function (ts) {
+var Cat;
+(function (Cat) {
     (function (Application) {
         (function (Services) {
             (function (Selenium) {
@@ -973,16 +973,16 @@ var ts;
             var Selenium = Services.Selenium;
         })(Application.Services || (Application.Services = {}));
         var Services = Application.Services;
-    })(ts.Application || (ts.Application = {}));
-    var Application = ts.Application;
-})(ts || (ts = {}));
+    })(Cat.Application || (Cat.Application = {}));
+    var Application = Cat.Application;
+})(Cat || (Cat = {}));
 /// <reference path="../../../Models/CommandList/Model.ts" />
 /// <reference path="../../Models/Message/PlaySeleniumCommandExecute/Repository.ts" />
 /// <reference path="../../Models/Message/Dispatcher.ts" />
 /// <reference path="../TabManager.ts" />
 /// <reference path="./Base.ts" />
-var ts;
-(function (ts) {
+var Cat;
+(function (Cat) {
     (function (Application) {
         (function (Services) {
             (function (Selenium) {
@@ -1036,12 +1036,12 @@ var ts;
             var Selenium = Services.Selenium;
         })(Application.Services || (Application.Services = {}));
         var Services = Application.Services;
-    })(ts.Application || (ts.Application = {}));
-    var Application = ts.Application;
-})(ts || (ts = {}));
+    })(Cat.Application || (Cat.Application = {}));
+    var Application = Cat.Application;
+})(Cat || (Cat = {}));
 /// <reference path="../../../Models/CommandList/Model.ts" />
-var ts;
-(function (ts) {
+var Cat;
+(function (Cat) {
     (function (Application) {
         (function (Models) {
             (function (CommandGrid) {
@@ -1054,27 +1054,27 @@ var ts;
                         var commands = this.getList().filter(function (command) {
                             return !!command.type;
                         });
-                        var commandList = new ts.Models.CommandList.Model(commands);
+                        var commandList = new Cat.Models.CommandList.Model(commands);
                         return commandList;
                     };
                     return Model;
-                })(ts.Base.EntityList.Model);
+                })(Cat.Base.EntityList.Model);
                 CommandGrid.Model = Model;
             })(Models.CommandGrid || (Models.CommandGrid = {}));
             var CommandGrid = Models.CommandGrid;
         })(Application.Models || (Application.Models = {}));
         var Models = Application.Models;
-    })(ts.Application || (ts.Application = {}));
-    var Application = ts.Application;
-})(ts || (ts = {}));
+    })(Cat.Application || (Cat.Application = {}));
+    var Application = Cat.Application;
+})(Cat || (Cat = {}));
 /// <reference path="../../DefinitelyTyped/angularjs/angular.d.ts" />
 /// <reference path="../Models/Message/AddCommand/Model.ts" />
 /// <reference path="../Models/Message/Dispatcher.ts" />
 /// <reference path="../Services/TabManager.ts" />
 /// <reference path="../Services/Selenium/Sender.ts" />
 /// <reference path="../Models/CommandGrid/Model.ts" />
-var ts;
-(function (ts) {
+var Cat;
+(function (Cat) {
     (function (Application) {
         (function (Controllers) {
             (function (Autopilot) {
@@ -1091,7 +1091,7 @@ var ts;
                             seleniumSender.interval = parseInt($scope.playSpeed);
                         };
                         $scope.addCommand = function () {
-                            $scope.commandGrid.add(new ts.Models.Command.Model());
+                            $scope.commandGrid.add(new Cat.Models.Command.Model());
                         };
                         $scope.deleteCommand = function (command) {
                             $scope.commandGrid.remove(command);
@@ -1118,7 +1118,7 @@ var ts;
                                     $scope.$apply(function () {
                                         if (!$scope.commandGrid.getList().length) {
                                             $scope.baseURL = tabManager.getTabURL();
-                                            $scope.commandGrid.add(new ts.Models.Command.Model('open', '', $scope.baseURL));
+                                            $scope.commandGrid.add(new Cat.Models.Command.Model('open', '', $scope.baseURL));
                                         }
                                         $scope.commandGrid.add(message.command);
                                     });
@@ -1133,13 +1133,13 @@ var ts;
             var Autopilot = Controllers.Autopilot;
         })(Application.Controllers || (Application.Controllers = {}));
         var Controllers = Application.Controllers;
-    })(ts.Application || (ts.Application = {}));
-    var Application = ts.Application;
-})(ts || (ts = {}));
+    })(Cat.Application || (Cat.Application = {}));
+    var Application = Cat.Application;
+})(Cat || (Cat = {}));
 /// <reference path="../../DefinitelyTyped/es6-promises/es6-promises.d.ts" />
 /// <reference path="../../DefinitelyTyped/chrome/chrome.d.ts" />
-var ts;
-(function (ts) {
+var Cat;
+(function (Cat) {
     (function (Application) {
         (function (Services) {
             var InjectScripts = (function () {
@@ -1179,11 +1179,11 @@ var ts;
             Services.InjectScripts = InjectScripts;
         })(Application.Services || (Application.Services = {}));
         var Services = Application.Services;
-    })(ts.Application || (ts.Application = {}));
-    var Application = ts.Application;
-})(ts || (ts = {}));
-var ts;
-(function (ts) {
+    })(Cat.Application || (Cat.Application = {}));
+    var Application = Cat.Application;
+})(Cat || (Cat = {}));
+var Cat;
+(function (Cat) {
     (function (Application) {
         (function (Services) {
             var Config = (function () {
@@ -1213,9 +1213,9 @@ var ts;
             Services.Config = Config;
         })(Application.Services || (Application.Services = {}));
         var Services = Application.Services;
-    })(ts.Application || (ts.Application = {}));
-    var Application = ts.Application;
-})(ts || (ts = {}));
+    })(Cat.Application || (Cat.Application = {}));
+    var Application = Cat.Application;
+})(Cat || (Cat = {}));
 /// <reference path="DefinitelyTyped/angularjs/angular.d.ts" />
 /// <reference path="DefinitelyTyped/es6-promises/es6-promises.d.ts" />
 /// <reference path="DefinitelyTyped/chrome/chrome.d.ts" />
@@ -1236,15 +1236,15 @@ var applicationServicesSeleniumSender;
         alert([].concat(messages).join('\n'));
     };
     (new Promise(function (resolve, reject) {
-        new ts.Application.Services.TabManager(calledTabId, function (tabManager) {
-            var injectScripts = ts.Application.Services.Config.injectScripts;
-            return ts.Application.Services.InjectScripts.connect(tabManager.getTabId(), injectScripts);
+        new Cat.Application.Services.TabManager(calledTabId, function (tabManager) {
+            var injectScripts = Cat.Application.Services.Config.injectScripts;
+            return Cat.Application.Services.InjectScripts.connect(tabManager.getTabId(), injectScripts);
         }, resolve, reject);
     })).then(function (tabManager) {
         Promise.all([
             new Promise(function (resolve, reject) {
-                var file = chrome.runtime.getURL(ts.Application.Services.Config.seleniumApiXML);
-                ts.Application.Services.Selenium.Sender.loadFile(file).then(resolve).catch(reject);
+                var file = chrome.runtime.getURL(Cat.Application.Services.Config.seleniumApiXML);
+                Cat.Application.Services.Selenium.Sender.loadFile(file).then(resolve).catch(reject);
             }),
             new Promise(function (resolve) {
                 angular.element(document).ready(resolve);
@@ -1252,12 +1252,12 @@ var applicationServicesSeleniumSender;
         ]).then(function () {
             autopilotApp = angular.module('AutopilotApp', ['ui.sortable']).factory('tabManager', function () {
                 return tabManager;
-            }).service('messageDispatcher', ts.Application.Models.Message.Dispatcher).factory('seleniumSender', function (tabManager, messageDispatcher) {
-                applicationServicesSeleniumSender = new ts.Application.Services.Selenium.Sender(tabManager, messageDispatcher);
+            }).service('messageDispatcher', Cat.Application.Models.Message.Dispatcher).factory('seleniumSender', function (tabManager, messageDispatcher) {
+                applicationServicesSeleniumSender = new Cat.Application.Services.Selenium.Sender(tabManager, messageDispatcher);
                 return applicationServicesSeleniumSender;
             }).factory('commandGrid', function () {
-                return new ts.Application.Models.CommandGrid.Model();
-            }).controller('Autopilot', ts.Application.Controllers.Autopilot.Controller);
+                return new Cat.Application.Models.CommandGrid.Model();
+            }).controller('Autopilot', Cat.Application.Controllers.Autopilot.Controller);
             angular.bootstrap(document, ['AutopilotApp']);
         }).catch(catchError);
     }).catch(catchError);
