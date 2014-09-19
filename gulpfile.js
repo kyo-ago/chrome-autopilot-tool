@@ -74,8 +74,8 @@ gulp.task('watch', ['compile', 'test:init'], function() {
             .pipe(plumber())
             .pipe(typescript())
             .pipe(gulp.dest('tmp/test/'))
-            .on('end', function (done) {
-                testPowerAssert().on('end', testKarma.bind(this, done));
+            .on('end', function () {
+                testPowerAssert().on('end', testKarma.bind(this, function () {}));
             })
         ;
     });
