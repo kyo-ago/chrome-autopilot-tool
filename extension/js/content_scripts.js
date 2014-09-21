@@ -475,8 +475,8 @@ var Cat;
                     };
                 };
                 Repository.prototype.fromObject = function (commandList) {
-                    var commandListObject = _super.prototype.fromEntityList.call(this, commandList['commandList']);
-                    return new CommandList.Model(commandListObject, commandList['name'], commandList['url']);
+                    var commandListObject = _super.prototype.fromEntityList.call(this, commandList.commandList);
+                    return new CommandList.Model(commandListObject, commandList.name, commandList.url);
                 };
                 return Repository;
             })(Cat.Base.EntityList.Repository);

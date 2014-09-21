@@ -4,15 +4,15 @@
 
 "use strict";
 
-describe('Cat.Models.CommandList', () => {
+describe('Cat.Models.CommandList.Model', () => {
     it('new',() => {
         new Cat.Models.CommandList.Model();
     });
     describe('properties', () => {
         var testList = [new Cat.Models.Command.Model];
-        var commnadList = new Cat.Models.CommandList.Model(testList, 'name', 'url');
-        assert(commnadList.getList() === testList);
-        assert(commnadList.name === 'name');
-        assert(commnadList.url === 'url');
+        var target = new Cat.Models.CommandList.Model(testList, 'name', 'url');
+        assert(target.getList() === testList);
+        assert(target.name === 'name');
+        assert(target.url === 'url');
     });
 });

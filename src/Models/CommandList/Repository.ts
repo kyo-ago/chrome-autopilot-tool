@@ -15,9 +15,13 @@ module Cat.Models.CommandList {
                 'url' : commandList.url
             };
         }
-        fromObject (commandList: Object) {
-            var commandListObject = super.fromEntityList(commandList['commandList']);
-            return new Model(commandListObject, commandList['name'], commandList['url']);
+        fromObject (commandList: {
+            'commandList' : Object[]
+            'name' : string
+            'url' : string
+        }) {
+            var commandListObject = super.fromEntityList(commandList.commandList);
+            return new Model(commandListObject, commandList.name, commandList.url);
         }
     }
 }

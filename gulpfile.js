@@ -43,12 +43,6 @@ gulp.task('test:compile', function () {
         .pipe(gulp.dest('tmp/test/'))
     ;
 });
-function testKarma (done) {
-    karma.start({
-        configFile: __dirname + '/karma.conf.js',
-        singleRun: true
-    }, done);
-}
 function testPowerAssert () {
     return gulp.src(['./tmp/test/*.js', './tmp/test/test/**/*.js'])
         .pipe(espower())
@@ -56,7 +50,12 @@ function testPowerAssert () {
     ;
 }
 gulp.task('test:power-assert', testPowerAssert);
-gulp.task('test:karma', testKarma);
+gulp.task('test:karma', function (done) {
+    karma.start({
+        configFile: __dirname + '/karma.conf.js',
+        singleRun: true
+    }, done);
+});
 gulp.task('test:clean', function () {
     return gulp.src(['./tmp/**/*', './tmp/*', './tmp/'], { read: false })
         .pipe(rm())
@@ -69,14 +68,15 @@ gulp.task('test', function () {
     runSequence('test:init', 'test:karma', 'test:clean');
 });
 gulp.task('watch', ['compile', 'test:init'], function() {
+    karma.start({
+        configFile: __dirname + '/karma.conf.js'
+    });
     gulp.watch(['test/**/*.ts', 'test/*.ts']).on('change', function (file) {
         return gulp.src(file['path'].replace(__dirname + '/', ''))
             .pipe(plumber())
             .pipe(typescript())
             .pipe(gulp.dest('tmp/test/'))
-            .on('end', function () {
-                testPowerAssert().on('end', testKarma.bind(this, function () {}));
-            })
+            .on('end', testPowerAssert)
         ;
     });
     gulp.watch(['src/**/*.ts', 'src/*.ts'], ['compile']);
