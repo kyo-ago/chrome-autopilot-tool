@@ -725,15 +725,15 @@ var Cat;
                     }
                     Dispatcher.prototype.dispatch = function (message, dispatcher) {
                         if (message.name == Message.AddComment.Model.messageName) {
-                            dispatcher.MessageAddCommentModel && dispatcher.MessageAddCommentModel(this.messageAddCommentModel.fromObject(message));
+                            dispatcher.MessageAddCommentModel(this.messageAddCommentModel.fromObject(message));
                         } else if (message.name == Message.PlayCommand.Model.messageName) {
-                            dispatcher.MessagePlayCommandModel && dispatcher.MessagePlayCommandModel(this.messagePlayCommandModel.fromObject(message));
+                            dispatcher.MessagePlayCommandModel(this.messagePlayCommandModel.fromObject(message));
                         } else if (message.name == Message.PlayCommandList.Model.messageName) {
-                            dispatcher.MessagePlayCommandListModel && dispatcher.MessagePlayCommandListModel(this.messagePlayCommandListModel.fromObject(message));
+                            dispatcher.MessagePlayCommandListModel(this.messagePlayCommandListModel.fromObject(message));
                         } else if (message.name == Message.PlaySeleniumCommandExecute.Model.messageName) {
-                            dispatcher.MessagePlaySeleniumCommandExecuteModel && dispatcher.MessagePlaySeleniumCommandExecuteModel(this.messagePlaySeleniumCommandExecuteModel.fromObject(message));
+                            dispatcher.MessagePlaySeleniumCommandExecuteModel(this.messagePlaySeleniumCommandExecuteModel.fromObject(message));
                         } else if (message.name == Message.PlaySeleniumCommandResult.Model.messageName) {
-                            dispatcher.MessagePlaySeleniumCommandResultModel && dispatcher.MessagePlaySeleniumCommandResultModel(this.messagePlaySeleniumCommandResultModel.fromObject(message));
+                            dispatcher.MessagePlaySeleniumCommandResultModel(this.messagePlaySeleniumCommandResultModel.fromObject(message));
                         } else {
                             throw new Error('Invalid message: ' + JSON.stringify(message));
                         }
@@ -763,6 +763,7 @@ var Cat;
                     this.onDisconnectListeners = [];
                     this.onConnectListeners = [];
                     this.sendMessageResponseInterval = 100;
+                    this.sendMessageResponseTimeout = 1000 * 10;
                     this.closeMessage = 'Close test case?';
                     this.getTab(calledTabId).then(function (tab) {
                         _this.tab = tab;
@@ -852,6 +853,7 @@ var Cat;
                     var _this = this;
                     chrome.tabs.sendMessage(this.tab.id, message, function (result) {
                         if (!result) {
+                            throw new Error('missing result');
                             return;
                         }
                         var interval = setInterval(function () {
@@ -861,10 +863,20 @@ var Cat;
                             if (_this.tab.status !== 'complete') {
                                 return;
                             }
+                            clearTimeout(timeout);
                             clearInterval(interval);
+                            interval = 0;
                             var message = new Application.Models.Message.PlaySeleniumCommandResult.Model(result);
                             callback(message.command);
                         }, _this.sendMessageResponseInterval);
+                        var timeout = setTimeout(function () {
+                            if (!interval) {
+                                return;
+                            }
+                            clearInterval(interval);
+                            interval = 0;
+                            throw new Error('sendMessage timeout');
+                        }, _this.sendMessageResponseTimeout);
                     });
                 };
                 TabManager.prototype.onMessage = function (callback) {

@@ -10,6 +10,7 @@ module Cat.Application.Services {
         private onDisconnectListeners: Function[] = [];
         private onConnectListeners: Function[] = [];
         private sendMessageResponseInterval = 100;
+        private sendMessageResponseTimeout = 1000 * 10;
 
         constructor (
             calledTabId: string,
@@ -96,6 +97,7 @@ module Cat.Application.Services {
         sendMessage (message: Object, callback: (message: Object) => any) {
             chrome.tabs.sendMessage(this.tab.id, message, (result) => {
                 if (!result) {
+                    throw new Error('missing result');
                     return;
                 }
                 var interval = setInterval(() => {
@@ -105,10 +107,20 @@ module Cat.Application.Services {
                     if (this.tab.status !== 'complete') {
                         return;
                     }
+                    clearTimeout(timeout);
                     clearInterval(interval);
+                    interval = 0;
                     var message = new Models.Message.PlaySeleniumCommandResult.Model(result);
                     callback(message.command);
                 }, this.sendMessageResponseInterval);
+                var timeout = setTimeout(() => {
+                    if (!interval) {
+                        return;
+                    }
+                    clearInterval(interval);
+                    interval = 0;
+                    throw new Error('sendMessage timeout');
+                }, this.sendMessageResponseTimeout);
             });
         }
         onMessage (callback: (message: Object) => any) {

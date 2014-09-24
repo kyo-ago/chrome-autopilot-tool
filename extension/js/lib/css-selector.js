@@ -28,7 +28,7 @@ function getCssSelector () {
                 }
             }
             var tagName = (element.prefix ? element.prefix + ":" : "") + element.localName;
-            var pathIndex = (index ? ":nth-child(" + (index+1) + ")" : "");
+            var pathIndex = (index ? ":eq(" + (index) + ")" : "");
             paths.splice(0, 0, tagName + pathIndex);
         }
 

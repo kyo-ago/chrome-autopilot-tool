@@ -725,15 +725,15 @@ var Cat;
                     }
                     Dispatcher.prototype.dispatch = function (message, dispatcher) {
                         if (message.name == Message.AddComment.Model.messageName) {
-                            dispatcher.MessageAddCommentModel && dispatcher.MessageAddCommentModel(this.messageAddCommentModel.fromObject(message));
+                            dispatcher.MessageAddCommentModel(this.messageAddCommentModel.fromObject(message));
                         } else if (message.name == Message.PlayCommand.Model.messageName) {
-                            dispatcher.MessagePlayCommandModel && dispatcher.MessagePlayCommandModel(this.messagePlayCommandModel.fromObject(message));
+                            dispatcher.MessagePlayCommandModel(this.messagePlayCommandModel.fromObject(message));
                         } else if (message.name == Message.PlayCommandList.Model.messageName) {
-                            dispatcher.MessagePlayCommandListModel && dispatcher.MessagePlayCommandListModel(this.messagePlayCommandListModel.fromObject(message));
+                            dispatcher.MessagePlayCommandListModel(this.messagePlayCommandListModel.fromObject(message));
                         } else if (message.name == Message.PlaySeleniumCommandExecute.Model.messageName) {
-                            dispatcher.MessagePlaySeleniumCommandExecuteModel && dispatcher.MessagePlaySeleniumCommandExecuteModel(this.messagePlaySeleniumCommandExecuteModel.fromObject(message));
+                            dispatcher.MessagePlaySeleniumCommandExecuteModel(this.messagePlaySeleniumCommandExecuteModel.fromObject(message));
                         } else if (message.name == Message.PlaySeleniumCommandResult.Model.messageName) {
-                            dispatcher.MessagePlaySeleniumCommandResultModel && dispatcher.MessagePlaySeleniumCommandResultModel(this.messagePlaySeleniumCommandResultModel.fromObject(message));
+                            dispatcher.MessagePlaySeleniumCommandResultModel(this.messagePlaySeleniumCommandResultModel.fromObject(message));
                         } else {
                             throw new Error('Invalid message: ' + JSON.stringify(message));
                         }
