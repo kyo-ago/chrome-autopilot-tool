@@ -7,15 +7,15 @@
 
 module Cat.Application.Controllers.Autopilot {
     export interface Scope extends ng.IScope {
-        playAll: () => any;
-        addCommand: () => any;
-        deleteCommand: (command: Cat.Models.Command.Model) => any;
+        playAll: () => void;
+        addCommand: () => void;
+        deleteCommand: (command: Cat.Models.Command.Model) => void;
         commandGrid: Cat.Application.Models.CommandGrid.Model;
-        startRecording: () => any;
-        stopRecording: () => any;
-        changeSpeed: () => any;
-        playCurrent: () => any;
-        playStop: () => any;
+        startRecording: () => void;
+        stopRecording: () => void;
+        changeSpeed: () => void;
+        playCurrent: () => void;
+        playStop: () => void;
         recordingStatus: boolean;
         baseURL: string;
         playSpeed: string;

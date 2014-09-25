@@ -24,7 +24,7 @@ module Cat.Application.Services.Selenium {
                 this.testCase.commands.push(selCommand);
             });
         }
-        execute(command: string, args: string[], callback: (response: string, result: boolean) => any) {
+        execute(command: string, args: string[], callback: (response: string, result: boolean) => void) {
             var model = new Models.SeleniumCommand.Model(command, args);
             var message = new Models.Message.PlaySeleniumCommandExecute.Model(model);
             this.tabManager.sendMessage(this.messagePlaySeleniumCommandExecuteRepository.toObject(message), (message) => {

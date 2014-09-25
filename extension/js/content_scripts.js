@@ -724,15 +724,15 @@ var Cat;
                         this.messagePlaySeleniumCommandResultModel = new Message.PlaySeleniumCommandResult.Repository();
                     }
                     Dispatcher.prototype.dispatch = function (message, dispatcher) {
-                        if (message.name == Message.AddComment.Model.messageName) {
+                        if (message['name'] == Message.AddComment.Model.messageName) {
                             dispatcher.MessageAddCommentModel(this.messageAddCommentModel.fromObject(message));
-                        } else if (message.name == Message.PlayCommand.Model.messageName) {
+                        } else if (message['name'] == Message.PlayCommand.Model.messageName) {
                             dispatcher.MessagePlayCommandModel(this.messagePlayCommandModel.fromObject(message));
-                        } else if (message.name == Message.PlayCommandList.Model.messageName) {
+                        } else if (message['name'] == Message.PlayCommandList.Model.messageName) {
                             dispatcher.MessagePlayCommandListModel(this.messagePlayCommandListModel.fromObject(message));
-                        } else if (message.name == Message.PlaySeleniumCommandExecute.Model.messageName) {
+                        } else if (message['name'] == Message.PlaySeleniumCommandExecute.Model.messageName) {
                             dispatcher.MessagePlaySeleniumCommandExecuteModel(this.messagePlaySeleniumCommandExecuteModel.fromObject(message));
-                        } else if (message.name == Message.PlaySeleniumCommandResult.Model.messageName) {
+                        } else if (message['name'] == Message.PlaySeleniumCommandResult.Model.messageName) {
                             dispatcher.MessagePlaySeleniumCommandResultModel(this.messagePlaySeleniumCommandResultModel.fromObject(message));
                         } else {
                             throw new Error('Invalid message: ' + JSON.stringify(message));

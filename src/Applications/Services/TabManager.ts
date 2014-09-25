@@ -9,14 +9,13 @@ module Cat.Application.Services {
         private onMessageListeners: Function[] = [];
         private onDisconnectListeners: Function[] = [];
         private onConnectListeners: Function[] = [];
-        private sendMessageResponseInterval = 100;
-        private sendMessageResponseTimeout = 1000 * 10;
+        private sendMessageResponseInterval = 1000;
 
         constructor (
             calledTabId: string,
-            private initialize: (tabManager: TabManager) => Promise<any>,
-            resolve: (tabManager: TabManager) => any,
-            reject: (errorMessage: string) => any
+            private initialize: (tabManager: TabManager) => Promise<TabManager>,
+            resolve: (tabManager: TabManager) => void,
+            reject: (errorMessage: string) => void
         ) {
             this.getTab(calledTabId).then((tab: chrome.tabs.Tab) => {
                 this.tab = tab;
@@ -27,7 +26,7 @@ module Cat.Application.Services {
             }).catch(reject);
         }
         private getTab (calledTabId: string) {
-            return new Promise((resolve: (tab: chrome.tabs.Tab) => any, rejectAll: (errorMessage: string) => any) => {
+            return new Promise((resolve: (tab: chrome.tabs.Tab) => void, rejectAll: (errorMessage: string) => void) => {
                 var reject = () => {
                     rejectAll('Security Error.\ndoes not run on "chrome://" page.\n');
                 };
@@ -75,7 +74,7 @@ module Cat.Application.Services {
             });
         }
         private reloadTab () {
-            return new Promise((resolve: () => any, reject: (errorMessage: string) => any) => {
+            return new Promise((resolve: () => void, reject: (errorMessage: string) => void) => {
                 this.initialize(this).then(() => {
                     this.port = chrome.tabs.connect(this.tab.id);
                     this.onConnectListeners.forEach(listener => listener());
@@ -94,7 +93,7 @@ module Cat.Application.Services {
         postMessage (message: Object) {
             this.port.postMessage(message);
         }
-        sendMessage (message: Object, callback: (message: Object) => any) {
+        sendMessage (message: Object, callback: (message: Object) => void) {
             chrome.tabs.sendMessage(this.tab.id, message, (result) => {
                 if (!result) {
                     throw new Error('missing result');
@@ -107,30 +106,20 @@ module Cat.Application.Services {
                     if (this.tab.status !== 'complete') {
                         return;
                     }
-                    clearTimeout(timeout);
                     clearInterval(interval);
-                    interval = 0;
                     var message = new Models.Message.PlaySeleniumCommandResult.Model(result);
                     callback(message.command);
                 }, this.sendMessageResponseInterval);
-                var timeout = setTimeout(() => {
-                    if (!interval) {
-                        return;
-                    }
-                    clearInterval(interval);
-                    interval = 0;
-                    throw new Error('sendMessage timeout');
-                }, this.sendMessageResponseTimeout);
             });
         }
-        onMessage (callback: (message: Object) => any) {
+        onMessage (callback: (message: Object) => void) {
             this.onMessageListeners.push(callback);
             this.port.onMessage.addListener(callback);
         }
-        onConnect (callback: () => any) {
+        onConnect (callback: () => void) {
             this.onConnectListeners.push(callback);
         }
-        onDisconnect (callback: () => any) {
+        onDisconnect (callback: () => void) {
             this.onDisconnectListeners.push(callback);
             this.port.onDisconnect.addListener(callback);
         }

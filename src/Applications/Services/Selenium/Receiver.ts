@@ -21,7 +21,7 @@ module Cat.Application.Services.Selenium {
             });
             return 'ERROR ' + errorMessage;
         }
-        private exec (exec: () => any) {
+        private exec (exec: () => void) {
             try {
                 exec();
                 return 'OK';

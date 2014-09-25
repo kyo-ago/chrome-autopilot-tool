@@ -18,18 +18,18 @@ var applicationServicesSeleniumSender: Cat.Application.Services.Selenium.Sender;
     var catchError = (messages: string[]) => {
         alert([].concat(messages).join('\n'));
     };
-    (new Promise((resolve: (tabManager: Cat.Application.Services.TabManager) => any, reject: (errorMessage: string) => any) => {
+    (new Promise<Cat.Application.Services.TabManager>((resolve: (tabManager: Cat.Application.Services.TabManager) => void, reject: (errorMessage: string) => void) => {
         new Cat.Application.Services.TabManager(calledTabId, (tabManager: Cat.Application.Services.TabManager) => {
             var injectScripts = Cat.Application.Services.Config.injectScripts;
             return Cat.Application.Services.InjectScripts.connect(tabManager.getTabId(), injectScripts);
         }, resolve, reject);
     })).then((tabManager: Cat.Application.Services.TabManager) => {
-        Promise.all([
-            new Promise((resolve: () => any, reject: (errorMessage: string) => any) => {
+        Promise.all<void>([
+            new Promise<void>((resolve: () => void, reject: (errorMessage: string) => void) => {
                 var file = chrome.runtime.getURL(Cat.Application.Services.Config.seleniumApiXML);
                 Cat.Application.Services.Selenium.Sender.loadFile(file).then(resolve).catch(reject);
             }),
-            new Promise((resolve: () => any) => {
+            new Promise<void>((resolve: () => void) => {
                 angular.element(document).ready(resolve);
             })
         ]).then(() => {

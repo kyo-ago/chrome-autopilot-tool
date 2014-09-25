@@ -38,7 +38,7 @@ var globalPort: chrome.runtime.Port;
             var addCommentMessage = messageAddCommentRepository.fromObject(message);
             port.postMessage(messageAddCommentRepository.toObject(addCommentMessage));
         };
-        chrome.runtime.onMessage.addListener((message: Object, sender: chrome.runtime.MessageSender, sendResponse: (message: Object) => any) => {
+        chrome.runtime.onMessage.addListener((message: Object, sender: chrome.runtime.MessageSender, sendResponse: (message: Object) => void) => {
             messageDispatcher.dispatch(message, {
                 MessagePlaySeleniumCommandExecuteModel : (message: Cat.Application.Models.Message.PlaySeleniumCommandExecute.Model) => {
                     Recorder.deregister(recorderObserver, window);

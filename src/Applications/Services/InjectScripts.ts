@@ -5,7 +5,7 @@ module Cat.Application.Services {
     export class InjectScripts {
         static connect(tabid: number, injectScripts_: string[]) {
             var injectScripts = injectScripts_.slice();
-            return new Promise((resolve: () => any) => {
+            return new Promise((resolve: () => void) => {
                 var executeScript = (injectScript: string) => {
                     //コードをxhrでキャッシュしてfileではなく、codeで渡してユーザ動作をブロックしつつ実行できないか
                     chrome.tabs.executeScript(tabid, {

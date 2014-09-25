@@ -8,7 +8,7 @@ module Cat.Application.Services.Selenium {
         testCase: any;
         interval: number = 1;
 
-        constructor (callback: () => any) {
+        constructor (callback: () => void) {
             // for selenium-runner
             (<any>window).getBrowser = () => {
                 return {
@@ -45,7 +45,7 @@ module Cat.Application.Services.Selenium {
             return this.interval;
         }
         start () {
-            return new Promise((resolve: () => any) => {
+            return new Promise((resolve: () => void) => {
                 this.currentTest = new (<any>window).IDETestLoop(this.commandFactory, {
                     'testComplete' : resolve
                 });
@@ -60,7 +60,7 @@ module Cat.Application.Services.Selenium {
 
         private static errorMessage = 'selenium command xml load failed.\n';
         static loadFile (file: string) {
-            return new Promise((resolve: () => any, reject: (errorMessage: string) => any) => {
+            return new Promise<void>((resolve: () => void, reject: (errorMessage: string) => void) => {
                 var xhr = new XMLHttpRequest();
                 xhr.open('GET', file);
                 xhr.onreadystatechange = () => {

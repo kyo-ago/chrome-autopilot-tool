@@ -724,15 +724,15 @@ var Cat;
                         this.messagePlaySeleniumCommandResultModel = new Message.PlaySeleniumCommandResult.Repository();
                     }
                     Dispatcher.prototype.dispatch = function (message, dispatcher) {
-                        if (message.name == Message.AddComment.Model.messageName) {
+                        if (message['name'] == Message.AddComment.Model.messageName) {
                             dispatcher.MessageAddCommentModel(this.messageAddCommentModel.fromObject(message));
-                        } else if (message.name == Message.PlayCommand.Model.messageName) {
+                        } else if (message['name'] == Message.PlayCommand.Model.messageName) {
                             dispatcher.MessagePlayCommandModel(this.messagePlayCommandModel.fromObject(message));
-                        } else if (message.name == Message.PlayCommandList.Model.messageName) {
+                        } else if (message['name'] == Message.PlayCommandList.Model.messageName) {
                             dispatcher.MessagePlayCommandListModel(this.messagePlayCommandListModel.fromObject(message));
-                        } else if (message.name == Message.PlaySeleniumCommandExecute.Model.messageName) {
+                        } else if (message['name'] == Message.PlaySeleniumCommandExecute.Model.messageName) {
                             dispatcher.MessagePlaySeleniumCommandExecuteModel(this.messagePlaySeleniumCommandExecuteModel.fromObject(message));
-                        } else if (message.name == Message.PlaySeleniumCommandResult.Model.messageName) {
+                        } else if (message['name'] == Message.PlaySeleniumCommandResult.Model.messageName) {
                             dispatcher.MessagePlaySeleniumCommandResultModel(this.messagePlaySeleniumCommandResultModel.fromObject(message));
                         } else {
                             throw new Error('Invalid message: ' + JSON.stringify(message));
@@ -762,8 +762,7 @@ var Cat;
                     this.onMessageListeners = [];
                     this.onDisconnectListeners = [];
                     this.onConnectListeners = [];
-                    this.sendMessageResponseInterval = 100;
-                    this.sendMessageResponseTimeout = 1000 * 10;
+                    this.sendMessageResponseInterval = 1000;
                     this.closeMessage = 'Close test case?';
                     this.getTab(calledTabId).then(function (tab) {
                         _this.tab = tab;
@@ -863,20 +862,10 @@ var Cat;
                             if (_this.tab.status !== 'complete') {
                                 return;
                             }
-                            clearTimeout(timeout);
                             clearInterval(interval);
-                            interval = 0;
                             var message = new Application.Models.Message.PlaySeleniumCommandResult.Model(result);
                             callback(message.command);
                         }, _this.sendMessageResponseInterval);
-                        var timeout = setTimeout(function () {
-                            if (!interval) {
-                                return;
-                            }
-                            clearInterval(interval);
-                            interval = 0;
-                            throw new Error('sendMessage timeout');
-                        }, _this.sendMessageResponseTimeout);
                     });
                 };
                 TabManager.prototype.onMessage = function (callback) {
