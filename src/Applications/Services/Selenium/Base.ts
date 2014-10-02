@@ -59,7 +59,7 @@ module Cat.Application.Services.Selenium {
         }
 
         private static errorMessage = 'selenium command xml load failed.\n';
-        static loadFile (file: string) {
+        static setApiDocs (file: string) {
             return new Promise<void>((resolve: () => void, reject: (errorMessage: string) => void) => {
                 var xhr = new XMLHttpRequest();
                 xhr.open('GET', file);

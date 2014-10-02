@@ -25,7 +25,7 @@
     <ul class="commandGrid" ui-sortable ng-model="commandGrid.list">
         <li ng-repeat="command in commandGrid.getList()">
             <span class="draggable">〓</span>
-            <input class="type" type="text" ng-model="command.type">
+            <select class="target" ng-model="command.type" ng-options="option for option in selectList"></select>
             <input class="target" type="text" ng-model="command.target">
             <input class="value" type="text" ng-model="command.value">
             <input class="delete" type="button" value="del" ng-click="deleteCommand(command)">

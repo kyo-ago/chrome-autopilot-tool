@@ -54,6 +54,8 @@ table {
   width: 20%; }
 .commandGrid .target {
   width: 30%; }
+.commandGrid select.target {
+  width: 28%; }
 .commandGrid .value {
   width: 30%; }
 .commandGrid .delete {

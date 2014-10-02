@@ -887,6 +887,47 @@ var Cat;
     })(Cat.Application || (Cat.Application = {}));
     var Application = Cat.Application;
 })(Cat || (Cat = {}));
+/// <reference path="../../DefinitelyTyped/es6-promises/es6-promises.d.ts" />
+var Cat;
+(function (Cat) {
+    (function (Application) {
+        (function (Services) {
+            var CommandSelectList = (function () {
+                function CommandSelectList() {
+                }
+                CommandSelectList.prototype.load = function (file) {
+                    var _this = this;
+                    return new Promise(function (resolve, reject) {
+                        var xhr = new XMLHttpRequest();
+                        xhr.open('GET', file);
+                        xhr.onreadystatechange = function () {
+                            if (xhr.readyState !== 4) {
+                                return;
+                            }
+                            if (xhr.status !== 0 && xhr.status !== 200) {
+                                return reject(CommandSelectList.errorMessage + file);
+                            }
+                            _this.documentElement = xhr.responseXML.documentElement;
+                            resolve();
+                        };
+                        xhr.send(null);
+                    });
+                };
+                CommandSelectList.prototype.getDocRoot = function () {
+                    return this.documentElement;
+                };
+                CommandSelectList.prototype.gets = function () {
+                    return [].slice.call(this.documentElement.querySelectorAll('function'));
+                };
+                CommandSelectList.errorMessage = 'command list xml load failed.\n';
+                return CommandSelectList;
+            })();
+            Services.CommandSelectList = CommandSelectList;
+        })(Application.Services || (Application.Services = {}));
+        var Services = Application.Services;
+    })(Cat.Application || (Cat.Application = {}));
+    var Application = Cat.Application;
+})(Cat || (Cat = {}));
 /// <reference path="../../../DefinitelyTyped/es6-promises/es6-promises.d.ts" />
 var Cat;
 (function (Cat) {
@@ -949,7 +990,7 @@ var Cat;
                         });
                     };
 
-                    Base.loadFile = function (file) {
+                    Base.setApiDocs = function (file) {
                         return new Promise(function (resolve, reject) {
                             var xhr = new XMLHttpRequest();
                             xhr.open('GET', file);
@@ -1072,6 +1113,7 @@ var Cat;
 /// <reference path="../Models/Message/AddCommand/Model.ts" />
 /// <reference path="../Models/Message/Dispatcher.ts" />
 /// <reference path="../Services/TabManager.ts" />
+/// <reference path="../Services/CommandSelectList.ts" />
 /// <reference path="../Services/Selenium/Sender.ts" />
 /// <reference path="../Models/CommandGrid/Model.ts" />
 var Cat;
@@ -1080,7 +1122,7 @@ var Cat;
         (function (Controllers) {
             (function (Autopilot) {
                 var Controller = (function () {
-                    function Controller($scope, tabManager, commandGrid, messageDispatcher, seleniumSender) {
+                    function Controller($scope, tabManager, commandGrid, messageDispatcher, seleniumSender, commandSelectList) {
                         $scope.commandGrid = commandGrid;
                         $scope.playSpeed = '100';
 
@@ -1110,6 +1152,12 @@ var Cat;
                         $scope.playStop = function () {
                             //@TODO
                         };
+                        $scope.selectList = commandSelectList.gets().map(function (elem) {
+                            return elem.getAttribute('name');
+                        });
+                        this.bindTabManager($scope, tabManager, messageDispatcher);
+                    }
+                    Controller.prototype.bindTabManager = function ($scope, tabManager, messageDispatcher) {
                         tabManager.onMessage(function (message) {
                             messageDispatcher.dispatch(message, {
                                 MessageAddCommentModel: function (message) {
@@ -1126,7 +1174,7 @@ var Cat;
                                 }
                             });
                         });
-                    }
+                    };
                     return Controller;
                 })();
                 Autopilot.Controller = Controller;
@@ -1242,10 +1290,14 @@ var applicationServicesSeleniumSender;
             return Cat.Application.Services.InjectScripts.connect(tabManager.getTabId(), injectScripts);
         }, resolve, reject);
     })).then(function (tabManager) {
+        var commandSelectList = new Cat.Application.Services.CommandSelectList();
+        var seleniumApiXMLFile = chrome.runtime.getURL(Cat.Application.Services.Config.seleniumApiXML);
         Promise.all([
             new Promise(function (resolve, reject) {
-                var file = chrome.runtime.getURL(Cat.Application.Services.Config.seleniumApiXML);
-                Cat.Application.Services.Selenium.Sender.loadFile(file).then(resolve).catch(reject);
+                Cat.Application.Services.Selenium.Sender.setApiDocs(seleniumApiXMLFile).then(resolve).catch(reject);
+            }),
+            new Promise(function (resolve, reject) {
+                commandSelectList.load(seleniumApiXMLFile).then(resolve).catch(reject);
             }),
             new Promise(function (resolve) {
                 angular.element(document).ready(resolve);
@@ -1253,6 +1305,8 @@ var applicationServicesSeleniumSender;
         ]).then(function () {
             autopilotApp = angular.module('AutopilotApp', ['ui.sortable']).factory('tabManager', function () {
                 return tabManager;
+            }).factory('commandSelectList', function () {
+                return commandSelectList;
             }).service('messageDispatcher', Cat.Application.Models.Message.Dispatcher).factory('seleniumSender', function (tabManager, messageDispatcher) {
                 applicationServicesSeleniumSender = new Cat.Application.Services.Selenium.Sender(tabManager, messageDispatcher);
                 return applicationServicesSeleniumSender;

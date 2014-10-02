@@ -24,10 +24,14 @@ var applicationServicesSeleniumSender: Cat.Application.Services.Selenium.Sender;
             return Cat.Application.Services.InjectScripts.connect(tabManager.getTabId(), injectScripts);
         }, resolve, reject);
     })).then((tabManager: Cat.Application.Services.TabManager) => {
+        var commandSelectList = new Cat.Application.Services.CommandSelectList();
+        var seleniumApiXMLFile = chrome.runtime.getURL(Cat.Application.Services.Config.seleniumApiXML);
         Promise.all<void>([
             new Promise<void>((resolve: () => void, reject: (errorMessage: string) => void) => {
-                var file = chrome.runtime.getURL(Cat.Application.Services.Config.seleniumApiXML);
-                Cat.Application.Services.Selenium.Sender.loadFile(file).then(resolve).catch(reject);
+                Cat.Application.Services.Selenium.Sender.setApiDocs(seleniumApiXMLFile).then(resolve).catch(reject);
+            }),
+            new Promise<void>((resolve: () => void, reject: (errorMessage: string) => void) => {
+                commandSelectList.load(seleniumApiXMLFile).then(resolve).catch(reject);
             }),
             new Promise<void>((resolve: () => void) => {
                 angular.element(document).ready(resolve);
@@ -36,6 +40,9 @@ var applicationServicesSeleniumSender: Cat.Application.Services.Selenium.Sender;
             autopilotApp = angular.module('AutopilotApp', ['ui.sortable'])
                 .factory('tabManager', () => {
                     return tabManager;
+                })
+                .factory('commandSelectList', () => {
+                    return commandSelectList;
                 })
                 .service('messageDispatcher', Cat.Application.Models.Message.Dispatcher)
                 .factory('seleniumSender', (tabManager: Cat.Application.Services.TabManager, messageDispatcher: Cat.Application.Models.Message.Dispatcher) => {

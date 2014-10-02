@@ -2,6 +2,7 @@
 /// <reference path="../Models/Message/AddCommand/Model.ts" />
 /// <reference path="../Models/Message/Dispatcher.ts" />
 /// <reference path="../Services/TabManager.ts" />
+/// <reference path="../Services/CommandSelectList.ts" />
 /// <reference path="../Services/Selenium/Sender.ts" />
 /// <reference path="../Models/CommandGrid/Model.ts" />
 
@@ -19,6 +20,7 @@ module Cat.Application.Controllers.Autopilot {
         recordingStatus: boolean;
         baseURL: string;
         playSpeed: string;
+        selectList: string[];
     }
     export class Controller {
         constructor(
@@ -26,7 +28,8 @@ module Cat.Application.Controllers.Autopilot {
             tabManager: Services.TabManager,
             commandGrid: Cat.Application.Models.CommandGrid.Model,
             messageDispatcher: Models.Message.Dispatcher,
-            seleniumSender: Cat.Application.Services.Selenium.Sender
+            seleniumSender: Cat.Application.Services.Selenium.Sender,
+            commandSelectList: Cat.Application.Services.CommandSelectList
         ) {
             $scope.commandGrid = commandGrid;
             $scope.playSpeed = '100';
@@ -57,6 +60,14 @@ module Cat.Application.Controllers.Autopilot {
             $scope.playStop = () => {
                 //@TODO
             };
+            $scope.selectList = commandSelectList.gets().map((elem) => elem.getAttribute('name'));
+            this.bindTabManager($scope, tabManager, messageDispatcher);
+        }
+        private bindTabManager (
+            $scope: Scope,
+            tabManager: Services.TabManager,
+            messageDispatcher: Models.Message.Dispatcher
+        ) {
             tabManager.onMessage((message: Object) => {
                 messageDispatcher.dispatch(message, {
                     MessageAddCommentModel : (message: Models.Message.AddComment.Model) => {

@@ -834,7 +834,7 @@ var Cat;
                         });
                     };
 
-                    Base.loadFile = function (file) {
+                    Base.setApiDocs = function (file) {
                         return new Promise(function (resolve, reject) {
                             var xhr = new XMLHttpRequest();
                             xhr.open('GET', file);

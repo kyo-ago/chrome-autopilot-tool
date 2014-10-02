@@ -13,7 +13,7 @@ module Cat.Application.Services {
 
         constructor (
             calledTabId: string,
-            private initialize: (tabManager: TabManager) => Promise<TabManager>,
+            private initialize: (tabManager: TabManager) => Promise<void>,
             resolve: (tabManager: TabManager) => void,
             reject: (errorMessage: string) => void
         ) {
