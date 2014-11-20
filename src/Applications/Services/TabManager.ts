@@ -1,5 +1,3 @@
-/// <reference path="../../DefinitelyTyped/es6-promises/es6-promises.d.ts" />
-/// <reference path="../../DefinitelyTyped/chrome/chrome.d.ts" />
 /// <reference path="../Models/Message/PlaySeleniumCommandResult/Repository.ts" />
 
 module Cat.Application.Services {

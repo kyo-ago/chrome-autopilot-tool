@@ -1,4 +1,4 @@
-/// <reference path="DefinitelyTyped/chrome/chrome.d.ts" />
+/// <reference path="_loadtsd.ts" />
 (() => {
     if ('undefined' === typeof chrome) {
         return;

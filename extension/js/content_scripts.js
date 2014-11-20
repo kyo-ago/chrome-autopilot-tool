@@ -1,5 +1,6 @@
 var Cat;
 (function (Cat) {
+    var UUID;
     (function (_UUID) {
         var InvalidUUIDFormat = (function () {
             function InvalidUUIDFormat() {
@@ -8,7 +9,7 @@ var Cat;
         })();
         var UUID = (function () {
             function UUID(id) {
-                if (typeof id === "undefined") { id = undefined; }
+                if (id === void 0) { id = undefined; }
                 if (!id) {
                     this.uuid = [
                         this.S4(),
@@ -35,11 +36,9 @@ var Cat;
             UUID.prototype.toString = function () {
                 return this.uuid;
             };
-
             UUID.fromString = function (id) {
                 return new UUID(id);
             };
-
             UUID.prototype.S4 = function () {
                 var rand = 1 + Math.random();
                 return ((rand * 0x10000) | 0).toString(16).substring(1);
@@ -47,16 +46,16 @@ var Cat;
             return UUID;
         })();
         _UUID.UUID = UUID;
-    })(Cat.UUID || (Cat.UUID = {}));
-    var UUID = Cat.UUID;
+    })(UUID = Cat.UUID || (Cat.UUID = {}));
 })(Cat || (Cat = {}));
 /// <reference path="UUID" />
 var Cat;
 (function (Cat) {
+    var Base;
     (function (Base) {
         var Identity = (function () {
             function Identity(uuid) {
-                if (typeof uuid === "undefined") { uuid = new Cat.UUID.UUID; }
+                if (uuid === void 0) { uuid = new Cat.UUID.UUID; }
                 this.uuid = uuid;
             }
             Identity.prototype.eq = function (e) {
@@ -65,8 +64,7 @@ var Cat;
             return Identity;
         })();
         Base.Identity = Identity;
-    })(Cat.Base || (Cat.Base = {}));
-    var Base = Cat.Base;
+    })(Base = Cat.Base || (Cat.Base = {}));
 })(Cat || (Cat = {}));
 /// <reference path="../Identity" />
 var __extends = this.__extends || function (d, b) {
@@ -77,12 +75,14 @@ var __extends = this.__extends || function (d, b) {
 };
 var Cat;
 (function (Cat) {
+    var Base;
     (function (Base) {
+        var Entity;
         (function (Entity) {
             var Model = (function (_super) {
                 __extends(Model, _super);
                 function Model(identity) {
-                    if (typeof identity === "undefined") { identity = new Base.Identity(new Cat.UUID.UUID); }
+                    if (identity === void 0) { identity = new Base.Identity(new Cat.UUID.UUID); }
                     _super.call(this, identity.uuid);
                     this.identity = identity;
                 }
@@ -92,22 +92,22 @@ var Cat;
                 return Model;
             })(Base.Identity);
             Entity.Model = Model;
-        })(Base.Entity || (Base.Entity = {}));
-        var Entity = Base.Entity;
-    })(Cat.Base || (Cat.Base = {}));
-    var Base = Cat.Base;
+        })(Entity = Base.Entity || (Base.Entity = {}));
+    })(Base = Cat.Base || (Cat.Base = {}));
 })(Cat || (Cat = {}));
 /// <reference path="../../Base/Entity/Model.ts" />
 var Cat;
 (function (Cat) {
+    var Models;
     (function (Models) {
+        var Command;
         (function (Command) {
             var Model = (function (_super) {
                 __extends(Model, _super);
                 function Model(type, target, value) {
-                    if (typeof type === "undefined") { type = ''; }
-                    if (typeof target === "undefined") { target = ''; }
-                    if (typeof value === "undefined") { value = ''; }
+                    if (type === void 0) { type = ''; }
+                    if (target === void 0) { target = ''; }
+                    if (value === void 0) { value = ''; }
                     _super.call(this);
                     this.type = type;
                     this.target = target;
@@ -116,22 +116,23 @@ var Cat;
                 return Model;
             })(Cat.Base.Entity.Model);
             Command.Model = Model;
-        })(Models.Command || (Models.Command = {}));
-        var Command = Models.Command;
-    })(Cat.Models || (Cat.Models = {}));
-    var Models = Cat.Models;
+        })(Command = Models.Command || (Models.Command = {}));
+    })(Models = Cat.Models || (Cat.Models = {}));
 })(Cat || (Cat = {}));
 /// <reference path="../../../Base/Entity/Model.ts" />
 var Cat;
 (function (Cat) {
+    var Application;
     (function (Application) {
+        var Models;
         (function (Models) {
+            var SeleniumCommand;
             (function (SeleniumCommand) {
                 var Model = (function (_super) {
                     __extends(Model, _super);
                     function Model(type, args) {
-                        if (typeof type === "undefined") { type = ''; }
-                        if (typeof args === "undefined") { args = []; }
+                        if (type === void 0) { type = ''; }
+                        if (args === void 0) { args = []; }
                         _super.call(this);
                         this.type = type;
                         this.args = args;
@@ -139,19 +140,18 @@ var Cat;
                     return Model;
                 })(Cat.Base.Entity.Model);
                 SeleniumCommand.Model = Model;
-            })(Models.SeleniumCommand || (Models.SeleniumCommand = {}));
-            var SeleniumCommand = Models.SeleniumCommand;
-        })(Application.Models || (Application.Models = {}));
-        var Models = Application.Models;
-    })(Cat.Application || (Cat.Application = {}));
-    var Application = Cat.Application;
+            })(SeleniumCommand = Models.SeleniumCommand || (Models.SeleniumCommand = {}));
+        })(Models = Application.Models || (Application.Models = {}));
+    })(Application = Cat.Application || (Cat.Application = {}));
 })(Cat || (Cat = {}));
 /// <reference path="./Model.ts" />
 /// <reference path="../../Base/Entity/Repository.ts" />
 /// <reference path="./Model.ts" />
 var Cat;
 (function (Cat) {
+    var Models;
     (function (Models) {
+        var Command;
         (function (Command) {
             var Repository = (function () {
                 function Repository() {
@@ -169,16 +169,17 @@ var Cat;
                 return Repository;
             })();
             Command.Repository = Repository;
-        })(Models.Command || (Models.Command = {}));
-        var Command = Models.Command;
-    })(Cat.Models || (Cat.Models = {}));
-    var Models = Cat.Models;
+        })(Command = Models.Command || (Models.Command = {}));
+    })(Models = Cat.Models || (Cat.Models = {}));
 })(Cat || (Cat = {}));
 /// <reference path="../../../Base/Entity/Model.ts" />
 var Cat;
 (function (Cat) {
+    var Application;
     (function (Application) {
+        var Models;
         (function (Models) {
+            var Message;
             (function (Message) {
                 var Model = (function (_super) {
                     __extends(Model, _super);
@@ -188,19 +189,19 @@ var Cat;
                     return Model;
                 })(Cat.Base.Entity.Model);
                 Message.Model = Model;
-            })(Models.Message || (Models.Message = {}));
-            var Message = Models.Message;
-        })(Application.Models || (Application.Models = {}));
-        var Models = Application.Models;
-    })(Cat.Application || (Cat.Application = {}));
-    var Application = Cat.Application;
+            })(Message = Models.Message || (Models.Message = {}));
+        })(Models = Application.Models || (Application.Models = {}));
+    })(Application = Cat.Application || (Cat.Application = {}));
 })(Cat || (Cat = {}));
 /// <reference path="../../../Base/Entity/Repository.ts" />
 /// <reference path="./Model.ts" />
 var Cat;
 (function (Cat) {
+    var Application;
     (function (Application) {
+        var Models;
         (function (Models) {
+            var Message;
             (function (Message) {
                 var Repository = (function () {
                     function Repository() {
@@ -214,20 +215,21 @@ var Cat;
                     return Repository;
                 })();
                 Message.Repository = Repository;
-            })(Models.Message || (Models.Message = {}));
-            var Message = Models.Message;
-        })(Application.Models || (Application.Models = {}));
-        var Models = Application.Models;
-    })(Cat.Application || (Cat.Application = {}));
-    var Application = Cat.Application;
+            })(Message = Models.Message || (Models.Message = {}));
+        })(Models = Application.Models || (Application.Models = {}));
+    })(Application = Cat.Application || (Cat.Application = {}));
 })(Cat || (Cat = {}));
 /// <reference path="../../../../Models/Command/Model.ts" />
 /// <reference path="../Model.ts" />
 var Cat;
 (function (Cat) {
+    var Application;
     (function (Application) {
+        var Models;
         (function (Models) {
+            var Message;
             (function (Message) {
+                var AddComment;
                 (function (AddComment) {
                     var Model = (function (_super) {
                         __extends(Model, _super);
@@ -240,23 +242,23 @@ var Cat;
                         return Model;
                     })(Message.Model);
                     AddComment.Model = Model;
-                })(Message.AddComment || (Message.AddComment = {}));
-                var AddComment = Message.AddComment;
-            })(Models.Message || (Models.Message = {}));
-            var Message = Models.Message;
-        })(Application.Models || (Application.Models = {}));
-        var Models = Application.Models;
-    })(Cat.Application || (Cat.Application = {}));
-    var Application = Cat.Application;
+                })(AddComment = Message.AddComment || (Message.AddComment = {}));
+            })(Message = Models.Message || (Models.Message = {}));
+        })(Models = Application.Models || (Application.Models = {}));
+    })(Application = Cat.Application || (Cat.Application = {}));
 })(Cat || (Cat = {}));
 /// <reference path="../../../../Models/Command/Repository.ts" />
 /// <reference path="../Repository.ts" />
 /// <reference path="./Model.ts" />
 var Cat;
 (function (Cat) {
+    var Application;
     (function (Application) {
+        var Models;
         (function (Models) {
+            var Message;
             (function (Message) {
+                var AddComment;
                 (function (AddComment) {
                     var Repository = (function (_super) {
                         __extends(Repository, _super);
@@ -281,22 +283,22 @@ var Cat;
                         return Repository;
                     })(Message.Repository);
                     AddComment.Repository = Repository;
-                })(Message.AddComment || (Message.AddComment = {}));
-                var AddComment = Message.AddComment;
-            })(Models.Message || (Models.Message = {}));
-            var Message = Models.Message;
-        })(Application.Models || (Application.Models = {}));
-        var Models = Application.Models;
-    })(Cat.Application || (Cat.Application = {}));
-    var Application = Cat.Application;
+                })(AddComment = Message.AddComment || (Message.AddComment = {}));
+            })(Message = Models.Message || (Models.Message = {}));
+        })(Models = Application.Models || (Application.Models = {}));
+    })(Application = Cat.Application || (Cat.Application = {}));
 })(Cat || (Cat = {}));
 /// <reference path="../../../../Models/Command/Model.ts" />
 /// <reference path="../Model.ts" />
 var Cat;
 (function (Cat) {
+    var Application;
     (function (Application) {
+        var Models;
         (function (Models) {
+            var Message;
             (function (Message) {
+                var PlayCommand;
                 (function (PlayCommand) {
                     var Model = (function (_super) {
                         __extends(Model, _super);
@@ -308,23 +310,23 @@ var Cat;
                         return Model;
                     })(Message.Model);
                     PlayCommand.Model = Model;
-                })(Message.PlayCommand || (Message.PlayCommand = {}));
-                var PlayCommand = Message.PlayCommand;
-            })(Models.Message || (Models.Message = {}));
-            var Message = Models.Message;
-        })(Application.Models || (Application.Models = {}));
-        var Models = Application.Models;
-    })(Cat.Application || (Cat.Application = {}));
-    var Application = Cat.Application;
+                })(PlayCommand = Message.PlayCommand || (Message.PlayCommand = {}));
+            })(Message = Models.Message || (Models.Message = {}));
+        })(Models = Application.Models || (Application.Models = {}));
+    })(Application = Cat.Application || (Cat.Application = {}));
 })(Cat || (Cat = {}));
 /// <reference path="../../../../Models/Command/Repository.ts" />
 /// <reference path="../Repository.ts" />
 /// <reference path="./Model.ts" />
 var Cat;
 (function (Cat) {
+    var Application;
     (function (Application) {
+        var Models;
         (function (Models) {
+            var Message;
             (function (Message) {
+                var PlayCommand;
                 (function (PlayCommand) {
                     var Repository = (function (_super) {
                         __extends(Repository, _super);
@@ -344,25 +346,23 @@ var Cat;
                         return Repository;
                     })(Message.Repository);
                     PlayCommand.Repository = Repository;
-                })(Message.PlayCommand || (Message.PlayCommand = {}));
-                var PlayCommand = Message.PlayCommand;
-            })(Models.Message || (Models.Message = {}));
-            var Message = Models.Message;
-        })(Application.Models || (Application.Models = {}));
-        var Models = Application.Models;
-    })(Cat.Application || (Cat.Application = {}));
-    var Application = Cat.Application;
+                })(PlayCommand = Message.PlayCommand || (Message.PlayCommand = {}));
+            })(Message = Models.Message || (Models.Message = {}));
+        })(Models = Application.Models || (Application.Models = {}));
+    })(Application = Cat.Application || (Cat.Application = {}));
 })(Cat || (Cat = {}));
 /// <reference path="../Identity" />
 /// <reference path="../Entity/Model.ts" />
 var Cat;
 (function (Cat) {
+    var Base;
     (function (Base) {
+        var EntityList;
         (function (EntityList) {
             var Model = (function (_super) {
                 __extends(Model, _super);
                 function Model(list) {
-                    if (typeof list === "undefined") { list = []; }
+                    if (list === void 0) { list = []; }
                     this.list = list;
                     _super.call(this);
                 }
@@ -376,14 +376,10 @@ var Cat;
                     this.list.splice(index, 1, entity);
                 };
                 Model.prototype.replace = function (identity, entity) {
-                    this.list = this.list.map(function (e) {
-                        return e.identity.eq(identity) ? entity : e;
-                    });
+                    this.list = this.list.map(function (e) { return e.identity.eq(identity) ? entity : e; });
                 };
                 Model.prototype.remove = function (entity) {
-                    this.list = this.list.filter(function (e) {
-                        return !e.eq(entity);
-                    });
+                    this.list = this.list.filter(function (e) { return !e.eq(entity); });
                 };
                 Model.prototype.clear = function () {
                     this.list = [];
@@ -391,16 +387,16 @@ var Cat;
                 return Model;
             })(Base.Entity.Model);
             EntityList.Model = Model;
-        })(Base.EntityList || (Base.EntityList = {}));
-        var EntityList = Base.EntityList;
-    })(Cat.Base || (Cat.Base = {}));
-    var Base = Cat.Base;
+        })(EntityList = Base.EntityList || (Base.EntityList = {}));
+    })(Base = Cat.Base || (Cat.Base = {}));
 })(Cat || (Cat = {}));
 /// <reference path="./Model.ts" />
 /// <reference path="../Entity/Repository.ts" />
 var Cat;
 (function (Cat) {
+    var Base;
     (function (Base) {
+        var EntityList;
         (function (EntityList) {
             var Repository = (function () {
                 function Repository(entityRepository) {
@@ -421,23 +417,23 @@ var Cat;
                 return Repository;
             })();
             EntityList.Repository = Repository;
-        })(Base.EntityList || (Base.EntityList = {}));
-        var EntityList = Base.EntityList;
-    })(Cat.Base || (Cat.Base = {}));
-    var Base = Cat.Base;
+        })(EntityList = Base.EntityList || (Base.EntityList = {}));
+    })(Base = Cat.Base || (Cat.Base = {}));
 })(Cat || (Cat = {}));
 /// <reference path="../../Base/EntityList/Model.ts" />
 /// <reference path="../Command/Model.ts" />
 var Cat;
 (function (Cat) {
+    var Models;
     (function (Models) {
+        var CommandList;
         (function (CommandList) {
             var Model = (function (_super) {
                 __extends(Model, _super);
                 function Model(commands, name, url) {
-                    if (typeof commands === "undefined") { commands = []; }
-                    if (typeof name === "undefined") { name = ''; }
-                    if (typeof url === "undefined") { url = ''; }
+                    if (commands === void 0) { commands = []; }
+                    if (name === void 0) { name = ''; }
+                    if (url === void 0) { url = ''; }
                     _super.call(this, commands);
                     this.name = name;
                     this.url = url;
@@ -450,17 +446,17 @@ var Cat;
                 return Model;
             })(Cat.Base.EntityList.Model);
             CommandList.Model = Model;
-        })(Models.CommandList || (Models.CommandList = {}));
-        var CommandList = Models.CommandList;
-    })(Cat.Models || (Cat.Models = {}));
-    var Models = Cat.Models;
+        })(CommandList = Models.CommandList || (Models.CommandList = {}));
+    })(Models = Cat.Models || (Cat.Models = {}));
 })(Cat || (Cat = {}));
 /// <reference path="../../Base/EntityList/Repository.ts" />
 /// <reference path="../Command/Repository.ts" />
 /// <reference path="./Model.ts" />
 var Cat;
 (function (Cat) {
+    var Models;
     (function (Models) {
+        var CommandList;
         (function (CommandList) {
             var Repository = (function (_super) {
                 __extends(Repository, _super);
@@ -481,18 +477,20 @@ var Cat;
                 return Repository;
             })(Cat.Base.EntityList.Repository);
             CommandList.Repository = Repository;
-        })(Models.CommandList || (Models.CommandList = {}));
-        var CommandList = Models.CommandList;
-    })(Cat.Models || (Cat.Models = {}));
-    var Models = Cat.Models;
+        })(CommandList = Models.CommandList || (Models.CommandList = {}));
+    })(Models = Cat.Models || (Cat.Models = {}));
 })(Cat || (Cat = {}));
 /// <reference path="../../../../Models/CommandList/Model.ts" />
 /// <reference path="../Model.ts" />
 var Cat;
 (function (Cat) {
+    var Application;
     (function (Application) {
+        var Models;
         (function (Models) {
+            var Message;
             (function (Message) {
+                var PlayCommandList;
                 (function (PlayCommandList) {
                     var Model = (function (_super) {
                         __extends(Model, _super);
@@ -504,23 +502,23 @@ var Cat;
                         return Model;
                     })(Message.Model);
                     PlayCommandList.Model = Model;
-                })(Message.PlayCommandList || (Message.PlayCommandList = {}));
-                var PlayCommandList = Message.PlayCommandList;
-            })(Models.Message || (Models.Message = {}));
-            var Message = Models.Message;
-        })(Application.Models || (Application.Models = {}));
-        var Models = Application.Models;
-    })(Cat.Application || (Cat.Application = {}));
-    var Application = Cat.Application;
+                })(PlayCommandList = Message.PlayCommandList || (Message.PlayCommandList = {}));
+            })(Message = Models.Message || (Models.Message = {}));
+        })(Models = Application.Models || (Application.Models = {}));
+    })(Application = Cat.Application || (Cat.Application = {}));
 })(Cat || (Cat = {}));
 /// <reference path="../../../../Models/CommandList/Repository.ts" />
 /// <reference path="../Repository.ts" />
 /// <reference path="./Model.ts" />
 var Cat;
 (function (Cat) {
+    var Application;
     (function (Application) {
+        var Models;
         (function (Models) {
+            var Message;
             (function (Message) {
+                var PlayCommandList;
                 (function (PlayCommandList) {
                     var Repository = (function (_super) {
                         __extends(Repository, _super);
@@ -540,21 +538,20 @@ var Cat;
                         return Repository;
                     })(Message.Repository);
                     PlayCommandList.Repository = Repository;
-                })(Message.PlayCommandList || (Message.PlayCommandList = {}));
-                var PlayCommandList = Message.PlayCommandList;
-            })(Models.Message || (Models.Message = {}));
-            var Message = Models.Message;
-        })(Application.Models || (Application.Models = {}));
-        var Models = Application.Models;
-    })(Cat.Application || (Cat.Application = {}));
-    var Application = Cat.Application;
+                })(PlayCommandList = Message.PlayCommandList || (Message.PlayCommandList = {}));
+            })(Message = Models.Message || (Models.Message = {}));
+        })(Models = Application.Models || (Application.Models = {}));
+    })(Application = Cat.Application || (Cat.Application = {}));
 })(Cat || (Cat = {}));
 /// <reference path="../../../Base/Entity/Repository.ts" />
 /// <reference path="./Model.ts" />
 var Cat;
 (function (Cat) {
+    var Application;
     (function (Application) {
+        var Models;
         (function (Models) {
+            var SeleniumCommand;
             (function (SeleniumCommand) {
                 var Repository = (function () {
                     function Repository() {
@@ -571,20 +568,21 @@ var Cat;
                     return Repository;
                 })();
                 SeleniumCommand.Repository = Repository;
-            })(Models.SeleniumCommand || (Models.SeleniumCommand = {}));
-            var SeleniumCommand = Models.SeleniumCommand;
-        })(Application.Models || (Application.Models = {}));
-        var Models = Application.Models;
-    })(Cat.Application || (Cat.Application = {}));
-    var Application = Cat.Application;
+            })(SeleniumCommand = Models.SeleniumCommand || (Models.SeleniumCommand = {}));
+        })(Models = Application.Models || (Application.Models = {}));
+    })(Application = Cat.Application || (Cat.Application = {}));
 })(Cat || (Cat = {}));
 /// <reference path="../../SeleniumCommand/Model.ts" />
 /// <reference path="../Model.ts" />
 var Cat;
 (function (Cat) {
+    var Application;
     (function (Application) {
+        var Models;
         (function (Models) {
+            var Message;
             (function (Message) {
+                var PlaySeleniumCommandExecute;
                 (function (PlaySeleniumCommandExecute) {
                     var Model = (function (_super) {
                         __extends(Model, _super);
@@ -596,23 +594,23 @@ var Cat;
                         return Model;
                     })(Message.Model);
                     PlaySeleniumCommandExecute.Model = Model;
-                })(Message.PlaySeleniumCommandExecute || (Message.PlaySeleniumCommandExecute = {}));
-                var PlaySeleniumCommandExecute = Message.PlaySeleniumCommandExecute;
-            })(Models.Message || (Models.Message = {}));
-            var Message = Models.Message;
-        })(Application.Models || (Application.Models = {}));
-        var Models = Application.Models;
-    })(Cat.Application || (Cat.Application = {}));
-    var Application = Cat.Application;
+                })(PlaySeleniumCommandExecute = Message.PlaySeleniumCommandExecute || (Message.PlaySeleniumCommandExecute = {}));
+            })(Message = Models.Message || (Models.Message = {}));
+        })(Models = Application.Models || (Application.Models = {}));
+    })(Application = Cat.Application || (Cat.Application = {}));
 })(Cat || (Cat = {}));
 /// <reference path="../../SeleniumCommand/Repository.ts" />
 /// <reference path="../Repository.ts" />
 /// <reference path="./Model.ts" />
 var Cat;
 (function (Cat) {
+    var Application;
     (function (Application) {
+        var Models;
         (function (Models) {
+            var Message;
             (function (Message) {
+                var PlaySeleniumCommandExecute;
                 (function (PlaySeleniumCommandExecute) {
                     var Repository = (function (_super) {
                         __extends(Repository, _super);
@@ -632,28 +630,28 @@ var Cat;
                         return Repository;
                     })(Message.Repository);
                     PlaySeleniumCommandExecute.Repository = Repository;
-                })(Message.PlaySeleniumCommandExecute || (Message.PlaySeleniumCommandExecute = {}));
-                var PlaySeleniumCommandExecute = Message.PlaySeleniumCommandExecute;
-            })(Models.Message || (Models.Message = {}));
-            var Message = Models.Message;
-        })(Application.Models || (Application.Models = {}));
-        var Models = Application.Models;
-    })(Cat.Application || (Cat.Application = {}));
-    var Application = Cat.Application;
+                })(PlaySeleniumCommandExecute = Message.PlaySeleniumCommandExecute || (Message.PlaySeleniumCommandExecute = {}));
+            })(Message = Models.Message || (Models.Message = {}));
+        })(Models = Application.Models || (Application.Models = {}));
+    })(Application = Cat.Application || (Cat.Application = {}));
 })(Cat || (Cat = {}));
 /// <reference path="../../SeleniumCommand/Model.ts" />
 /// <reference path="../Model.ts" />
 var Cat;
 (function (Cat) {
+    var Application;
     (function (Application) {
+        var Models;
         (function (Models) {
+            var Message;
             (function (Message) {
+                var PlaySeleniumCommandResult;
                 (function (PlaySeleniumCommandResult) {
                     var Model = (function (_super) {
                         __extends(Model, _super);
                         //page reloading
                         function Model(command) {
-                            if (typeof command === "undefined") { command = 'OK'; }
+                            if (command === void 0) { command = 'OK'; }
                             _super.call(this);
                             this.command = command;
                         }
@@ -661,23 +659,23 @@ var Cat;
                         return Model;
                     })(Message.Model);
                     PlaySeleniumCommandResult.Model = Model;
-                })(Message.PlaySeleniumCommandResult || (Message.PlaySeleniumCommandResult = {}));
-                var PlaySeleniumCommandResult = Message.PlaySeleniumCommandResult;
-            })(Models.Message || (Models.Message = {}));
-            var Message = Models.Message;
-        })(Application.Models || (Application.Models = {}));
-        var Models = Application.Models;
-    })(Cat.Application || (Cat.Application = {}));
-    var Application = Cat.Application;
+                })(PlaySeleniumCommandResult = Message.PlaySeleniumCommandResult || (Message.PlaySeleniumCommandResult = {}));
+            })(Message = Models.Message || (Models.Message = {}));
+        })(Models = Application.Models || (Application.Models = {}));
+    })(Application = Cat.Application || (Cat.Application = {}));
 })(Cat || (Cat = {}));
 /// <reference path="../../SeleniumCommand/Repository.ts" />
 /// <reference path="../Repository.ts" />
 /// <reference path="./Model.ts" />
 var Cat;
 (function (Cat) {
+    var Application;
     (function (Application) {
+        var Models;
         (function (Models) {
+            var Message;
             (function (Message) {
+                var PlaySeleniumCommandResult;
                 (function (PlaySeleniumCommandResult) {
                     var Repository = (function (_super) {
                         __extends(Repository, _super);
@@ -696,14 +694,10 @@ var Cat;
                         return Repository;
                     })(Message.Repository);
                     PlaySeleniumCommandResult.Repository = Repository;
-                })(Message.PlaySeleniumCommandResult || (Message.PlaySeleniumCommandResult = {}));
-                var PlaySeleniumCommandResult = Message.PlaySeleniumCommandResult;
-            })(Models.Message || (Models.Message = {}));
-            var Message = Models.Message;
-        })(Application.Models || (Application.Models = {}));
-        var Models = Application.Models;
-    })(Cat.Application || (Cat.Application = {}));
-    var Application = Cat.Application;
+                })(PlaySeleniumCommandResult = Message.PlaySeleniumCommandResult || (Message.PlaySeleniumCommandResult = {}));
+            })(Message = Models.Message || (Models.Message = {}));
+        })(Models = Application.Models || (Application.Models = {}));
+    })(Application = Cat.Application || (Cat.Application = {}));
 })(Cat || (Cat = {}));
 /// <reference path="./AddCommand/Repository.ts" />
 /// <reference path="./PlayCommand/Repository.ts" />
@@ -712,8 +706,11 @@ var Cat;
 /// <reference path="./PlaySeleniumCommandResult/Repository.ts" />
 var Cat;
 (function (Cat) {
+    var Application;
     (function (Application) {
+        var Models;
         (function (Models) {
+            var Message;
             (function (Message) {
                 var Dispatcher = (function () {
                     function Dispatcher() {
@@ -726,31 +723,35 @@ var Cat;
                     Dispatcher.prototype.dispatch = function (message, dispatcher) {
                         if (message['name'] == Message.AddComment.Model.messageName) {
                             dispatcher.MessageAddCommentModel(this.messageAddCommentModel.fromObject(message));
-                        } else if (message['name'] == Message.PlayCommand.Model.messageName) {
+                        }
+                        else if (message['name'] == Message.PlayCommand.Model.messageName) {
                             dispatcher.MessagePlayCommandModel(this.messagePlayCommandModel.fromObject(message));
-                        } else if (message['name'] == Message.PlayCommandList.Model.messageName) {
+                        }
+                        else if (message['name'] == Message.PlayCommandList.Model.messageName) {
                             dispatcher.MessagePlayCommandListModel(this.messagePlayCommandListModel.fromObject(message));
-                        } else if (message['name'] == Message.PlaySeleniumCommandExecute.Model.messageName) {
+                        }
+                        else if (message['name'] == Message.PlaySeleniumCommandExecute.Model.messageName) {
                             dispatcher.MessagePlaySeleniumCommandExecuteModel(this.messagePlaySeleniumCommandExecuteModel.fromObject(message));
-                        } else if (message['name'] == Message.PlaySeleniumCommandResult.Model.messageName) {
+                        }
+                        else if (message['name'] == Message.PlaySeleniumCommandResult.Model.messageName) {
                             dispatcher.MessagePlaySeleniumCommandResultModel(this.messagePlaySeleniumCommandResultModel.fromObject(message));
-                        } else {
+                        }
+                        else {
                             throw new Error('Invalid message: ' + JSON.stringify(message));
                         }
                     };
                     return Dispatcher;
                 })();
                 Message.Dispatcher = Dispatcher;
-            })(Models.Message || (Models.Message = {}));
-            var Message = Models.Message;
-        })(Application.Models || (Application.Models = {}));
-        var Models = Application.Models;
-    })(Cat.Application || (Cat.Application = {}));
-    var Application = Cat.Application;
+            })(Message = Models.Message || (Models.Message = {}));
+        })(Models = Application.Models || (Application.Models = {}));
+    })(Application = Cat.Application || (Cat.Application = {}));
 })(Cat || (Cat = {}));
 var Cat;
 (function (Cat) {
+    var Application;
     (function (Application) {
+        var Services;
         (function (Services) {
             var RecorderObserver = (function () {
                 function RecorderObserver() {
@@ -767,16 +768,16 @@ var Cat;
                 return RecorderObserver;
             })();
             Services.RecorderObserver = RecorderObserver;
-        })(Application.Services || (Application.Services = {}));
-        var Services = Application.Services;
-    })(Cat.Application || (Cat.Application = {}));
-    var Application = Cat.Application;
+        })(Services = Application.Services || (Application.Services = {}));
+    })(Application = Cat.Application || (Cat.Application = {}));
 })(Cat || (Cat = {}));
-/// <reference path="../../../DefinitelyTyped/es6-promises/es6-promises.d.ts" />
 var Cat;
 (function (Cat) {
+    var Application;
     (function (Application) {
+        var Services;
         (function (Services) {
+            var Selenium;
             (function (Selenium) {
                 var Base = (function () {
                     function Base(callback) {
@@ -793,7 +794,6 @@ var Cat;
                         window.lastWindow = window;
                         window.testCase = new window.TestCase;
                         window.selenium = callback();
-
                         window.editor = {
                             'app': {
                                 'getOptions': function () {
@@ -809,7 +809,6 @@ var Cat;
                                 }
                             }
                         };
-
                         this.testCase = window.testCase;
                         this.selenium = window.selenium;
                         this.selenium.browserbot.selectWindow(null);
@@ -828,12 +827,10 @@ var Cat;
                             _this.currentTest.getCommandInterval = function () {
                                 return _this.getInterval();
                             };
-
                             _this.testCase.debugContext.reset();
                             _this.currentTest.start();
                         });
                     };
-
                     Base.setApiDocs = function (file) {
                         return new Promise(function (resolve, reject) {
                             var xhr = new XMLHttpRequest();
@@ -855,42 +852,34 @@ var Cat;
                     return Base;
                 })();
                 Selenium.Base = Base;
-            })(Services.Selenium || (Services.Selenium = {}));
-            var Selenium = Services.Selenium;
-        })(Application.Services || (Application.Services = {}));
-        var Services = Application.Services;
-    })(Cat.Application || (Cat.Application = {}));
-    var Application = Cat.Application;
+            })(Selenium = Services.Selenium || (Services.Selenium = {}));
+        })(Services = Application.Services || (Application.Services = {}));
+    })(Application = Cat.Application || (Cat.Application = {}));
 })(Cat || (Cat = {}));
 /// <reference path="../../Models/SeleniumCommand/Model.ts" />
 /// <reference path="./Base.ts" />
 var Cat;
 (function (Cat) {
+    var Application;
     (function (Application) {
+        var Services;
         (function (Services) {
+            var Selenium;
             (function (Selenium) {
                 var Receiver = (function (_super) {
                     __extends(Receiver, _super);
                     function Receiver() {
-                        _super.call(this, function () {
-                            return window.createSelenium(location.href, true);
-                        });
+                        _super.call(this, function () { return window.createSelenium(location.href, true); });
                         this.errorMessage = 'missing command: ';
                     }
                     Receiver.prototype.execute = function (model) {
                         var _this = this;
                         if (this.selenium[model.type]) {
-                            return this.exec(function () {
-                                return _this.selenium[model.type].apply(_this.selenium, model.args);
-                            });
+                            return this.exec(function () { return _this.selenium[model.type].apply(_this.selenium, model.args); });
                         }
-                        var commandName = 'do' + model.type.replace(/^\w/, function (w) {
-                            return w.toUpperCase();
-                        });
+                        var commandName = 'do' + model.type.replace(/^\w/, function (w) { return w.toUpperCase(); });
                         if (this.selenium[commandName]) {
-                            return this.exec(function () {
-                                return _this.selenium[commandName].apply(_this.selenium, model.args);
-                            });
+                            return this.exec(function () { return _this.selenium[commandName].apply(_this.selenium, model.args); });
                         }
                         var errorMessage = this.errorMessage + JSON.stringify(model);
                         setTimeout(function () {
@@ -899,10 +888,11 @@ var Cat;
                         return 'ERROR ' + errorMessage;
                     };
                     Receiver.prototype.exec = function (exec) {
-                        try  {
+                        try {
                             exec();
                             return 'OK';
-                        } catch (e) {
+                        }
+                        catch (e) {
                             setTimeout(function () {
                                 throw e;
                             });
@@ -912,21 +902,16 @@ var Cat;
                     return Receiver;
                 })(Selenium.Base);
                 Selenium.Receiver = Receiver;
-            })(Services.Selenium || (Services.Selenium = {}));
-            var Selenium = Services.Selenium;
-        })(Application.Services || (Application.Services = {}));
-        var Services = Application.Services;
-    })(Cat.Application || (Cat.Application = {}));
-    var Application = Cat.Application;
+            })(Selenium = Services.Selenium || (Services.Selenium = {}));
+        })(Services = Application.Services || (Application.Services = {}));
+    })(Application = Cat.Application || (Cat.Application = {}));
 })(Cat || (Cat = {}));
-/// <reference path="DefinitelyTyped/Selenium/recorder.d.ts" />
-/// <reference path="DefinitelyTyped/chrome/chrome.d.ts" />
+/// <reference path="_loadtsd.ts" />
 /// <reference path="Models/Command/Model.ts" />
 /// <reference path="Applications/Models/SeleniumCommand/Model.ts" />
 /// <reference path="Applications/Models/Message/Dispatcher.ts" />
 /// <reference path="Applications/Services/RecorderObserver.ts" />
 /// <reference path="Applications/Services/Selenium/Receiver.ts" />
-
 var globalPort;
 (function () {
     if ('undefined' === typeof chrome) {
@@ -937,7 +922,6 @@ var globalPort;
     var recorderObserver = new Cat.Application.Services.RecorderObserver();
     var messageDispatcher = new Cat.Application.Models.Message.Dispatcher();
     var SeleniumReceiver = new Cat.Application.Services.Selenium.Receiver();
-
     chrome.extension.onConnect.addListener(function (port) {
         globalPort = port;
         Recorder.register(recorderObserver, window);

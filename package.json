@@ -1,9 +1,13 @@
 {
   "name": "chrome-autopilot-tool",
   "version": "0.0.0",
-  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kyo-ago/chrome-autopilot-tool.git"
+  },
   "scripts": {
-    "test": "karma start"
+    "test": "gulp test",
+    "postinstall": "bower cache clean && bower install && tsd reinstall -so"
   },
   "directories": {
     "test": "test/"
@@ -11,23 +15,21 @@
   "author": "@kyo_ago",
   "license": "GPL3",
   "devDependencies": {
-    "grunt": "^0.4.4",
-    "grunt-version": "^0.3.0",
-    "gulp-espower": "^0.7.0",
-    "gulp": "^3.6.2",
-    "gulp-tsc": "^0.8.0",
-    "gulp-grunt": "^0.4.1",
-    "gulp-zip": "^0.3.4",
-    "mocha": "^1.19.0",
+    "bower": "^1.3.12",
     "event-stream": "^3.1.5",
-    "run-sequence": "^0.3.6",
+    "gulp": "^3.6.2",
+    "gulp-bump": "^0.1.11",
+    "gulp-espower": "^0.7.0",
     "gulp-plumber": "^0.6.1",
+    "gulp-rm": "^0.2.0",
+    "gulp-tsc": "^0.8.0",
+    "gulp-zip": "^0.3.4",
     "karma": "^0.12.23",
     "karma-mocha": "^0.1.9",
     "karma-phantomjs-launcher": "^0.1.4",
-    "gulp-rm": "^0.2.0"
-  },
-  "dependencies": {
-    "expect.js": "^0.3.1"
+    "mocha": "^1.19.0",
+    "run-sequence": "^0.3.6",
+    "tsd": "^0.6.0-beta.4",
+    "typescript": "^1.3.0"
   }
 }

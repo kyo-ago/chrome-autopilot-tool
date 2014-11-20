@@ -1,5 +1,4 @@
-/// <reference path="DefinitelyTyped/Selenium/recorder.d.ts" />
-/// <reference path="DefinitelyTyped/chrome/chrome.d.ts" />
+/// <reference path="_loadtsd.ts" />
 /// <reference path="Models/Command/Model.ts" />
 /// <reference path="Applications/Models/SeleniumCommand/Model.ts" />
 /// <reference path="Applications/Models/Message/Dispatcher.ts" />

@@ -1,6 +1,3 @@
-/// <reference path="../../DefinitelyTyped/es6-promises/es6-promises.d.ts" />
-/// <reference path="../../DefinitelyTyped/chrome/chrome.d.ts" />
-
 module Cat.Application.Services {
     export class InjectScripts {
         static connect(tabid: number, injectScripts_: string[]) {

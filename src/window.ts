@@ -1,6 +1,4 @@
-/// <reference path="DefinitelyTyped/angularjs/angular.d.ts" />
-/// <reference path="DefinitelyTyped/es6-promises/es6-promises.d.ts" />
-/// <reference path="DefinitelyTyped/chrome/chrome.d.ts" />
+/// <reference path="_loadtsd.ts" />
 /// <reference path="Applications/Controllers/Autopilot.ts" />
 /// <reference path="Applications/Services/TabManager.ts" />
 /// <reference path="Applications/Services/InjectScripts.ts" />

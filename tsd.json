@@ -1,0 +1,39 @@
+{
+  "version": "v4",
+  "repo": "borisyankov/DefinitelyTyped",
+  "ref": "master",
+  "path": "typings",
+  "bundle": "typings/tsd.d.ts",
+  "installed": {
+    "angularjs/angular.d.ts": {
+      "commit": "7c194584f39e29c7f150e0bfc1686a796efc19be"
+    },
+    "chrome/chrome.d.ts": {
+      "commit": "7c194584f39e29c7f150e0bfc1686a796efc19be"
+    },
+    "es6-promise/es6-promise.d.ts": {
+      "commit": "7c194584f39e29c7f150e0bfc1686a796efc19be"
+    },
+    "eventemitter2/eventemitter2.d.ts": {
+      "commit": "7c194584f39e29c7f150e0bfc1686a796efc19be"
+    },
+    "webrtc/MediaStream.d.ts": {
+      "commit": "0b584f01246640fb933f1af95d92e918a51d993b"
+    },
+    "jquery/jquery.d.ts": {
+      "commit": "0b584f01246640fb933f1af95d92e918a51d993b"
+    },
+    "mocha/mocha.d.ts": {
+      "commit": "07ae96e580d1ac9817d40717158fcafc875044b3"
+    },
+    "power-assert/power-assert.d.ts": {
+      "commit": "07ae96e580d1ac9817d40717158fcafc875044b3"
+    },
+    "empower/empower.d.ts": {
+      "commit": "07ae96e580d1ac9817d40717158fcafc875044b3"
+    },
+    "power-assert-formatter/power-assert-formatter.d.ts": {
+      "commit": "07ae96e580d1ac9817d40717158fcafc875044b3"
+    }
+  }
+}

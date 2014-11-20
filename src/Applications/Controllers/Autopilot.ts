@@ -1,4 +1,3 @@
-/// <reference path="../../DefinitelyTyped/angularjs/angular.d.ts" />
 /// <reference path="../Models/Message/AddCommand/Model.ts" />
 /// <reference path="../Models/Message/Dispatcher.ts" />
 /// <reference path="../Services/TabManager.ts" />

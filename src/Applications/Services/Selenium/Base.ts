@@ -1,5 +1,3 @@
-/// <reference path="../../../DefinitelyTyped/es6-promises/es6-promises.d.ts" />
-
 module Cat.Application.Services.Selenium {
     export class Base {
         selenium: any;
