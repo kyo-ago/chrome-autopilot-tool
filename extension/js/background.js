@@ -1,6 +1,8 @@
+/// <reference path="../typings/tsd.d.ts" />
+window.EventEmitter = window.EventEmitter2;
 /// <reference path="_loadtsd.ts" />
 (function () {
-    if ('undefined' === typeof chrome) {
+    if ('undefined' !== typeof TestInitialize) {
         return;
     }
     chrome.browserAction.onClicked.addListener(function (calledTab) {

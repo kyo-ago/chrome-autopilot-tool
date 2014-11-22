@@ -1,3 +1,5 @@
+/// <reference path="../typings/tsd.d.ts" />
+window.EventEmitter = window.EventEmitter2;
 var Cat;
 (function (Cat) {
     var UUID;
@@ -747,133 +749,141 @@ var Cat;
         })(Models = Application.Models || (Application.Models = {}));
     })(Application = Cat.Application || (Cat.Application = {}));
 })(Cat || (Cat = {}));
-/// <reference path="../Models/Message/PlaySeleniumCommandResult/Repository.ts" />
+/// <reference path="../../Models/Message/PlaySeleniumCommandResult/Repository.ts" />
 var Cat;
 (function (Cat) {
     var Application;
     (function (Application) {
         var Services;
         (function (Services) {
-            var TabManager = (function () {
-                function TabManager(calledTabId, initialize, resolve, reject) {
-                    var _this = this;
-                    this.initialize = initialize;
-                    this.onMessageListeners = [];
-                    this.onDisconnectListeners = [];
-                    this.onConnectListeners = [];
-                    this.sendMessageResponseInterval = 1000;
-                    this.closeMessage = 'Close test case?';
-                    this.getTab(calledTabId).then(function (tab) {
-                        _this.tab = tab;
-                        _this.initialize(_this).then(function () {
-                            _this.connectTab();
-                            resolve(_this);
-                        }).catch(reject);
-                    }).catch(reject);
-                }
-                TabManager.prototype.getTab = function (calledTabId) {
-                    return new Promise(function (resolve, rejectAll) {
-                        var reject = function () {
-                            rejectAll('Security Error.\ndoes not run on "chrome://" page.\n');
-                        };
-                        chrome.tabs.get(parseInt(calledTabId), function (tab) {
-                            if (tab && tab.id) {
-                                resolve(tab);
+            var Tab;
+            (function (Tab) {
+                var TabManager = (function () {
+                    function TabManager(calledTabId, initialize) {
+                        this.calledTabId = calledTabId;
+                        this.initialize = initialize;
+                        this.onMessageListeners = [];
+                        this.onDisconnectListeners = [];
+                        this.onConnectListeners = [];
+                        this.sendMessageResponseInterval = 1000;
+                        this.closeMessage = 'Close test case?';
+                    }
+                    TabManager.prototype.connect = function () {
+                        var _this = this;
+                        return new Promise(function (resolve, reject) {
+                            _this.getTab(_this.calledTabId).then(function (tab) {
+                                _this.tab = tab;
+                                _this.initialize(_this).then(function () {
+                                    _this.connectTab();
+                                    resolve(_this);
+                                }).catch(reject);
+                            }).catch(reject);
+                        });
+                    };
+                    TabManager.prototype.getTab = function (calledTabId) {
+                        return new Promise(function (resolve, rejectAll) {
+                            var reject = function () {
+                                rejectAll('Security Error.\ndoes not run on "chrome://" page.\n');
+                            };
+                            chrome.tabs.get(parseInt(calledTabId), function (tab) {
+                                if (tab && tab.id) {
+                                    resolve(tab);
+                                }
+                                else {
+                                    reject();
+                                }
+                            });
+                        });
+                    };
+                    TabManager.prototype.connectTab = function () {
+                        var _this = this;
+                        this.port = chrome.tabs.connect(this.tab.id);
+                        this.port.onDisconnect.addListener(function () {
+                            _this.port = null;
+                            delete _this.port;
+                        });
+                        chrome.tabs.onRemoved.addListener(function (tabId, removeInfo) {
+                            if (_this.tab.id !== tabId) {
+                                return;
                             }
-                            else {
-                                reject();
+                            if (confirm(_this.closeMessage)) {
+                                window.close();
                             }
                         });
-                    });
-                };
-                TabManager.prototype.connectTab = function () {
-                    var _this = this;
-                    this.port = chrome.tabs.connect(this.tab.id);
-                    this.port.onDisconnect.addListener(function () {
-                        _this.port = null;
-                        delete _this.port;
-                    });
-                    chrome.tabs.onRemoved.addListener(function (tabId, removeInfo) {
-                        if (_this.tab.id !== tabId) {
-                            return;
-                        }
-                        if (confirm(_this.closeMessage)) {
-                            window.close();
-                        }
-                    });
-                    var updated = false;
-                    chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
-                        if (_this.tab.id !== tabId) {
-                            return;
-                        }
-                        _this.port = null;
-                        delete _this.port;
-                        if (changeInfo.status === 'complete') {
-                            updated = false;
-                            return;
-                        }
-                        if (updated) {
-                            return;
-                        }
-                        updated = true;
-                        _this.reloadTab();
-                    });
-                };
-                TabManager.prototype.reloadTab = function () {
-                    var _this = this;
-                    return new Promise(function (resolve, reject) {
-                        _this.initialize(_this).then(function () {
-                            _this.port = chrome.tabs.connect(_this.tab.id);
-                            _this.onConnectListeners.forEach(function (listener) { return listener(); });
-                            _this.onMessageListeners.forEach(function (listener) { return _this.port.onMessage.addListener(listener); });
-                            _this.onDisconnectListeners.forEach(function (listener) { return _this.port.onDisconnect.addListener(listener); });
-                            resolve();
-                        }).catch(reject);
-                    });
-                };
-                TabManager.prototype.getTabId = function () {
-                    return this.tab.id;
-                };
-                TabManager.prototype.getTabURL = function () {
-                    return this.tab.url;
-                };
-                TabManager.prototype.postMessage = function (message) {
-                    this.port.postMessage(message);
-                };
-                TabManager.prototype.sendMessage = function (message, callback) {
-                    var _this = this;
-                    chrome.tabs.sendMessage(this.tab.id, message, function (result) {
-                        if (!result) {
-                            throw new Error('missing result');
-                            return;
-                        }
-                        var interval = setInterval(function () {
-                            if (!_this.port) {
+                        var updated = false;
+                        chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
+                            if (_this.tab.id !== tabId) {
                                 return;
                             }
-                            if (_this.tab.status !== 'complete') {
+                            _this.port = null;
+                            delete _this.port;
+                            if (changeInfo.status === 'complete') {
+                                updated = false;
                                 return;
                             }
-                            clearInterval(interval);
-                            var message = new Application.Models.Message.PlaySeleniumCommandResult.Model(result);
-                            callback(message.command);
-                        }, _this.sendMessageResponseInterval);
-                    });
-                };
-                TabManager.prototype.onMessage = function (callback) {
-                    this.onMessageListeners.push(callback);
-                    this.port.onMessage.addListener(callback);
-                };
-                TabManager.prototype.onConnect = function (callback) {
-                    this.onConnectListeners.push(callback);
-                };
-                TabManager.prototype.onDisconnect = function (callback) {
-                    this.onDisconnectListeners.push(callback);
-                    this.port.onDisconnect.addListener(callback);
-                };
-                return TabManager;
-            })();
-            Services.TabManager = TabManager;
+                            if (updated) {
+                                return;
+                            }
+                            updated = true;
+                            _this.reloadTab();
+                        });
+                    };
+                    TabManager.prototype.reloadTab = function () {
+                        var _this = this;
+                        return new Promise(function (resolve, reject) {
+                            _this.initialize(_this).then(function () {
+                                _this.port = chrome.tabs.connect(_this.tab.id);
+                                _this.onConnectListeners.forEach(function (listener) { return listener(); });
+                                _this.onMessageListeners.forEach(function (listener) { return _this.port.onMessage.addListener(listener); });
+                                _this.onDisconnectListeners.forEach(function (listener) { return _this.port.onDisconnect.addListener(listener); });
+                                resolve();
+                            }).catch(reject);
+                        });
+                    };
+                    TabManager.prototype.getTabId = function () {
+                        return this.tab.id;
+                    };
+                    TabManager.prototype.getTabURL = function () {
+                        return this.tab.url;
+                    };
+                    TabManager.prototype.postMessage = function (message) {
+                        this.port.postMessage(message);
+                    };
+                    TabManager.prototype.sendMessage = function (message, callback) {
+                        var _this = this;
+                        chrome.tabs.sendMessage(this.tab.id, message, function (result) {
+                            if (!result) {
+                                throw new Error('missing result');
+                                return;
+                            }
+                            var interval = setInterval(function () {
+                                if (!_this.port) {
+                                    return;
+                                }
+                                if (_this.tab.status !== 'complete') {
+                                    return;
+                                }
+                                clearInterval(interval);
+                                var message = new Application.Models.Message.PlaySeleniumCommandResult.Model(result);
+                                callback(message.command);
+                            }, _this.sendMessageResponseInterval);
+                        });
+                    };
+                    TabManager.prototype.onMessage = function (callback) {
+                        this.onMessageListeners.push(callback);
+                        this.port.onMessage.addListener(callback);
+                    };
+                    TabManager.prototype.onConnect = function (callback) {
+                        this.onConnectListeners.push(callback);
+                    };
+                    TabManager.prototype.onDisconnect = function (callback) {
+                        this.onDisconnectListeners.push(callback);
+                        this.port.onDisconnect.addListener(callback);
+                    };
+                    return TabManager;
+                })();
+                Tab.TabManager = TabManager;
+            })(Tab = Services.Tab || (Services.Tab = {}));
         })(Services = Application.Services || (Application.Services = {}));
     })(Application = Cat.Application || (Cat.Application = {}));
 })(Cat || (Cat = {}));
@@ -1005,7 +1015,7 @@ var Cat;
 /// <reference path="../../../Models/CommandList/Model.ts" />
 /// <reference path="../../Models/Message/PlaySeleniumCommandExecute/Repository.ts" />
 /// <reference path="../../Models/Message/Dispatcher.ts" />
-/// <reference path="../TabManager.ts" />
+/// <reference path="../Tab/TabManager.ts" />
 /// <reference path="./Base.ts" />
 var Cat;
 (function (Cat) {
@@ -1085,7 +1095,7 @@ var Cat;
 })(Cat || (Cat = {}));
 /// <reference path="../Models/Message/AddCommand/Model.ts" />
 /// <reference path="../Models/Message/Dispatcher.ts" />
-/// <reference path="../Services/TabManager.ts" />
+/// <reference path="../Services/Tab/TabManager.ts" />
 /// <reference path="../Services/CommandSelectList.ts" />
 /// <reference path="../Services/Selenium/Sender.ts" />
 /// <reference path="../Models/CommandGrid/Model.ts" />
@@ -1161,50 +1171,6 @@ var Cat;
     (function (Application) {
         var Services;
         (function (Services) {
-            var InjectScripts = (function () {
-                function InjectScripts() {
-                }
-                InjectScripts.connect = function (tabid, injectScripts_) {
-                    var injectScripts = injectScripts_.slice();
-                    return new Promise(function (resolve) {
-                        var executeScript = function (injectScript) {
-                            //コードをxhrでキャッシュしてfileではなく、codeで渡してユーザ動作をブロックしつつ実行できないか
-                            chrome.tabs.executeScript(tabid, {
-                                'runAt': 'document_start',
-                                'file': injectScript
-                            }, function () {
-                                if (injectScripts.length) {
-                                    return executeScript(injectScripts.shift());
-                                }
-                                chrome.tabs.executeScript(tabid, {
-                                    'code': 'this.extensionContentLoaded = true'
-                                }, function () {
-                                    resolve();
-                                });
-                            });
-                        };
-                        chrome.tabs.executeScript(tabid, {
-                            'code': 'this.extensionContentLoaded'
-                        }, function (result) {
-                            if (result && result.length && result[0]) {
-                                return resolve();
-                            }
-                            executeScript(injectScripts.shift());
-                        });
-                    });
-                };
-                return InjectScripts;
-            })();
-            Services.InjectScripts = InjectScripts;
-        })(Services = Application.Services || (Application.Services = {}));
-    })(Application = Cat.Application || (Cat.Application = {}));
-})(Cat || (Cat = {}));
-var Cat;
-(function (Cat) {
-    var Application;
-    (function (Application) {
-        var Services;
-        (function (Services) {
             var Config = (function () {
                 function Config() {
                 }
@@ -1224,6 +1190,7 @@ var Cat;
                     "js/selenium-ide/recorder.js",
                     "js/selenium-ide/recorder-handlers.js",
                     "js/selenium-ide/testCase.js",
+                    "bower_components/eventemitter2/lib/eventemitter2.js",
                     "js/content_scripts.js"
                 ];
                 Config.seleniumApiXML = '/js/selenium-ide/iedoc-core.xml';
@@ -1233,53 +1200,162 @@ var Cat;
         })(Services = Application.Services || (Application.Services = {}));
     })(Application = Cat.Application || (Cat.Application = {}));
 })(Cat || (Cat = {}));
+var Cat;
+(function (Cat) {
+    var Application;
+    (function (Application) {
+        var Services;
+        (function (Services) {
+            var Tab;
+            (function (Tab) {
+                var InjectScripts = (function () {
+                    function InjectScripts(injectScripts_) {
+                        this.injectScripts_ = injectScripts_;
+                        this.injectScripts = injectScripts_.slice();
+                    }
+                    InjectScripts.prototype.connect = function (tabid) {
+                        var _this = this;
+                        return new Promise(function (resolve) {
+                            var executeScript = function (injectScript) {
+                                //コードをxhrでキャッシュしてfileではなく、codeで渡してユーザ動作をブロックしつつ実行できないか
+                                chrome.tabs.executeScript(tabid, {
+                                    'runAt': 'document_start',
+                                    'file': injectScript
+                                }, function () {
+                                    if (_this.injectScripts.length) {
+                                        return executeScript(_this.injectScripts.shift());
+                                    }
+                                    chrome.tabs.executeScript(tabid, {
+                                        'code': 'this.extensionContentLoaded = true'
+                                    }, function () {
+                                        resolve();
+                                    });
+                                });
+                            };
+                            chrome.tabs.executeScript(tabid, {
+                                'code': 'this.extensionContentLoaded'
+                            }, function (result) {
+                                if (result && result.length && result[0]) {
+                                    return resolve();
+                                }
+                                executeScript(_this.injectScripts.shift());
+                            });
+                        });
+                    };
+                    return InjectScripts;
+                })();
+                Tab.InjectScripts = InjectScripts;
+            })(Tab = Services.Tab || (Services.Tab = {}));
+        })(Services = Application.Services || (Application.Services = {}));
+    })(Application = Cat.Application || (Cat.Application = {}));
+})(Cat || (Cat = {}));
+/// <reference path="Tab/InjectScripts.ts" />
+/// <reference path="Config.ts" />
+/// <reference path="Tab/TabManager" />
+var Cat;
+(function (Cat) {
+    var Application;
+    (function (Application) {
+        var Services;
+        (function (Services) {
+            var TabInitializer = (function () {
+                function TabInitializer(calledTabId) {
+                    var _this = this;
+                    this.calledTabId = calledTabId;
+                    var injectScripts = Services.Config.injectScripts;
+                    this.injectScripts = new Services.Tab.InjectScripts(injectScripts);
+                    this.tabManager = new Services.Tab.TabManager(this.calledTabId, function (tabManager) {
+                        return _this.injectScripts.connect(tabManager.getTabId());
+                    });
+                }
+                TabInitializer.prototype.start = function () {
+                    return this.tabManager.connect();
+                };
+                return TabInitializer;
+            })();
+            Services.TabInitializer = TabInitializer;
+        })(Services = Application.Services || (Application.Services = {}));
+    })(Application = Cat.Application || (Cat.Application = {}));
+})(Cat || (Cat = {}));
+/// <reference path="Autopilot.ts" />
+/// <reference path="../Services/Config.ts" />
+/// <reference path="../Services/TabInitializer.ts" />
+/// <reference path="../Services/Selenium/Sender.ts" />
+/// <reference path="../Models/CommandGrid/Model.ts" />
+var Cat;
+(function (Cat) {
+    var Application;
+    (function (Application) {
+        var Controllers;
+        (function (Controllers) {
+            var WindowCtrl = (function () {
+                function WindowCtrl(calledTabId) {
+                    this.calledTabId = calledTabId;
+                }
+                WindowCtrl.prototype.initAngular = function (tabManager, commandSelectList) {
+                    return new Promise(function (resolve) {
+                        var autopilotApp = angular.module('AutopilotApp', ['ui.sortable']).factory('tabManager', function () { return tabManager; }).factory('commandSelectList', function () { return commandSelectList; }).service('messageDispatcher', Application.Models.Message.Dispatcher).factory('seleniumSender', function (tabManager, messageDispatcher) {
+                            applicationServicesSeleniumSender = new Application.Services.Selenium.Sender(tabManager, messageDispatcher);
+                            return applicationServicesSeleniumSender;
+                        }).factory('commandGrid', function () {
+                            return new Application.Models.CommandGrid.Model();
+                        }).controller('Autopilot', Controllers.Autopilot.Controller);
+                        angular.bootstrap(document, ['AutopilotApp']);
+                        resolve(autopilotApp);
+                    });
+                };
+                WindowCtrl.prototype.initCommandSelectList = function () {
+                    var seleniumApiXMLFile = chrome.runtime.getURL(Application.Services.Config.seleniumApiXML);
+                    return Promise.all([
+                        new Promise(function (resolve, reject) {
+                            var commandSelectList = new Application.Services.CommandSelectList();
+                            commandSelectList.load(seleniumApiXMLFile).then(resolve).catch(reject);
+                            return commandSelectList;
+                        }),
+                        new Promise(function (resolve, reject) {
+                            Application.Services.Selenium.Sender.setApiDocs(seleniumApiXMLFile).then(resolve).catch(reject);
+                        }),
+                        new Promise(function (resolve) {
+                            angular.element(document).ready(resolve);
+                        })
+                    ]);
+                };
+                WindowCtrl.prototype.initTabInitializer = function (resolve, catchError) {
+                    var _this = this;
+                    (new Promise(function (resolve, reject) {
+                        var tabInitializer = new Application.Services.TabInitializer(_this.calledTabId);
+                        tabInitializer.start().then(resolve).catch(reject);
+                    })).then(function (tabManager) {
+                        _this.initCommandSelectList().then(function (results) {
+                            var commandSelectList = results.shift();
+                            _this.initAngular(tabManager, commandSelectList).then(resolve).catch(catchError);
+                        }).catch(catchError);
+                    }).catch(catchError);
+                };
+                WindowCtrl.prototype.initialize = function () {
+                    return new Promise(this.initTabInitializer.bind(this));
+                };
+                return WindowCtrl;
+            })();
+            Controllers.WindowCtrl = WindowCtrl;
+        })(Controllers = Application.Controllers || (Application.Controllers = {}));
+    })(Application = Cat.Application || (Cat.Application = {}));
+})(Cat || (Cat = {}));
 /// <reference path="_loadtsd.ts" />
-/// <reference path="Applications/Controllers/Autopilot.ts" />
-/// <reference path="Applications/Services/TabManager.ts" />
-/// <reference path="Applications/Services/InjectScripts.ts" />
-/// <reference path="Applications/Services/Config.ts" />
+/// <reference path="Applications/Controllers/WindowCtrl.ts" />
 /// <reference path="Applications/Services/Selenium/Sender.ts" />
-/// <reference path="Applications/Models/CommandGrid/Model.ts" />
 var autopilotApp;
 var applicationServicesSeleniumSender;
 (function () {
-    if ('undefined' === typeof chrome) {
+    if ('undefined' !== typeof TestInitialize) {
         return;
     }
     var calledTabId = location.hash.replace(/^#/, '');
     var catchError = function (messages) {
         alert([].concat(messages).join('\n'));
     };
-    (new Promise(function (resolve, reject) {
-        new Cat.Application.Services.TabManager(calledTabId, function (tabManager) {
-            var injectScripts = Cat.Application.Services.Config.injectScripts;
-            return Cat.Application.Services.InjectScripts.connect(tabManager.getTabId(), injectScripts);
-        }, resolve, reject);
-    })).then(function (tabManager) {
-        var commandSelectList = new Cat.Application.Services.CommandSelectList();
-        var seleniumApiXMLFile = chrome.runtime.getURL(Cat.Application.Services.Config.seleniumApiXML);
-        Promise.all([
-            new Promise(function (resolve, reject) {
-                Cat.Application.Services.Selenium.Sender.setApiDocs(seleniumApiXMLFile).then(resolve).catch(reject);
-            }),
-            new Promise(function (resolve, reject) {
-                commandSelectList.load(seleniumApiXMLFile).then(resolve).catch(reject);
-            }),
-            new Promise(function (resolve) {
-                angular.element(document).ready(resolve);
-            })
-        ]).then(function () {
-            autopilotApp = angular.module('AutopilotApp', ['ui.sortable']).factory('tabManager', function () {
-                return tabManager;
-            }).factory('commandSelectList', function () {
-                return commandSelectList;
-            }).service('messageDispatcher', Cat.Application.Models.Message.Dispatcher).factory('seleniumSender', function (tabManager, messageDispatcher) {
-                applicationServicesSeleniumSender = new Cat.Application.Services.Selenium.Sender(tabManager, messageDispatcher);
-                return applicationServicesSeleniumSender;
-            }).factory('commandGrid', function () {
-                return new Cat.Application.Models.CommandGrid.Model();
-            }).controller('Autopilot', Cat.Application.Controllers.Autopilot.Controller);
-            angular.bootstrap(document, ['AutopilotApp']);
-        }).catch(catchError);
+    var windowCtrl = new Cat.Application.Controllers.WindowCtrl(calledTabId);
+    windowCtrl.initialize().then(function () {
+        console.log('load success');
     }).catch(catchError);
 })();

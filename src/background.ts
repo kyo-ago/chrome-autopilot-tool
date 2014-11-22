@@ -1,6 +1,6 @@
 /// <reference path="_loadtsd.ts" />
 (() => {
-    if ('undefined' === typeof chrome) {
+    if ('undefined' !== typeof TestInitialize) {
         return;
     }
     chrome.browserAction.onClicked.addListener((calledTab: chrome.tabs.Tab) => {

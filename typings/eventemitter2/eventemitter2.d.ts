@@ -129,7 +129,7 @@ declare module eventemitter2 {
          * @param event
          * @param args
          */
-        emit(event: string, ...args: string[]): boolean;
+        emit(event: string, ...args: any[]): boolean;
 
         /**
          * Execute each of the listeners that may be listening for the specified event name in order with the list of arguments.

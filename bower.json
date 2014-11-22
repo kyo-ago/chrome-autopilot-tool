@@ -16,7 +16,8 @@
     "angular": "~1.2.16",
     "jQuery": "~2.1.0",
     "jqueryui": "~1.10.4",
-    "angular-ui-sortable": "~0.12.5"
+    "angular-ui-sortable": "~0.12.5",
+    "eventemitter2": "~0.4.14"
   },
   "devDependencies": {
     "power-assert": "~0.9.0"

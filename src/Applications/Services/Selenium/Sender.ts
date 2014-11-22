@@ -1,13 +1,13 @@
 /// <reference path="../../../Models/CommandList/Model.ts" />
 /// <reference path="../../Models/Message/PlaySeleniumCommandExecute/Repository.ts" />
 /// <reference path="../../Models/Message/Dispatcher.ts" />
-/// <reference path="../TabManager.ts" />
+/// <reference path="../Tab/TabManager.ts" />
 /// <reference path="./Base.ts" />
 
 module Cat.Application.Services.Selenium {
     export class Sender extends Base {
         private messagePlaySeleniumCommandExecuteRepository = new Models.Message.PlaySeleniumCommandExecute.Repository();
-        constructor (private tabManager: Services.TabManager, private messageDispatcher: Cat.Application.Models.Message.Dispatcher) {
+        constructor (private tabManager: Services.Tab.TabManager, private messageDispatcher: Cat.Application.Models.Message.Dispatcher) {
             super(() => new (<any>window).ChromeExtensionBackedSelenium(tabManager.getTabURL(), ''));
             (<any>window).shouldAbortCurrentCommand = () => false;
             tabManager.onConnect(() => {

@@ -15,10 +15,13 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-        'extension/bower_components/power-assert/build/power-assert.js',
-        'extension/js/*.js',
-        'tmp/powered-test/**/*.js',
-        'tmp/powered-test/*.js'
+      'extension/bower_components/power-assert/build/power-assert.js',
+      'extension/bower_components/eventemitter2/lib/eventemitter2.js',
+      'node_modules/sinon/pkg/sinon.js',
+      'test/initialize.js',
+      'extension/js/*.js',
+      'tmp/powered-test/**/*.js',
+      'tmp/powered-test/*.js'
     ],
 
 
@@ -58,7 +61,7 @@ module.exports = function(config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['PhantomJS'],
+    browsers: ['Chrome'],
 
 
     // Continuous Integration mode

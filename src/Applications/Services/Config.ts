@@ -16,6 +16,7 @@ module Cat.Application.Services {
             "js/selenium-ide/recorder.js",
             "js/selenium-ide/recorder-handlers.js",
             "js/selenium-ide/testCase.js",
+            "bower_components/eventemitter2/lib/eventemitter2.js",
             "js/content_scripts.js"
         ];
         static seleniumApiXML = '/js/selenium-ide/iedoc-core.xml';

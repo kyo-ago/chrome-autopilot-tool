@@ -1,0 +1,63 @@
+/// <reference path="Autopilot.ts" />
+/// <reference path="../Services/Config.ts" />
+/// <reference path="../Services/TabInitializer.ts" />
+/// <reference path="../Services/Selenium/Sender.ts" />
+/// <reference path="../Models/CommandGrid/Model.ts" />
+
+module Cat.Application.Controllers {
+    export class WindowCtrl {
+        constructor (private calledTabId: string) {}
+        private initAngular (tabManager, commandSelectList) {
+            return new Promise((resolve) => {
+                var autopilotApp = angular.module('AutopilotApp', ['ui.sortable'])
+                    .factory('tabManager', () => tabManager)
+                    .factory('commandSelectList', () => commandSelectList)
+                    .service('messageDispatcher', Models.Message.Dispatcher)
+                    .factory('seleniumSender', (tabManager: Services.Tab.TabManager, messageDispatcher: Models.Message.Dispatcher) => {
+                        applicationServicesSeleniumSender = new Services.Selenium.Sender(tabManager, messageDispatcher);
+                        return applicationServicesSeleniumSender;
+                    })
+                    .factory('commandGrid', () => {
+                        return new Models.CommandGrid.Model();
+                    })
+                    .controller('Autopilot', Controllers.Autopilot.Controller)
+                ;
+                angular.bootstrap(document, ['AutopilotApp']);
+                resolve(autopilotApp);
+            });
+        }
+        private initCommandSelectList () {
+            var seleniumApiXMLFile = chrome.runtime.getURL(Services.Config.seleniumApiXML);
+            return Promise.all([
+                new Promise((resolve: () => void, reject: (errorMessage: string) => void) => {
+                    var commandSelectList = new Services.CommandSelectList();
+                    commandSelectList.load(seleniumApiXMLFile).then(resolve).catch(reject);
+                    return commandSelectList;
+                }),
+                new Promise((resolve: () => void, reject: (errorMessage: string) => void) => {
+                    Services.Selenium.Sender.setApiDocs(seleniumApiXMLFile).then(resolve).catch(reject);
+                }),
+                new Promise((resolve: () => void) => {
+                    angular.element(document).ready(resolve);
+                })
+            ]);
+        }
+        private initTabInitializer (resolve, catchError) {
+            (new Promise((resolve: (tabManager: Services.Tab.TabManager) => void, reject: (errorMessage: string) => void) => {
+                var tabInitializer = new Services.TabInitializer(this.calledTabId);
+                tabInitializer.start().then(resolve).catch(reject);
+            })).then((tabManager: Services.Tab.TabManager) => {
+                this.initCommandSelectList().then((results) => {
+                    var commandSelectList = results.shift();
+                    this.initAngular(tabManager, commandSelectList)
+                        .then(resolve)
+                        .catch(catchError)
+                    ;
+                }).catch(catchError);
+            }).catch(catchError);
+        }
+        initialize () {
+            return new Promise(this.initTabInitializer.bind(this));
+        }
+    }
+}

@@ -1,6 +1,6 @@
-/// <reference path="../Models/Message/PlaySeleniumCommandResult/Repository.ts" />
+/// <reference path="../../Models/Message/PlaySeleniumCommandResult/Repository.ts" />
 
-module Cat.Application.Services {
+module Cat.Application.Services.Tab {
     export class TabManager {
         private tab: chrome.tabs.Tab;
         private port: chrome.runtime.Port;
@@ -10,18 +10,20 @@ module Cat.Application.Services {
         private sendMessageResponseInterval = 1000;
 
         constructor (
-            calledTabId: string,
-            private initialize: (tabManager: TabManager) => Promise<void>,
-            resolve: (tabManager: TabManager) => void,
-            reject: (errorMessage: string) => void
+            private calledTabId: string,
+            private initialize: (tabManager: TabManager) => Promise<void>
         ) {
-            this.getTab(calledTabId).then((tab: chrome.tabs.Tab) => {
-                this.tab = tab;
-                this.initialize(this).then(() => {
-                    this.connectTab();
-                    resolve(this);
+        }
+        connect () {
+            return new Promise((resolve, reject) => {
+                this.getTab(this.calledTabId).then((tab: chrome.tabs.Tab) => {
+                    this.tab = tab;
+                    this.initialize(this).then(() => {
+                        this.connectTab();
+                        resolve(this);
+                    }).catch(reject);
                 }).catch(reject);
-            }).catch(reject);
+            });
         }
         private getTab (calledTabId: string) {
             return new Promise((resolve: (tab: chrome.tabs.Tab) => void, rejectAll: (errorMessage: string) => void) => {

@@ -1,7 +1,10 @@
-module Cat.Application.Services {
+module Cat.Application.Services.Tab {
     export class InjectScripts {
-        static connect(tabid: number, injectScripts_: string[]) {
-            var injectScripts = injectScripts_.slice();
+        private injectScripts : string[];
+        constructor (private injectScripts_) {
+            this.injectScripts = injectScripts_.slice();
+        }
+        connect(tabid: number) {
             return new Promise<void>((resolve: () => void) => {
                 var executeScript = (injectScript: string) => {
                     //コードをxhrでキャッシュしてfileではなく、codeで渡してユーザ動作をブロックしつつ実行できないか
@@ -9,8 +12,8 @@ module Cat.Application.Services {
                         'runAt' : 'document_start',
                         'file' : injectScript
                     }, () => {
-                        if (injectScripts.length) {
-                            return executeScript(injectScripts.shift());
+                        if (this.injectScripts.length) {
+                            return executeScript(this.injectScripts.shift());
                         }
                         chrome.tabs.executeScript(tabid, {
                             'code' : 'this.extensionContentLoaded = true'
@@ -25,7 +28,7 @@ module Cat.Application.Services {
                     if (result && result.length && result[0]) {
                         return resolve();
                     }
-                    executeScript(injectScripts.shift());
+                    executeScript(this.injectScripts.shift());
                 });
             });
         }

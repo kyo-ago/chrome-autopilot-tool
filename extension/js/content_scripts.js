@@ -1,3 +1,5 @@
+/// <reference path="../typings/tsd.d.ts" />
+window.EventEmitter = window.EventEmitter2;
 var Cat;
 (function (Cat) {
     var UUID;
@@ -95,30 +97,6 @@ var Cat;
         })(Entity = Base.Entity || (Base.Entity = {}));
     })(Base = Cat.Base || (Cat.Base = {}));
 })(Cat || (Cat = {}));
-/// <reference path="../../Base/Entity/Model.ts" />
-var Cat;
-(function (Cat) {
-    var Models;
-    (function (Models) {
-        var Command;
-        (function (Command) {
-            var Model = (function (_super) {
-                __extends(Model, _super);
-                function Model(type, target, value) {
-                    if (type === void 0) { type = ''; }
-                    if (target === void 0) { target = ''; }
-                    if (value === void 0) { value = ''; }
-                    _super.call(this);
-                    this.type = type;
-                    this.target = target;
-                    this.value = value;
-                }
-                return Model;
-            })(Cat.Base.Entity.Model);
-            Command.Model = Model;
-        })(Command = Models.Command || (Models.Command = {}));
-    })(Models = Cat.Models || (Cat.Models = {}));
-})(Cat || (Cat = {}));
 /// <reference path="../../../Base/Entity/Model.ts" />
 var Cat;
 (function (Cat) {
@@ -145,6 +123,30 @@ var Cat;
     })(Application = Cat.Application || (Cat.Application = {}));
 })(Cat || (Cat = {}));
 /// <reference path="./Model.ts" />
+/// <reference path="../../Base/Entity/Model.ts" />
+var Cat;
+(function (Cat) {
+    var Models;
+    (function (Models) {
+        var Command;
+        (function (Command) {
+            var Model = (function (_super) {
+                __extends(Model, _super);
+                function Model(type, target, value) {
+                    if (type === void 0) { type = ''; }
+                    if (target === void 0) { target = ''; }
+                    if (value === void 0) { value = ''; }
+                    _super.call(this);
+                    this.type = type;
+                    this.target = target;
+                    this.value = value;
+                }
+                return Model;
+            })(Cat.Base.Entity.Model);
+            Command.Model = Model;
+        })(Command = Models.Command || (Models.Command = {}));
+    })(Models = Cat.Models || (Cat.Models = {}));
+})(Cat || (Cat = {}));
 /// <reference path="../../Base/Entity/Repository.ts" />
 /// <reference path="./Model.ts" />
 var Cat;
@@ -747,14 +749,19 @@ var Cat;
         })(Models = Application.Models || (Application.Models = {}));
     })(Application = Cat.Application || (Cat.Application = {}));
 })(Cat || (Cat = {}));
+/*
+* Mock RecorderObserver for Selenium Recorder
+* */
 var Cat;
 (function (Cat) {
     var Application;
     (function (Application) {
         var Services;
         (function (Services) {
-            var RecorderObserver = (function () {
+            var RecorderObserver = (function (_super) {
+                __extends(RecorderObserver, _super);
                 function RecorderObserver() {
+                    _super.apply(this, arguments);
                     this.recordingEnabled = true;
                     this.isSidebar = false;
                 }
@@ -762,11 +769,13 @@ var Cat;
                     return console;
                 };
                 RecorderObserver.prototype.addCommand = function (command, target, value, window, insertBeforeLastCommand) {
+                    this.emit('addCommand', command, target, value, window, insertBeforeLastCommand);
                 };
                 RecorderObserver.prototype.onUnloadDocument = function (doc) {
+                    this.emit('onUnloadDocument', doc);
                 };
                 return RecorderObserver;
-            })();
+            })(EventEmitter);
             Services.RecorderObserver = RecorderObserver;
         })(Services = Application.Services || (Application.Services = {}));
     })(Application = Cat.Application || (Cat.Application = {}));
@@ -906,52 +915,80 @@ var Cat;
         })(Services = Application.Services || (Application.Services = {}));
     })(Application = Cat.Application || (Cat.Application = {}));
 })(Cat || (Cat = {}));
+/// <reference path="../Models/SeleniumCommand/Model.ts" />
+/// <reference path="../Models/Message/Dispatcher.ts" />
+/// <reference path="../Services/RecorderObserver.ts" />
+/// <reference path="../Services/Selenium/Receiver.ts" />
+var Cat;
+(function (Cat) {
+    var Application;
+    (function (Application) {
+        var Controllers;
+        (function (Controllers) {
+            var ContentScriptsCtrl = (function () {
+                function ContentScriptsCtrl(port) {
+                    this.port = port;
+                    this.messagePlaySeleniumCommandResultRepository = new Application.Models.Message.PlaySeleniumCommandResult.Repository();
+                    this.messageAddCommentRepository = new Application.Models.Message.AddComment.Repository();
+                    this.recorderObserver = new Application.Services.RecorderObserver();
+                    this.messageDispatcher = new Application.Models.Message.Dispatcher();
+                    this.SeleniumReceiver = new Application.Services.Selenium.Receiver();
+                }
+                ContentScriptsCtrl.prototype.onMessage = function (message, sender, sendResponse) {
+                    var _this = this;
+                    this.messageDispatcher.dispatch(message, {
+                        MessagePlaySeleniumCommandExecuteModel: function (message) {
+                            Recorder.deregister(_this.recorderObserver, window);
+                            var result = _this.SeleniumReceiver.execute(message.command);
+                            Recorder.register(_this.recorderObserver, window);
+                            var resultMessage = new Application.Models.Message.PlaySeleniumCommandResult.Model(result);
+                            sendResponse(_this.messagePlaySeleniumCommandResultRepository.toObject(resultMessage));
+                        }
+                    });
+                };
+                ContentScriptsCtrl.prototype.addCommand = function (commandName, target, value, window, insertBeforeLastCommand) {
+                    var message = {
+                        'content': {
+                            'command': {
+                                'type': commandName,
+                                'target': target,
+                                'value': value
+                            },
+                            'insertBeforeLastCommand': insertBeforeLastCommand
+                        }
+                    };
+                    var addCommentMessage = this.messageAddCommentRepository.fromObject(message);
+                    this.port.postMessage(this.messageAddCommentRepository.toObject(addCommentMessage));
+                };
+                ContentScriptsCtrl.prototype.initialize = function () {
+                    var _this = this;
+                    Recorder.register(this.recorderObserver, window);
+                    this.recorderObserver.addListener('addCommand', function (commandName, target, value, window, insertBeforeLastCommand) {
+                        _this.addCommand(commandName, target, value, window, insertBeforeLastCommand);
+                    });
+                    this.port.onDisconnect.addListener(function () {
+                        Recorder.deregister(_this.recorderObserver, window);
+                    });
+                };
+                return ContentScriptsCtrl;
+            })();
+            Controllers.ContentScriptsCtrl = ContentScriptsCtrl;
+        })(Controllers = Application.Controllers || (Application.Controllers = {}));
+    })(Application = Cat.Application || (Cat.Application = {}));
+})(Cat || (Cat = {}));
 /// <reference path="_loadtsd.ts" />
-/// <reference path="Models/Command/Model.ts" />
-/// <reference path="Applications/Models/SeleniumCommand/Model.ts" />
-/// <reference path="Applications/Models/Message/Dispatcher.ts" />
-/// <reference path="Applications/Services/RecorderObserver.ts" />
-/// <reference path="Applications/Services/Selenium/Receiver.ts" />
+/// <reference path="Applications/Controllers/ContentScriptsCtrl.ts" />
 var globalPort;
 (function () {
-    if ('undefined' === typeof chrome) {
+    if ('undefined' !== typeof TestInitialize) {
         return;
     }
-    var messagePlaySeleniumCommandResultRepository = new Cat.Application.Models.Message.PlaySeleniumCommandResult.Repository();
-    var messageAddCommentRepository = new Cat.Application.Models.Message.AddComment.Repository();
-    var recorderObserver = new Cat.Application.Services.RecorderObserver();
-    var messageDispatcher = new Cat.Application.Models.Message.Dispatcher();
-    var SeleniumReceiver = new Cat.Application.Services.Selenium.Receiver();
     chrome.extension.onConnect.addListener(function (port) {
         globalPort = port;
-        Recorder.register(recorderObserver, window);
-        recorderObserver.addCommand = function (commandName, target, value, window, insertBeforeLastCommand) {
-            var message = {
-                'content': {
-                    'command': {
-                        'type': commandName,
-                        'target': target,
-                        'value': value
-                    },
-                    'insertBeforeLastCommand': insertBeforeLastCommand
-                }
-            };
-            var addCommentMessage = messageAddCommentRepository.fromObject(message);
-            port.postMessage(messageAddCommentRepository.toObject(addCommentMessage));
-        };
+        var contentScriptsCtrl = new Cat.Application.Controllers.ContentScriptsCtrl(port);
+        contentScriptsCtrl.initialize();
         chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
-            messageDispatcher.dispatch(message, {
-                MessagePlaySeleniumCommandExecuteModel: function (message) {
-                    Recorder.deregister(recorderObserver, window);
-                    var result = SeleniumReceiver.execute(message.command);
-                    Recorder.register(recorderObserver, window);
-                    var resultMessage = new Cat.Application.Models.Message.PlaySeleniumCommandResult.Model(result);
-                    sendResponse(messagePlaySeleniumCommandResultRepository.toObject(resultMessage));
-                }
-            });
-        });
-        port.onDisconnect.addListener(function () {
-            Recorder.deregister(recorderObserver, window);
+            contentScriptsCtrl.onMessage(message, sender, sendResponse);
         });
         window.onunload = function () {
             port = null;

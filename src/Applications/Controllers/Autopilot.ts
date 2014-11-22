@@ -1,6 +1,6 @@
 /// <reference path="../Models/Message/AddCommand/Model.ts" />
 /// <reference path="../Models/Message/Dispatcher.ts" />
-/// <reference path="../Services/TabManager.ts" />
+/// <reference path="../Services/Tab/TabManager.ts" />
 /// <reference path="../Services/CommandSelectList.ts" />
 /// <reference path="../Services/Selenium/Sender.ts" />
 /// <reference path="../Models/CommandGrid/Model.ts" />
@@ -24,7 +24,7 @@ module Cat.Application.Controllers.Autopilot {
     export class Controller {
         constructor(
             $scope: Scope,
-            tabManager: Services.TabManager,
+            tabManager: Services.Tab.TabManager,
             commandGrid: Cat.Application.Models.CommandGrid.Model,
             messageDispatcher: Models.Message.Dispatcher,
             seleniumSender: Cat.Application.Services.Selenium.Sender,
@@ -64,7 +64,7 @@ module Cat.Application.Controllers.Autopilot {
         }
         private bindTabManager (
             $scope: Scope,
-            tabManager: Services.TabManager,
+            tabManager: Services.Tab.TabManager,
             messageDispatcher: Models.Message.Dispatcher
         ) {
             tabManager.onMessage((message: Object) => {
