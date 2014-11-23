@@ -1293,53 +1293,56 @@ var Cat;
         })(Services = Application.Services || (Application.Services = {}));
     })(Application = Cat.Application || (Cat.Application = {}));
 })(Cat || (Cat = {}));
-/// <reference path="Tab/InjectScripts.ts" />
-/// <reference path="Config.ts" />
-/// <reference path="Tab/Manager" />
+/// <reference path="InjectScripts.ts" />
+/// <reference path="../Config.ts" />
+/// <reference path="Manager" />
 var Cat;
 (function (Cat) {
     var Application;
     (function (Application) {
         var Services;
         (function (Services) {
-            var TabInitializer = (function () {
-                function TabInitializer(calledTabId) {
-                    this.calledTabId = calledTabId;
-                    var injectScripts = Services.Config.injectScripts;
-                    this.injectScripts = new Services.Tab.InjectScripts(injectScripts);
-                }
-                TabInitializer.prototype.start = function () {
-                    var _this = this;
-                    return new Promise(function (resolve, reject) {
-                        _this.getTab(_this.calledTabId).then(function (tab) {
-                            _this.manager = new Services.Tab.Manager(tab, function (manager) {
-                                return _this.injectScripts.connect(manager.getTabId());
-                            });
-                            _this.manager.connect().then(function () { return resolve(_this.manager); });
-                        }).catch(reject);
-                    });
-                };
-                TabInitializer.prototype.getTab = function (calledTabId) {
-                    return new Promise(function (resolve, reject) {
-                        chrome.tabs.get(parseInt(calledTabId), function (tab) {
-                            if (tab && tab.id) {
-                                resolve(tab);
-                            }
-                            else {
-                                reject('Security Error.\ndoes not run on "chrome://" page.\n');
-                            }
+            var Tab;
+            (function (Tab) {
+                var Initializer = (function () {
+                    function Initializer(calledTabId) {
+                        this.calledTabId = calledTabId;
+                        var injectScripts = Services.Config.injectScripts;
+                        this.injectScripts = new Tab.InjectScripts(injectScripts);
+                    }
+                    Initializer.prototype.start = function () {
+                        var _this = this;
+                        return new Promise(function (resolve, reject) {
+                            _this.getTab(_this.calledTabId).then(function (tab) {
+                                _this.manager = new Tab.Manager(tab, function (manager) {
+                                    return _this.injectScripts.connect(manager.getTabId());
+                                });
+                                _this.manager.connect().then(function () { return resolve(_this.manager); });
+                            }).catch(reject);
                         });
-                    });
-                };
-                return TabInitializer;
-            })();
-            Services.TabInitializer = TabInitializer;
+                    };
+                    Initializer.prototype.getTab = function (calledTabId) {
+                        return new Promise(function (resolve, reject) {
+                            chrome.tabs.get(parseInt(calledTabId), function (tab) {
+                                if (tab && tab.id) {
+                                    resolve(tab);
+                                }
+                                else {
+                                    reject('Security Error.\ndoes not run on "chrome://" page.\n');
+                                }
+                            });
+                        });
+                    };
+                    return Initializer;
+                })();
+                Tab.Initializer = Initializer;
+            })(Tab = Services.Tab || (Services.Tab = {}));
         })(Services = Application.Services || (Application.Services = {}));
     })(Application = Cat.Application || (Cat.Application = {}));
 })(Cat || (Cat = {}));
 /// <reference path="Autopilot.ts" />
 /// <reference path="../Services/Config.ts" />
-/// <reference path="../Services/TabInitializer.ts" />
+/// <reference path="../Services/Tab/Initializer.ts" />
 /// <reference path="../Services/Selenium/Sender.ts" />
 /// <reference path="../Models/CommandGrid/Model.ts" />
 var Cat;
@@ -1383,8 +1386,8 @@ var Cat;
                 WindowCtrl.prototype.initTabInitializer = function (resolve, catchError) {
                     var _this = this;
                     (new Promise(function (resolve, reject) {
-                        var tabInitializer = new Application.Services.TabInitializer(_this.calledTabId);
-                        tabInitializer.start().then(resolve).catch(reject);
+                        var initializer = new Application.Services.Tab.Initializer(_this.calledTabId);
+                        initializer.start().then(resolve).catch(reject);
                     })).then(function (manager) {
                         _this.initCommandSelectList().then(function (results) {
                             var commandSelectList = results.shift();

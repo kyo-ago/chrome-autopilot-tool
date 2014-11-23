@@ -1,19 +1,19 @@
-/// <reference path="Tab/InjectScripts.ts" />
-/// <reference path="Config.ts" />
-/// <reference path="Tab/Manager" />
+/// <reference path="InjectScripts.ts" />
+/// <reference path="../Config.ts" />
+/// <reference path="Manager" />
 
-module Cat.Application.Services {
-    export class TabInitializer {
-        private injectScripts : Tab.InjectScripts;
-        private manager : Tab.Manager;
+module Cat.Application.Services.Tab {
+    export class Initializer {
+        private injectScripts : InjectScripts;
+        private manager : Manager;
         constructor (private calledTabId: string) {
             var injectScripts = Config.injectScripts;
-            this.injectScripts = new Tab.InjectScripts(injectScripts);
+            this.injectScripts = new InjectScripts(injectScripts);
         }
         start () {
             return new Promise((resolve, reject) => {
                 this.getTab(this.calledTabId).then((tab: chrome.tabs.Tab) => {
-                    this.manager = new Tab.Manager(tab, (manager) => {
+                    this.manager = new Manager(tab, (manager) => {
                         return this.injectScripts.connect(manager.getTabId());
                     });
                     this.manager.connect().then(() => resolve(this.manager));

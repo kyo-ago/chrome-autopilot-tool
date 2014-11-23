@@ -1,6 +1,6 @@
 /// <reference path="Autopilot.ts" />
 /// <reference path="../Services/Config.ts" />
-/// <reference path="../Services/TabInitializer.ts" />
+/// <reference path="../Services/Tab/Initializer.ts" />
 /// <reference path="../Services/Selenium/Sender.ts" />
 /// <reference path="../Models/CommandGrid/Model.ts" />
 
@@ -44,8 +44,8 @@ module Cat.Application.Controllers {
         }
         private initTabInitializer (resolve, catchError) {
             (new Promise((resolve: (manager: Services.Tab.Manager) => void, reject: (errorMessage: string) => void) => {
-                var tabInitializer = new Services.TabInitializer(this.calledTabId);
-                tabInitializer.start().then(resolve).catch(reject);
+                var initializer = new Services.Tab.Initializer(this.calledTabId);
+                initializer.start().then(resolve).catch(reject);
             })).then((manager: Services.Tab.Manager) => {
                 this.initCommandSelectList().then((results) => {
                     var commandSelectList = results.shift();
