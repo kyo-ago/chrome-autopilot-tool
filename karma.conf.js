@@ -20,8 +20,7 @@ module.exports = function(config) {
       'node_modules/sinon/pkg/sinon.js',
       'test/initialize.js',
       'extension/js/*.js',
-      'tmp/powered-test/**/*.js',
-      'tmp/powered-test/*.js'
+      'tmp/powered-test/**/*.js'
     ],
 
 

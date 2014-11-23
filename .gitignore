@@ -1,3 +1,4 @@
 extension/bower_components
 node_modules
 tmp
+coverage

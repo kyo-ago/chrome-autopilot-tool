@@ -15,7 +15,6 @@ gulp.task('bump', function () {
 gulp.task('zip', function () {
     var zip = require('gulp-zip');
     return gulp.src([
-        'extension/*',
         'extension/**/*'
     ], { base: process.cwd() })
         .pipe(zip('archive.zip'))
@@ -39,14 +38,14 @@ gulp.task('compile', function () {
 
 gulp.task('test:compile', function () {
     var typescript = require('gulp-tsc');
-    return gulp.src(['test/*.ts', 'test/**/*.ts'])
+    return gulp.src(['test/**/*.ts', 'src/**/*.ts'])
         .pipe(typescript())
         .pipe(gulp.dest('tmp/test/'))
     ;
 });
 function testPowerAssert () {
     var espower = require("gulp-espower");
-    return gulp.src(['./tmp/test/*.js', './tmp/test/test/**/*.js'])
+    return gulp.src('./tmp/test/test/**/*.js')
         .pipe(espower())
         .pipe(gulp.dest('./tmp/powered-test/'))
     ;
@@ -61,7 +60,7 @@ gulp.task('test:karma', function (done) {
 });
 gulp.task('test:clean', function () {
     var rm = require('gulp-rm');
-    return gulp.src(['./tmp/**/*', './tmp/*', './tmp/'], { read: false })
+    return gulp.src(['./tmp/**/*', './tmp/'], { read: false })
         .pipe(rm())
     ;
 });
@@ -74,13 +73,13 @@ gulp.task('test', function () {
     runSequence('test:init', 'test:karma', 'test:clean');
 });
 gulp.task('watch', ['compile', 'test:init'], function() {
-    var karma = require('karma').server;
     var plumber = require('gulp-plumber');
     var typescript = require('gulp-tsc');
+    var karma = require('karma').server;
     karma.start({
         configFile: __dirname + '/karma.conf.js'
     });
-    gulp.watch(['test/**/*.ts', 'test/*.ts']).on('change', function (file) {
+    gulp.watch(['test/**/*.ts']).on('change', function (file) {
         return gulp.src(['src/**/*.ts', file['path'].replace(__dirname + '/', '')])
             .pipe(plumber())
             .pipe(typescript())
@@ -88,7 +87,7 @@ gulp.task('watch', ['compile', 'test:init'], function() {
             .on('end', testPowerAssert)
             ;
     });
-    gulp.watch(['src/**/*.ts', 'src/*.ts'], ['compile']);
+    gulp.watch('src/**/*.ts', ['compile']);
 });
 
 gulp.task('default', ['watch']);
