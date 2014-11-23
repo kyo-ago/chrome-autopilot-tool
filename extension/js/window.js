@@ -1213,32 +1213,38 @@ var Cat;
                         this.injectScripts_ = injectScripts_;
                         this.injectScripts = injectScripts_.slice();
                     }
+                    // set double loading flag.
+                    InjectScripts.prototype.executeEnd = function (tabid, resolve) {
+                        chrome.tabs.executeScript(tabid, {
+                            'code': 'this.extensionContentLoaded = true'
+                        }, resolve);
+                    };
+                    InjectScripts.prototype.executeScript = function (tabid, injectScript) {
+                        var _this = this;
+                        return new Promise(function (resolve) {
+                            //コードをxhrでキャッシュしてfileではなく、codeで渡してユーザ動作をブロックしつつ実行できないか
+                            chrome.tabs.executeScript(tabid, {
+                                'runAt': 'document_start',
+                                'file': injectScript
+                            }, function () {
+                                if (_this.injectScripts.length) {
+                                    return _this.executeScript(tabid, _this.injectScripts.shift()).then(resolve);
+                                }
+                                _this.executeEnd(tabid, resolve);
+                            });
+                        });
+                    };
                     InjectScripts.prototype.connect = function (tabid) {
                         var _this = this;
                         return new Promise(function (resolve) {
-                            var executeScript = function (injectScript) {
-                                //コードをxhrでキャッシュしてfileではなく、codeで渡してユーザ動作をブロックしつつ実行できないか
-                                chrome.tabs.executeScript(tabid, {
-                                    'runAt': 'document_start',
-                                    'file': injectScript
-                                }, function () {
-                                    if (_this.injectScripts.length) {
-                                        return executeScript(_this.injectScripts.shift());
-                                    }
-                                    chrome.tabs.executeScript(tabid, {
-                                        'code': 'this.extensionContentLoaded = true'
-                                    }, function () {
-                                        resolve();
-                                    });
-                                });
-                            };
+                            // double loading flag check.
                             chrome.tabs.executeScript(tabid, {
                                 'code': 'this.extensionContentLoaded'
                             }, function (result) {
                                 if (result && result.length && result[0]) {
                                     return resolve();
                                 }
-                                executeScript(_this.injectScripts.shift());
+                                _this.executeScript(tabid, _this.injectScripts.shift()).then(resolve);
                             });
                         });
                     };
