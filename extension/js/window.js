@@ -758,65 +758,28 @@ var Cat;
         (function (Services) {
             var Tab;
             (function (Tab) {
-                var TabManager = (function () {
-                    function TabManager(calledTabId, initialize) {
-                        this.calledTabId = calledTabId;
-                        this.initialize = initialize;
-                        this.onMessageListeners = [];
-                        this.onDisconnectListeners = [];
-                        this.onConnectListeners = [];
+                var Model = (function (_super) {
+                    __extends(Model, _super);
+                    function Model(tab) {
+                        _super.call(this);
+                        this.tab = tab;
                         this.sendMessageResponseInterval = 1000;
-                        this.closeMessage = 'Close test case?';
-                    }
-                    TabManager.prototype.connect = function () {
-                        var _this = this;
-                        return new Promise(function (resolve, reject) {
-                            _this.getTab(_this.calledTabId).then(function (tab) {
-                                _this.tab = tab;
-                                _this.initialize(_this).then(function () {
-                                    _this.connectTab();
-                                    resolve(_this);
-                                }).catch(reject);
-                            }).catch(reject);
-                        });
-                    };
-                    TabManager.prototype.getTab = function (calledTabId) {
-                        return new Promise(function (resolve, rejectAll) {
-                            var reject = function () {
-                                rejectAll('Security Error.\ndoes not run on "chrome://" page.\n');
-                            };
-                            chrome.tabs.get(parseInt(calledTabId), function (tab) {
-                                if (tab && tab.id) {
-                                    resolve(tab);
-                                }
-                                else {
-                                    reject();
-                                }
-                            });
-                        });
-                    };
-                    TabManager.prototype.connectTab = function () {
-                        var _this = this;
                         this.port = chrome.tabs.connect(this.tab.id);
-                        this.port.onDisconnect.addListener(function () {
-                            _this.port = null;
-                            delete _this.port;
-                        });
-                        chrome.tabs.onRemoved.addListener(function (tabId, removeInfo) {
-                            if (_this.tab.id !== tabId) {
-                                return;
-                            }
-                            if (confirm(_this.closeMessage)) {
-                                window.close();
-                            }
-                        });
+                    }
+                    Model.prototype.getTabId = function () {
+                        return this.tab.id;
+                    };
+                    Model.prototype.getTabURL = function () {
+                        return this.tab.url;
+                    };
+                    Model.prototype.checkOnUpdated = function () {
+                        var _this = this;
                         var updated = false;
                         chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
                             if (_this.tab.id !== tabId) {
                                 return;
                             }
-                            _this.port = null;
-                            delete _this.port;
+                            _this.disconnect();
                             if (changeInfo.status === 'complete') {
                                 updated = false;
                                 return;
@@ -825,64 +788,139 @@ var Cat;
                                 return;
                             }
                             updated = true;
-                            _this.reloadTab();
+                            _this.emit('onUpdated');
                         });
                     };
-                    TabManager.prototype.reloadTab = function () {
+                    Model.prototype.postMessage = function (message) {
+                        this.port.postMessage(message);
+                    };
+                    Model.prototype.sendMessage = function (message) {
                         var _this = this;
                         return new Promise(function (resolve, reject) {
+                            chrome.tabs.sendMessage(_this.tab.id, message, function (result) {
+                                if (!result) {
+                                    return reject('missing result');
+                                }
+                                var interval = setInterval(function () {
+                                    if (!_this.port) {
+                                        return;
+                                    }
+                                    if (_this.tab.status !== 'complete') {
+                                        return;
+                                    }
+                                    clearInterval(interval);
+                                    var message = new Application.Models.Message.PlaySeleniumCommandResult.Model(result);
+                                    resolve(message.command);
+                                }, _this.sendMessageResponseInterval);
+                                var timeout = setTimeout(function () {
+                                    clearInterval(interval);
+                                    return reject('sendMessage timeout');
+                                }, _this.sendMessageResponseInterval * 10);
+                            });
+                        });
+                    };
+                    Model.prototype.connect = function () {
+                        var _this = this;
+                        this.port.onDisconnect.addListener(function () {
+                            _this.disconnect();
+                        });
+                        chrome.tabs.onRemoved.addListener(function (tabId, removeInfo) {
+                            if (_this.tab.id !== tabId) {
+                                return;
+                            }
+                            _this.emit('onRemoved');
+                        });
+                        this.checkOnUpdated();
+                    };
+                    Model.prototype.onMessage = function (callback) {
+                        this.port.onMessage.addListener(callback);
+                    };
+                    Model.prototype.onDisconnect = function (callback) {
+                        this.port.onDisconnect.addListener(callback);
+                    };
+                    Model.prototype.disconnect = function () {
+                        this.port = null;
+                        delete this.port;
+                    };
+                    return Model;
+                })(EventEmitter);
+                Tab.Model = Model;
+            })(Tab = Services.Tab || (Services.Tab = {}));
+        })(Services = Application.Services || (Application.Services = {}));
+    })(Application = Cat.Application || (Cat.Application = {}));
+})(Cat || (Cat = {}));
+/// <reference path="Model.ts" />
+var Cat;
+(function (Cat) {
+    var Application;
+    (function (Application) {
+        var Services;
+        (function (Services) {
+            var Tab;
+            (function (Tab) {
+                var Manager = (function () {
+                    function Manager(tab, initialize) {
+                        this.initialize = initialize;
+                        this.onMessageListeners = [];
+                        this.onDisconnectListeners = [];
+                        this.onConnectListeners = [];
+                        this.closeMessage = 'Close test case?';
+                        this.tab = new Tab.Model(tab);
+                    }
+                    Manager.prototype.connect = function () {
+                        var _this = this;
+                        this.tab.connect();
+                        this.tab.addListener('onRemoved', function () {
+                            if (confirm(_this.closeMessage)) {
+                                window.close();
+                            }
+                        });
+                        this.tab.addListener('onUpdated', function () {
+                            _this.reloadTab();
+                        });
+                        return this.initialize(this);
+                    };
+                    Manager.prototype.reloadTab = function () {
+                        var _this = this;
+                        var tabId = this.tab.getTabId();
+                        return new Promise(function (resolve, reject) {
                             _this.initialize(_this).then(function () {
-                                _this.port = chrome.tabs.connect(_this.tab.id);
-                                _this.onConnectListeners.forEach(function (listener) { return listener(); });
-                                _this.onMessageListeners.forEach(function (listener) { return _this.port.onMessage.addListener(listener); });
-                                _this.onDisconnectListeners.forEach(function (listener) { return _this.port.onDisconnect.addListener(listener); });
-                                resolve();
+                                chrome.tabs.get(tabId, function (tab) {
+                                    _this.tab = new Tab.Model(tab);
+                                    _this.onConnectListeners.forEach(function (listener) { return listener(); });
+                                    _this.onMessageListeners.forEach(function (listener) { return _this.tab.onMessage(listener); });
+                                    _this.onDisconnectListeners.forEach(function (listener) { return _this.tab.onDisconnect(listener); });
+                                    resolve();
+                                });
                             }).catch(reject);
                         });
                     };
-                    TabManager.prototype.getTabId = function () {
-                        return this.tab.id;
+                    Manager.prototype.getTabId = function () {
+                        return this.tab.getTabId();
                     };
-                    TabManager.prototype.getTabURL = function () {
-                        return this.tab.url;
+                    Manager.prototype.getTabURL = function () {
+                        return this.tab.getTabURL();
                     };
-                    TabManager.prototype.postMessage = function (message) {
-                        this.port.postMessage(message);
+                    Manager.prototype.postMessage = function (message) {
+                        this.tab.postMessage(message);
                     };
-                    TabManager.prototype.sendMessage = function (message, callback) {
-                        var _this = this;
-                        chrome.tabs.sendMessage(this.tab.id, message, function (result) {
-                            if (!result) {
-                                throw new Error('missing result');
-                                return;
-                            }
-                            var interval = setInterval(function () {
-                                if (!_this.port) {
-                                    return;
-                                }
-                                if (_this.tab.status !== 'complete') {
-                                    return;
-                                }
-                                clearInterval(interval);
-                                var message = new Application.Models.Message.PlaySeleniumCommandResult.Model(result);
-                                callback(message.command);
-                            }, _this.sendMessageResponseInterval);
-                        });
+                    Manager.prototype.sendMessage = function (message) {
+                        return this.tab.sendMessage(message);
                     };
-                    TabManager.prototype.onMessage = function (callback) {
+                    Manager.prototype.onMessage = function (callback) {
                         this.onMessageListeners.push(callback);
-                        this.port.onMessage.addListener(callback);
+                        this.tab.onMessage(callback);
                     };
-                    TabManager.prototype.onConnect = function (callback) {
+                    Manager.prototype.onConnect = function (callback) {
                         this.onConnectListeners.push(callback);
                     };
-                    TabManager.prototype.onDisconnect = function (callback) {
+                    Manager.prototype.onDisconnect = function (callback) {
                         this.onDisconnectListeners.push(callback);
-                        this.port.onDisconnect.addListener(callback);
+                        this.tab.onDisconnect(callback);
                     };
-                    return TabManager;
+                    return Manager;
                 })();
-                Tab.TabManager = TabManager;
+                Tab.Manager = Manager;
             })(Tab = Services.Tab || (Services.Tab = {}));
         })(Services = Application.Services || (Application.Services = {}));
     })(Application = Cat.Application || (Cat.Application = {}));
@@ -1015,7 +1053,7 @@ var Cat;
 /// <reference path="../../../Models/CommandList/Model.ts" />
 /// <reference path="../../Models/Message/PlaySeleniumCommandExecute/Repository.ts" />
 /// <reference path="../../Models/Message/Dispatcher.ts" />
-/// <reference path="../Tab/TabManager.ts" />
+/// <reference path="../Tab/Manager.ts" />
 /// <reference path="./Base.ts" />
 var Cat;
 (function (Cat) {
@@ -1027,16 +1065,16 @@ var Cat;
             (function (Selenium) {
                 var Sender = (function (_super) {
                     __extends(Sender, _super);
-                    function Sender(tabManager, messageDispatcher) {
-                        _super.call(this, function () { return new window.ChromeExtensionBackedSelenium(tabManager.getTabURL(), ''); });
-                        this.tabManager = tabManager;
+                    function Sender(manager, messageDispatcher) {
+                        _super.call(this, function () { return new window.ChromeExtensionBackedSelenium(manager.getTabURL(), ''); });
+                        this.manager = manager;
                         this.messageDispatcher = messageDispatcher;
                         this.messagePlaySeleniumCommandExecuteRepository = new Application.Models.Message.PlaySeleniumCommandExecute.Repository();
                         window.shouldAbortCurrentCommand = function () { return false; };
-                        tabManager.onConnect(function () {
+                        manager.onConnect(function () {
                             window.shouldAbortCurrentCommand = function () { return false; };
                         });
-                        tabManager.onDisconnect(function () {
+                        manager.onDisconnect(function () {
                             window.shouldAbortCurrentCommand = function () { return false; };
                         });
                     }
@@ -1052,7 +1090,7 @@ var Cat;
                         var _this = this;
                         var model = new Application.Models.SeleniumCommand.Model(command, args);
                         var message = new Application.Models.Message.PlaySeleniumCommandExecute.Model(model);
-                        this.tabManager.sendMessage(this.messagePlaySeleniumCommandExecuteRepository.toObject(message), function (message) {
+                        this.manager.sendMessage(this.messagePlaySeleniumCommandExecuteRepository.toObject(message)).then(function (message) {
                             _this.messageDispatcher.dispatch(message, {
                                 MessagePlaySeleniumCommandResultModel: function (message) { return callback('OK', true); }
                             });
@@ -1095,7 +1133,7 @@ var Cat;
 })(Cat || (Cat = {}));
 /// <reference path="../Models/Message/AddCommand/Model.ts" />
 /// <reference path="../Models/Message/Dispatcher.ts" />
-/// <reference path="../Services/Tab/TabManager.ts" />
+/// <reference path="../Services/Tab/Manager.ts" />
 /// <reference path="../Services/CommandSelectList.ts" />
 /// <reference path="../Services/Selenium/Sender.ts" />
 /// <reference path="../Models/CommandGrid/Model.ts" />
@@ -1108,7 +1146,7 @@ var Cat;
             var Autopilot;
             (function (Autopilot) {
                 var Controller = (function () {
-                    function Controller($scope, tabManager, commandGrid, messageDispatcher, seleniumSender, commandSelectList) {
+                    function Controller($scope, manager, commandGrid, messageDispatcher, seleniumSender, commandSelectList) {
                         $scope.commandGrid = commandGrid;
                         $scope.playSpeed = '100';
                         $scope.playAll = function () {
@@ -1138,10 +1176,10 @@ var Cat;
                             //@TODO
                         };
                         $scope.selectList = commandSelectList.gets().map(function (elem) { return elem.getAttribute('name'); });
-                        this.bindTabManager($scope, tabManager, messageDispatcher);
+                        this.bindTabManager($scope, manager, messageDispatcher);
                     }
-                    Controller.prototype.bindTabManager = function ($scope, tabManager, messageDispatcher) {
-                        tabManager.onMessage(function (message) {
+                    Controller.prototype.bindTabManager = function ($scope, manager, messageDispatcher) {
+                        manager.onMessage(function (message) {
                             messageDispatcher.dispatch(message, {
                                 MessageAddCommentModel: function (message) {
                                     if (!$scope.recordingStatus) {
@@ -1149,7 +1187,7 @@ var Cat;
                                     }
                                     $scope.$apply(function () {
                                         if (!$scope.commandGrid.getList().length) {
-                                            $scope.baseURL = tabManager.getTabURL();
+                                            $scope.baseURL = manager.getTabURL();
                                             $scope.commandGrid.add(new Cat.Models.Command.Model('open', '', $scope.baseURL));
                                         }
                                         $scope.commandGrid.add(message.command);
@@ -1257,7 +1295,7 @@ var Cat;
 })(Cat || (Cat = {}));
 /// <reference path="Tab/InjectScripts.ts" />
 /// <reference path="Config.ts" />
-/// <reference path="Tab/TabManager" />
+/// <reference path="Tab/Manager" />
 var Cat;
 (function (Cat) {
     var Application;
@@ -1266,16 +1304,32 @@ var Cat;
         (function (Services) {
             var TabInitializer = (function () {
                 function TabInitializer(calledTabId) {
-                    var _this = this;
                     this.calledTabId = calledTabId;
                     var injectScripts = Services.Config.injectScripts;
                     this.injectScripts = new Services.Tab.InjectScripts(injectScripts);
-                    this.tabManager = new Services.Tab.TabManager(this.calledTabId, function (tabManager) {
-                        return _this.injectScripts.connect(tabManager.getTabId());
-                    });
                 }
                 TabInitializer.prototype.start = function () {
-                    return this.tabManager.connect();
+                    var _this = this;
+                    return new Promise(function (resolve, reject) {
+                        _this.getTab(_this.calledTabId).then(function (tab) {
+                            _this.manager = new Services.Tab.Manager(tab, function (manager) {
+                                return _this.injectScripts.connect(manager.getTabId());
+                            });
+                            _this.manager.connect().then(function () { return resolve(_this.manager); });
+                        }).catch(reject);
+                    });
+                };
+                TabInitializer.prototype.getTab = function (calledTabId) {
+                    return new Promise(function (resolve, reject) {
+                        chrome.tabs.get(parseInt(calledTabId), function (tab) {
+                            if (tab && tab.id) {
+                                resolve(tab);
+                            }
+                            else {
+                                reject('Security Error.\ndoes not run on "chrome://" page.\n');
+                            }
+                        });
+                    });
                 };
                 return TabInitializer;
             })();
@@ -1300,8 +1354,8 @@ var Cat;
                 }
                 WindowCtrl.prototype.initAngular = function (tabManager, commandSelectList) {
                     return new Promise(function (resolve) {
-                        var autopilotApp = angular.module('AutopilotApp', ['ui.sortable']).factory('tabManager', function () { return tabManager; }).factory('commandSelectList', function () { return commandSelectList; }).service('messageDispatcher', Application.Models.Message.Dispatcher).factory('seleniumSender', function (tabManager, messageDispatcher) {
-                            applicationServicesSeleniumSender = new Application.Services.Selenium.Sender(tabManager, messageDispatcher);
+                        var autopilotApp = angular.module('AutopilotApp', ['ui.sortable']).factory('tabManager', function () { return tabManager; }).factory('commandSelectList', function () { return commandSelectList; }).service('messageDispatcher', Application.Models.Message.Dispatcher).factory('seleniumSender', function (manager, messageDispatcher) {
+                            applicationServicesSeleniumSender = new Application.Services.Selenium.Sender(manager, messageDispatcher);
                             return applicationServicesSeleniumSender;
                         }).factory('commandGrid', function () {
                             return new Application.Models.CommandGrid.Model();
@@ -1331,10 +1385,10 @@ var Cat;
                     (new Promise(function (resolve, reject) {
                         var tabInitializer = new Application.Services.TabInitializer(_this.calledTabId);
                         tabInitializer.start().then(resolve).catch(reject);
-                    })).then(function (tabManager) {
+                    })).then(function (manager) {
                         _this.initCommandSelectList().then(function (results) {
                             var commandSelectList = results.shift();
-                            _this.initAngular(tabManager, commandSelectList).then(resolve).catch(catchError);
+                            _this.initAngular(manager, commandSelectList).then(resolve).catch(catchError);
                         }).catch(catchError);
                     }).catch(catchError);
                 };

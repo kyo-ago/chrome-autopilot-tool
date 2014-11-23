@@ -13,8 +13,8 @@ module Cat.Application.Controllers {
                     .factory('tabManager', () => tabManager)
                     .factory('commandSelectList', () => commandSelectList)
                     .service('messageDispatcher', Models.Message.Dispatcher)
-                    .factory('seleniumSender', (tabManager: Services.Tab.TabManager, messageDispatcher: Models.Message.Dispatcher) => {
-                        applicationServicesSeleniumSender = new Services.Selenium.Sender(tabManager, messageDispatcher);
+                    .factory('seleniumSender', (manager: Services.Tab.Manager, messageDispatcher: Models.Message.Dispatcher) => {
+                        applicationServicesSeleniumSender = new Services.Selenium.Sender(manager, messageDispatcher);
                         return applicationServicesSeleniumSender;
                     })
                     .factory('commandGrid', () => {
@@ -43,13 +43,13 @@ module Cat.Application.Controllers {
             ]);
         }
         private initTabInitializer (resolve, catchError) {
-            (new Promise((resolve: (tabManager: Services.Tab.TabManager) => void, reject: (errorMessage: string) => void) => {
+            (new Promise((resolve: (manager: Services.Tab.Manager) => void, reject: (errorMessage: string) => void) => {
                 var tabInitializer = new Services.TabInitializer(this.calledTabId);
                 tabInitializer.start().then(resolve).catch(reject);
-            })).then((tabManager: Services.Tab.TabManager) => {
+            })).then((manager: Services.Tab.Manager) => {
                 this.initCommandSelectList().then((results) => {
                     var commandSelectList = results.shift();
-                    this.initAngular(tabManager, commandSelectList)
+                    this.initAngular(manager, commandSelectList)
                         .then(resolve)
                         .catch(catchError)
                     ;

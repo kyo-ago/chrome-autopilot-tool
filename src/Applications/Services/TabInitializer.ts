@@ -1,20 +1,35 @@
 /// <reference path="Tab/InjectScripts.ts" />
 /// <reference path="Config.ts" />
-/// <reference path="Tab/TabManager" />
+/// <reference path="Tab/Manager" />
 
 module Cat.Application.Services {
     export class TabInitializer {
         private injectScripts : Tab.InjectScripts;
-        private tabManager : Tab.TabManager;
+        private manager : Tab.Manager;
         constructor (private calledTabId: string) {
             var injectScripts = Config.injectScripts;
             this.injectScripts = new Tab.InjectScripts(injectScripts);
-            this.tabManager = new Tab.TabManager(this.calledTabId, (tabManager: Tab.TabManager) => {
-                return this.injectScripts.connect(tabManager.getTabId());
-            });
         }
         start () {
-            return this.tabManager.connect();
+            return new Promise((resolve, reject) => {
+                this.getTab(this.calledTabId).then((tab: chrome.tabs.Tab) => {
+                    this.manager = new Tab.Manager(tab, (manager) => {
+                        return this.injectScripts.connect(manager.getTabId());
+                    });
+                    this.manager.connect().then(() => resolve(this.manager));
+                }).catch(reject);
+            });
+        }
+        private getTab (calledTabId: string) {
+            return new Promise((resolve: (tab: chrome.tabs.Tab) => void, reject: (errorMessage: string) => void) => {
+                chrome.tabs.get(parseInt(calledTabId), (tab: chrome.tabs.Tab) => {
+                    if (tab && tab.id) {
+                        resolve(tab);
+                    } else {
+                        reject('Security Error.\ndoes not run on "chrome://" page.\n');
+                    }
+                });
+            });
         }
     }
 }

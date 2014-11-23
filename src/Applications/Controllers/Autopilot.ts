@@ -1,6 +1,6 @@
 /// <reference path="../Models/Message/AddCommand/Model.ts" />
 /// <reference path="../Models/Message/Dispatcher.ts" />
-/// <reference path="../Services/Tab/TabManager.ts" />
+/// <reference path="../Services/Tab/Manager.ts" />
 /// <reference path="../Services/CommandSelectList.ts" />
 /// <reference path="../Services/Selenium/Sender.ts" />
 /// <reference path="../Models/CommandGrid/Model.ts" />
@@ -24,7 +24,7 @@ module Cat.Application.Controllers.Autopilot {
     export class Controller {
         constructor(
             $scope: Scope,
-            tabManager: Services.Tab.TabManager,
+            manager: Services.Tab.Manager,
             commandGrid: Cat.Application.Models.CommandGrid.Model,
             messageDispatcher: Models.Message.Dispatcher,
             seleniumSender: Cat.Application.Services.Selenium.Sender,
@@ -60,14 +60,14 @@ module Cat.Application.Controllers.Autopilot {
                 //@TODO
             };
             $scope.selectList = commandSelectList.gets().map((elem) => elem.getAttribute('name'));
-            this.bindTabManager($scope, tabManager, messageDispatcher);
+            this.bindTabManager($scope, manager, messageDispatcher);
         }
         private bindTabManager (
             $scope: Scope,
-            tabManager: Services.Tab.TabManager,
+            manager: Services.Tab.Manager,
             messageDispatcher: Models.Message.Dispatcher
         ) {
-            tabManager.onMessage((message: Object) => {
+            manager.onMessage((message: Object) => {
                 messageDispatcher.dispatch(message, {
                     MessageAddCommentModel : (message: Models.Message.AddComment.Model) => {
                         if (!$scope.recordingStatus) {
@@ -75,7 +75,7 @@ module Cat.Application.Controllers.Autopilot {
                         }
                         $scope.$apply(() => {
                             if (!$scope.commandGrid.getList().length) {
-                                $scope.baseURL = tabManager.getTabURL();
+                                $scope.baseURL = manager.getTabURL();
                                 $scope.commandGrid.add(new Cat.Models.Command.Model('open', '', $scope.baseURL));
                             }
                             $scope.commandGrid.add(message.command);
