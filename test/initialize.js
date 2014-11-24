@@ -1,5 +1,5 @@
 var TestInitialize = true;
-if (!this.chrome) {
+if ('undefined' === typeof chrome) {
     var chrome = {};
 }
 var chromeEvent = function () {
@@ -10,6 +10,13 @@ var chromeEvent = function () {
 };
 if (!chrome.tabs) {
     chrome.tabs = {
+        'newTab' : function () {
+            return {
+                'id' : 1,
+                'url' : 'http://example.com',
+                'status' : 'complete'
+            };
+        },
         'get' : function (tabId, callback) {
             setTimeout(callback.bind(this, {'id' : 1}));
         },
