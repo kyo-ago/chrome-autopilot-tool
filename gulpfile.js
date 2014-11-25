@@ -80,7 +80,7 @@ gulp.task('watch', ['compile', 'test:init'], function() {
         configFile: __dirname + '/karma.conf.js'
     });
     gulp.watch(['test/**/*.ts']).on('change', function (file) {
-        return gulp.src(['src/**/*.ts', file['path'].replace(__dirname + '/', '')])
+        return gulp.src(['src/**/*.ts', 'test/_loadtsd.ts', file['path'].replace(__dirname + '/', '')])
             .pipe(plumber())
             .pipe(typescript())
             .pipe(gulp.dest('tmp/test/'))

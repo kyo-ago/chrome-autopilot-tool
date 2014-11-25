@@ -1275,7 +1275,7 @@ var Cat;
                     InjectScripts.prototype.connect = function (tabid) {
                         var _this = this;
                         return new Promise(function (resolve) {
-                            // double loading flag check.
+                            // double loading check.
                             chrome.tabs.executeScript(tabid, {
                                 'code': 'this.extensionContentLoaded'
                             }, function (result) {

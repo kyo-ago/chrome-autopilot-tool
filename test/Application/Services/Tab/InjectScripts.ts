@@ -8,10 +8,9 @@ describe('Cat.Application.Services.Tab.InjectScripts', () => {
     });
     it('connect',(done) => {
         var injectScripts = new Cat.Application.Services.Tab.InjectScripts(['', '', '']);
-        sinon.spy(injectScripts, 'executeEnd');
+        sinonBox.spy(injectScripts, 'executeEnd');
         injectScripts.connect(1).then(() => {
             assert((<any>injectScripts).executeEnd.calledOnce);
-            sinon.restore((<any>injectScripts).executeEnd);
             done();
         }).catch(console.error.bind(console));
     });

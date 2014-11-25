@@ -26,7 +26,7 @@ module Cat.Application.Services.Tab {
         }
         connect(tabid: number) {
             return new Promise<void>((resolve: () => void) => {
-                // double loading flag check.
+                // double loading check.
                 chrome.tabs.executeScript(tabid, {
                     'code' : 'this.extensionContentLoaded'
                 }, (result: any[]) => {

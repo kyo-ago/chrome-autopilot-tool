@@ -7,28 +7,21 @@ describe('Cat.Application.Services.Tab.Manager', () => {
     it('new',() => {
         new Cat.Application.Services.Tab.Manager(tab, (manager) => new Promise<void>((resolve) => resolve()));
     });
-    it('connect',(done) => {
-        var spy = sinon.spy((resolve) => resolve());
+    it('connect',() => {
+        var spy = sinonBox.spy((resolve) => resolve());
         var manager = new Cat.Application.Services.Tab.Manager(tab, (manager) => new Promise<void>(spy));
         manager.connect();
-        setTimeout(() => {
-            assert(spy.callCount === 1);
-            done();
-        });
+        assert(spy.callCount === 1);
     });
-    it('onUpdated',(done) => {
-        sinon.spy(chrome.tabs.onUpdated, 'addListener');
-        var spy = sinon.spy((resolve) => resolve());
+    it('onUpdated',() => {
+        sinonBox.spy(chrome.tabs.onUpdated, 'addListener');
+        var spy = sinonBox.spy((resolve) => resolve());
         var manager = new Cat.Application.Services.Tab.Manager(tab, (manager) => new Promise<void>(spy));
         manager.connect();
         var handler = (<SinonSpy>chrome.tabs.onUpdated.addListener).lastCall.args[0];
         handler(tab.id, {
             status : 'loading'
         });
-        setTimeout(() => {
-            assert(spy.callCount === 2);
-            sinon.restore(chrome.tabs.onUpdated.addListener);
-            done();
-        });
+        assert(spy.callCount === 2);
     });
 });
