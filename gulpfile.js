@@ -72,22 +72,24 @@ gulp.task('test', function () {
     var runSequence = require('run-sequence');
     runSequence('test:init', 'test:karma', 'test:clean');
 });
-gulp.task('watch', ['compile', 'test:init'], function() {
+gulp.task('watch:compile', ['compile'], function() {
     var plumber = require('gulp-plumber');
     var typescript = require('gulp-tsc');
-    var karma = require('karma').server;
-    karma.start({
-        configFile: __dirname + '/karma.conf.js'
-    });
     gulp.watch(['test/**/*.ts']).on('change', function (file) {
         return gulp.src(['src/**/*.ts', 'test/_loadtsd.ts', file['path'].replace(__dirname + '/', '')])
             .pipe(plumber())
             .pipe(typescript())
             .pipe(gulp.dest('tmp/test/'))
             .on('end', testPowerAssert)
-            ;
+        ;
     });
     gulp.watch('src/**/*.ts', ['compile']);
 });
+gulp.task('watch:test', ['watch:compile'], function() {
+    var karma = require('karma').server;
+    karma.start({
+        configFile: __dirname + '/karma.conf.js'
+    });
+});
 
-gulp.task('default', ['watch']);
+gulp.task('default', ['watch:test']);

@@ -14,6 +14,6 @@ var applicationServicesSeleniumSender: Cat.Application.Services.Selenium.Sender;
     };
     var windowCtrl = new Cat.Application.Controllers.WindowCtrl(calledTabId);
     windowCtrl.initialize().then(() => {
-        console.log('load success');
+//        console.log('load success');
     }).catch(catchError);
 })();

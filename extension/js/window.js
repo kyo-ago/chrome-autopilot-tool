@@ -1365,9 +1365,9 @@ var Cat;
                 function WindowCtrl(calledTabId) {
                     this.calledTabId = calledTabId;
                 }
-                WindowCtrl.prototype.initAngular = function (tabManager, commandSelectList) {
+                WindowCtrl.prototype.initAngular = function (manager, commandSelectList) {
                     return new Promise(function (resolve) {
-                        var autopilotApp = angular.module('AutopilotApp', ['ui.sortable']).factory('tabManager', function () { return tabManager; }).factory('commandSelectList', function () { return commandSelectList; }).service('messageDispatcher', Application.Models.Message.Dispatcher).factory('seleniumSender', function (manager, messageDispatcher) {
+                        var autopilotApp = angular.module('AutopilotApp', ['ui.sortable']).factory('manager', function () { return manager; }).factory('commandSelectList', function () { return commandSelectList; }).service('messageDispatcher', Application.Models.Message.Dispatcher).factory('seleniumSender', function (manager, messageDispatcher) {
                             applicationServicesSeleniumSender = new Application.Services.Selenium.Sender(manager, messageDispatcher);
                             return applicationServicesSeleniumSender;
                         }).factory('commandGrid', function () {
@@ -1382,8 +1382,7 @@ var Cat;
                     return Promise.all([
                         new Promise(function (resolve, reject) {
                             var commandSelectList = new Application.Services.CommandSelectList();
-                            commandSelectList.load(seleniumApiXMLFile).then(resolve).catch(reject);
-                            return commandSelectList;
+                            commandSelectList.load(seleniumApiXMLFile).then(function () { return resolve(commandSelectList); }).catch(reject);
                         }),
                         new Promise(function (resolve, reject) {
                             Application.Services.Selenium.Sender.setApiDocs(seleniumApiXMLFile).then(resolve).catch(reject);
@@ -1429,6 +1428,6 @@ var applicationServicesSeleniumSender;
     };
     var windowCtrl = new Cat.Application.Controllers.WindowCtrl(calledTabId);
     windowCtrl.initialize().then(function () {
-        console.log('load success');
+        //        console.log('load success');
     }).catch(catchError);
 })();

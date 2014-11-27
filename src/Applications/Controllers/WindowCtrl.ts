@@ -7,10 +7,10 @@
 module Cat.Application.Controllers {
     export class WindowCtrl {
         constructor (private calledTabId: string) {}
-        private initAngular (tabManager, commandSelectList) {
+        private initAngular (manager, commandSelectList) {
             return new Promise((resolve) => {
                 var autopilotApp = angular.module('AutopilotApp', ['ui.sortable'])
-                    .factory('tabManager', () => tabManager)
+                    .factory('manager', () => manager)
                     .factory('commandSelectList', () => commandSelectList)
                     .service('messageDispatcher', Models.Message.Dispatcher)
                     .factory('seleniumSender', (manager: Services.Tab.Manager, messageDispatcher: Models.Message.Dispatcher) => {
@@ -29,10 +29,9 @@ module Cat.Application.Controllers {
         private initCommandSelectList () {
             var seleniumApiXMLFile = chrome.runtime.getURL(Services.Config.seleniumApiXML);
             return Promise.all([
-                new Promise((resolve: () => void, reject: (errorMessage: string) => void) => {
+                new Promise((resolve: (commandSelectList: Services.CommandSelectList) => void, reject: (errorMessage: string) => void) => {
                     var commandSelectList = new Services.CommandSelectList();
-                    commandSelectList.load(seleniumApiXMLFile).then(resolve).catch(reject);
-                    return commandSelectList;
+                    commandSelectList.load(seleniumApiXMLFile).then(() => resolve(commandSelectList)).catch(reject);
                 }),
                 new Promise((resolve: () => void, reject: (errorMessage: string) => void) => {
                     Services.Selenium.Sender.setApiDocs(seleniumApiXMLFile).then(resolve).catch(reject);

@@ -7,6 +7,9 @@
   },
   "scripts": {
     "test": "gulp test",
+    "compile": "gulp compile",
+    "watch:test": "gulp watch:test",
+    "watch:compile": "gulp watch:compile",
     "postinstall": "bower cache clean && bower install && tsd reinstall -so"
   },
   "directories": {
