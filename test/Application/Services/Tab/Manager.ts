@@ -1,5 +1,3 @@
-/// <reference path="../../../../src/Applications/Services/Tab/InjectScripts.ts" />
-
 "use strict";
 
 describe('Cat.Application.Services.Tab.Manager', () => {

@@ -656,6 +656,13 @@ var Cat;
                             if (command === void 0) { command = 'OK'; }
                             _super.call(this);
                             this.command = command;
+                            this.validCommand = [
+                                'OK',
+                                'NG'
+                            ];
+                            if (!~this.validCommand.indexOf(command)) {
+                                throw new Error('invalid command,' + command);
+                            }
                         }
                         Model.messageName = 'playSeleniumCommandResult';
                         return Model;
@@ -801,21 +808,24 @@ var Cat;
                                 if (!result) {
                                     return reject('missing result');
                                 }
-                                var interval = setInterval(function () {
+                                var success = function () {
                                     if (!_this.port) {
                                         return;
                                     }
                                     if (_this.tab.status !== 'complete') {
                                         return;
                                     }
+                                    clearTimeout(timeout);
                                     clearInterval(interval);
                                     var message = new Application.Models.Message.PlaySeleniumCommandResult.Model(result);
                                     resolve(message.command);
-                                }, _this.sendMessageResponseInterval);
+                                };
+                                var interval = setInterval(success, _this.sendMessageResponseInterval);
                                 var timeout = setTimeout(function () {
                                     clearInterval(interval);
                                     return reject('sendMessage timeout');
                                 }, _this.sendMessageResponseInterval * 10);
+                                success();
                             });
                         });
                     };

@@ -656,6 +656,13 @@ var Cat;
                             if (command === void 0) { command = 'OK'; }
                             _super.call(this);
                             this.command = command;
+                            this.validCommand = [
+                                'OK',
+                                'NG'
+                            ];
+                            if (!~this.validCommand.indexOf(command)) {
+                                throw new Error('invalid command,' + command);
+                            }
                         }
                         Model.messageName = 'playSeleniumCommandResult';
                         return Model;

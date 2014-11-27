@@ -43,21 +43,24 @@ module Cat.Application.Services.Tab {
                     if (!result) {
                         return reject('missing result');
                     }
-                    var interval = setInterval(() => {
+                    var success = () => {
                         if (!this.port) {
                             return;
                         }
                         if (this.tab.status !== 'complete') {
                             return;
                         }
+                        clearTimeout(timeout);
                         clearInterval(interval);
                         var message = new Models.Message.PlaySeleniumCommandResult.Model(result);
                         resolve(message.command);
-                    }, this.sendMessageResponseInterval);
+                    };
+                    var interval = setInterval(success, this.sendMessageResponseInterval);
                     var timeout = setTimeout(() => {
                         clearInterval(interval);
                         return reject('sendMessage timeout');
                     }, this.sendMessageResponseInterval * 10);
+                    success();
                 });
             });
         }

@@ -30,6 +30,9 @@ if (!chrome.tabs) {
                 'onDisconnect' : chromeEvent()
             };
         },
+        'sendMessage' : function (tabId, message, callback) {
+            setTimeout(callback.bind(this, 'OK'));
+        },
         'onRemoved' : chromeEvent(),
         'onUpdated' : chromeEvent()
     };
