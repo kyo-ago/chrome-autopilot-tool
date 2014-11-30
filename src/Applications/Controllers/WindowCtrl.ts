@@ -4,6 +4,8 @@
 /// <reference path="../Services/Selenium/Sender.ts" />
 /// <reference path="../Models/CommandGrid/Model.ts" />
 
+var applicationServicesSeleniumSender: Cat.Application.Services.Selenium.Sender;
+
 module Cat.Application.Controllers {
     export class WindowCtrl {
         constructor (private calledTabId: string) {}

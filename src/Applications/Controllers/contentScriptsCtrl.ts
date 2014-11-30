@@ -50,6 +50,9 @@ module Cat.Application.Controllers {
             this.port.onDisconnect.addListener(() => {
                 Recorder.deregister(this.recorderObserver, window);
             });
+            chrome.runtime.onMessage.addListener((message: Object, sender: chrome.runtime.MessageSender, sendResponse: (message: Object) => void) => {
+                this.onMessage(message, sender, sendResponse);
+            });
         }
     }
 }

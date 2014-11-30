@@ -1,5 +1,3 @@
-/// <reference path="../typings/tsd.d.ts" />
-
 declare module chrome.extension {
     var onConnect: chrome.runtime.ExtensionConnectEvent;
 }

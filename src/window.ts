@@ -1,9 +1,7 @@
 /// <reference path="_loadtsd.ts" />
-/// <reference path="Applications/Controllers/WindowCtrl.ts" />
-/// <reference path="Applications/Services/Selenium/Sender.ts" />
 
 var autopilotApp: ng.IModule;
-var applicationServicesSeleniumSender: Cat.Application.Services.Selenium.Sender;
+declare var Cat;
 (() => {
     if ('undefined' !== typeof TestInitialize) {
         return;

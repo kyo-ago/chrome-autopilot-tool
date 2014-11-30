@@ -1,4 +1,3 @@
-/// <reference path="../typings/tsd.d.ts" />
 window.EventEmitter = window.EventEmitter2;
 /// <reference path="_loadtsd.ts" />
 (function () {

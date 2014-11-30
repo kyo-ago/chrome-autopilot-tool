@@ -1,5 +1,3 @@
-/// <reference path="../../../src/Models/CommandList/Repository.ts" />
-
 "use strict";
 
 describe('Cat.Models.CommandList.Repository', () => {
