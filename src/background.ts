@@ -1,4 +1,4 @@
-/// <reference path="_loadtsd.ts" />
+/// <reference path="_define.ts" />
 
 (() => {
     if ('undefined' !== typeof TestInitialize) {

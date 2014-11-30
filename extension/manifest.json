@@ -11,7 +11,8 @@
     "background": {
         "scripts": [
             "bower_components/eventemitter2/lib/eventemitter2.js",
-            "js/background.js"
+            "src/_define.js",
+            "src/background.js"
         ],
         "persistent": false
     },
@@ -24,6 +25,6 @@
         "48": "img/icon128.png"
     },
     "web_accessible_resources": [
-        "/js/selenium-ide/iedoc-core.xml"
+        "/src/selenium-ide/iedoc-core.xml"
     ]
 }

@@ -24,38 +24,30 @@ gulp.task('zip', function () {
 
 gulp.task('compile:clean', function () {
     var rm = require('gulp-rm');
-    return gulp.src('extension/js/*.map', { read: false })
+    return gulp.src('extension/src/*.map', { read: false })
         .pipe(rm())
     ;
-});gulp.task('compile:tsc', function () {
+});
+gulp.task('compile:tsc', function () {
     var merge = require('event-stream').merge;
     var typescript = require('gulp-tsc');
     var sourcemaps = require('gulp-sourcemaps');
-    var app = gulp.src(['typings/tsd.d.ts', 'src/_loadtsd.ts', 'src/*/**/*.ts'])
+    var app = gulp.src(['typings/tsd.d.ts', 'src/_define.ts', 'src/*/**/*.ts'])
         .pipe(typescript({
-            'out' : 'application.js',
+            'out' : 'src/application.js',
             'sourcemap' : true,
             'declaration' : true
         }))
         .pipe(sourcemaps.init({'loadMaps': true}))
         .pipe(sourcemaps.write())
-        .pipe(gulp.dest('extension/js/'))
+        .pipe(gulp.dest('extension/'))
     ;
-    var bases = [
-        'background',
-        'content_scripts',
-        'window'
-    ].map(function (name) {
-        return gulp.src(['typings/tsd.d.ts', 'src/'+name+'.ts'])
-            .pipe(typescript({
-                'out' : name+'.js'
-            }))
-            .pipe(gulp.dest('extension/js/'))
-        ;
-    });
-    bases.push(app);
+    var init = gulp.src(['typings/tsd.d.ts', 'src/*.ts', '!src/_define.ts'])
+        .pipe(typescript())
+        .pipe(gulp.dest('extension/'))
+    ;
 
-    return merge.apply(this, bases);
+    return merge(app, init);
 });
 gulp.task('compile', function () {
     var runSequence = require('run-sequence');
@@ -65,7 +57,7 @@ gulp.task('compile', function () {
 gulp.task('test:compile', function () {
     var typescript = require('gulp-tsc');
     var espower = require('gulp-espower');
-    return gulp.src(['typings/tsd.d.ts', 'test/_loadtsd.ts', 'extension/js/application.d.ts', 'test/**/*.ts'])
+    return gulp.src(['typings/tsd.d.ts', 'test/_loadtsd.ts', 'extension/src/application.d.ts', 'test/**/*.ts'])
         .pipe(typescript())
         .pipe(espower())
         .pipe(gulp.dest('tmp/'))

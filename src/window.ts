@@ -1,4 +1,4 @@
-/// <reference path="_loadtsd.ts" />
+/// <reference path="_define.ts" />
 
 var autopilotApp: ng.IModule;
 declare var Cat;

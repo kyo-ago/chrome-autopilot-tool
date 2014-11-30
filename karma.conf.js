@@ -19,7 +19,7 @@ module.exports = function(config) {
       'extension/bower_components/eventemitter2/lib/eventemitter2.js',
       'node_modules/sinon/pkg/sinon.js',
       'test/initialize.js',
-      'extension/js/*.js',
+      'extension/src/*.js',
       'tmp/test/**/*.js'
     ],
 

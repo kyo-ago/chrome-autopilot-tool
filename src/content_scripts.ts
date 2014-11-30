@@ -1,4 +1,4 @@
-/// <reference path="_loadtsd.ts" />
+/// <reference path="_define.ts" />
 
 var globalPort: chrome.runtime.Port;
 declare var Cat;

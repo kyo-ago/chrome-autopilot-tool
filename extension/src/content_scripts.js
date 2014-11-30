@@ -1,5 +1,4 @@
-window.EventEmitter = window.EventEmitter2;
-/// <reference path="_loadtsd.ts" />
+/// <reference path="_define.ts" />
 var globalPort;
 (function () {
     if ('undefined' !== typeof TestInitialize) {
