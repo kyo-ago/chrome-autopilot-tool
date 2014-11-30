@@ -1,8 +1,3 @@
-/// <reference path="../Models/SeleniumCommand/Model.ts" />
-/// <reference path="../Models/Message/Dispatcher.ts" />
-/// <reference path="../Services/RecorderObserver.ts" />
-/// <reference path="../Services/Selenium/Receiver.ts" />
-
 module Cat.Application.Controllers {
     export class ContentScriptsCtrl {
         private messagePlaySeleniumCommandResultRepository : Models.Message.PlaySeleniumCommandResult.Repository;

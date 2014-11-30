@@ -1,9 +1,3 @@
-/// <reference path="Autopilot.ts" />
-/// <reference path="../Services/Config.ts" />
-/// <reference path="../Services/Tab/Initializer.ts" />
-/// <reference path="../Services/Selenium/Sender.ts" />
-/// <reference path="../Models/CommandGrid/Model.ts" />
-
 var applicationServicesSeleniumSender: Cat.Application.Services.Selenium.Sender;
 
 module Cat.Application.Controllers {

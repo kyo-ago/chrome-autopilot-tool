@@ -1,5 +1,3 @@
-/// <reference path="../../../Models/CommandList/Model.ts" />
-
 module Cat.Application.Models.CommandGrid {
     export class Model extends Cat.Base.EntityList.Model<Cat.Models.Command.Model> {
         getCommandList() {

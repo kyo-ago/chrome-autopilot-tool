@@ -1,5 +1,3 @@
-/// <reference path="UUID" />
-
 module Cat.Base {
     export class Identity {
         constructor (public uuid: UUID.UUID = new UUID.UUID) {

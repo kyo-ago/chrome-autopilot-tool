@@ -1,9 +1,3 @@
-/// <reference path="./AddCommand/Repository.ts" />
-/// <reference path="./PlayCommand/Repository.ts" />
-/// <reference path="./PlayCommandList/Repository.ts" />
-/// <reference path="./PlaySeleniumCommandExecute/Repository.ts" />
-/// <reference path="./PlaySeleniumCommandResult/Repository.ts" />
-
 module Cat.Application.Models.Message {
     export interface DispatchMap {
         MessageAddCommentModel? : (message: AddComment.Model) => void;

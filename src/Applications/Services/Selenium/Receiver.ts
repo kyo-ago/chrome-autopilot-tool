@@ -1,6 +1,3 @@
-/// <reference path="../../Models/SeleniumCommand/Model.ts" />
-/// <reference path="./Base.ts" />
-
 module Cat.Application.Services.Selenium {
     export class Receiver extends Base {
         constructor () {

@@ -1,7 +1,3 @@
-/// <reference path="InjectScripts.ts" />
-/// <reference path="../Config.ts" />
-/// <reference path="Manager" />
-
 module Cat.Application.Services.Tab {
     export class Initializer {
         private injectScripts : InjectScripts;

@@ -57,7 +57,7 @@ gulp.task('compile', function () {
 gulp.task('test:compile', function () {
     var typescript = require('gulp-tsc');
     var espower = require('gulp-espower');
-    return gulp.src(['typings/tsd.d.ts', 'test/_loadtsd.ts', 'extension/src/application.d.ts', 'test/**/*.ts'])
+    return gulp.src(['typings/tsd.d.ts', 'extension/src/application.d.ts', 'test/**/*.ts'])
         .pipe(typescript())
         .pipe(espower())
         .pipe(gulp.dest('tmp/'))

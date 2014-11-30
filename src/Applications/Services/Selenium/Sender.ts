@@ -1,9 +1,3 @@
-/// <reference path="../../../Models/CommandList/Model.ts" />
-/// <reference path="../../Models/Message/PlaySeleniumCommandExecute/Repository.ts" />
-/// <reference path="../../Models/Message/Dispatcher.ts" />
-/// <reference path="../Tab/Manager.ts" />
-/// <reference path="./Base.ts" />
-
 module Cat.Application.Services.Selenium {
     export class Sender extends Base {
         private messagePlaySeleniumCommandExecuteRepository = new Models.Message.PlaySeleniumCommandExecute.Repository();

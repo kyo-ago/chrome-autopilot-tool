@@ -1,5 +1,3 @@
-/// <reference path="Model.ts" />
-
 module Cat.Application.Services.Tab {
     export class Manager {
         private tab: Model;

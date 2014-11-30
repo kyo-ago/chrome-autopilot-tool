@@ -1,7 +1,3 @@
-/// <reference path="../../../../Models/CommandList/Repository.ts" />
-/// <reference path="../Repository.ts" />
-/// <reference path="./Model.ts" />
-
 module Cat.Application.Models.Message.PlayCommandList {
     export class Repository extends Message.Repository {
         repository = new Cat.Models.CommandList.Repository();

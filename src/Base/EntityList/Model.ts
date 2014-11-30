@@ -1,6 +1,3 @@
-/// <reference path="../Identity" />
-/// <reference path="../Entity/Model.ts" />
-
 module Cat.Base.EntityList {
     export class Model<E extends Entity.Model> extends Entity.Model {
         list: E[];

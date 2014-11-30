@@ -1,10 +1,3 @@
-/// <reference path="../Models/Message/AddCommand/Model.ts" />
-/// <reference path="../Models/Message/Dispatcher.ts" />
-/// <reference path="../Services/Tab/Manager.ts" />
-/// <reference path="../Services/CommandSelectList.ts" />
-/// <reference path="../Services/Selenium/Sender.ts" />
-/// <reference path="../Models/CommandGrid/Model.ts" />
-
 module Cat.Application.Controllers.Autopilot {
     export interface Scope extends ng.IScope {
         playAll: () => void;

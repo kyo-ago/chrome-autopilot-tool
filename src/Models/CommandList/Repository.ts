@@ -1,7 +1,3 @@
-/// <reference path="../../Base/EntityList/Repository.ts" />
-/// <reference path="../Command/Repository.ts" />
-/// <reference path="./Model.ts" />
-
 module Cat.Models.CommandList {
     export class Repository extends Cat.Base.EntityList.Repository<Command.Model, Model> implements Cat.Base.Entity.Repository<Model> {
         constructor () {

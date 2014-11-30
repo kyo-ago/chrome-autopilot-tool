@@ -1,5 +1,3 @@
-/// <reference path="../../Models/Message/PlaySeleniumCommandResult/Repository.ts" />
-
 module Cat.Application.Services.Tab {
     export class Model extends EventEmitter {
         private port: chrome.runtime.Port;

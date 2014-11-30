@@ -1,5 +1,3 @@
-/// <reference path="../Identity" />
-
 module Cat.Base.Entity {
     export class Model extends Identity {
         constructor (public identity: Identity = new Identity(new UUID.UUID)) {

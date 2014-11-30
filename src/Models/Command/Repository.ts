@@ -1,6 +1,3 @@
-/// <reference path="../../Base/Entity/Repository.ts" />
-/// <reference path="./Model.ts" />
-
 module Cat.Models.Command {
     export interface IModelObject {
         type: string;

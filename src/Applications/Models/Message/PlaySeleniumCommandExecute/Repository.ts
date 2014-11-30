@@ -1,7 +1,3 @@
-/// <reference path="../../SeleniumCommand/Repository.ts" />
-/// <reference path="../Repository.ts" />
-/// <reference path="./Model.ts" />
-
 module Cat.Application.Models.Message.PlaySeleniumCommandExecute {
     export class Repository extends Message.Repository {
         repository = new SeleniumCommand.Repository();
