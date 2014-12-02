@@ -9,7 +9,7 @@
 </head>
 <body>
 <div ng-controller="Autopilot">
-    <div class="baseURL"><span>Base URL</span><input type="text" class="urlInput" ng-model="baseURL"></div>
+    <div class="baseURL"><span>Base URL</span><div class="urlForm"><input type="text" class="urlInput" ng-model="baseURL"></div></div>
     <div class="testControl">
         <div class="play">
             <input class="range" type="range" ng-model="playSpeed" min="0" max="100" ng-change="changeSpeed()">

@@ -1,4 +1,30 @@
-html, body, div, span, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, code, img, q, dl, dt, dd, ol, ul, li, form, label, table, caption, tbody, tfoot, thead, tr, th, td { margin: 0; padding: 0; border: 0; outline: 0; font-size: 100%; vertical-align: baseline; background: transparent; } body { line-height: 1; } ol, ul { list-style: none; } blockquote, q { quotes: none; } blockquote:before, blockquote:after, q:before, q:after { content: ''; content: none; } :focus { outline: 0; } table { border-collapse: collapse; border-spacing: 0; }
+html, body, div, span, iframe, h1, h2, h3, h4, h5, h6, p,
+blockquote, pre, a, code, img, q, dl, dt, dd, ol, ul, li,
+form, label, table, caption, tbody, tfoot, thead, tr, th,
+td {
+  margin: 0; padding: 0; border: 0; outline: 0;
+  font-size: 100%; vertical-align: baseline;
+  background: transparent;
+}
+body { line-height: 1; }
+ol, ul { list-style: none; }
+blockquote, q { quotes: none; }
+blockquote:before, blockquote:after, q:before, q:after {
+  content: ''; content: none;
+}
+:focus { outline: 0; }
+table { border-collapse: collapse; border-spacing: 0; }
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+html {
+  box-sizing: border-box;
+}
+
+body {
+  padding: 0.5em;
+}
 
 @mixin positionright {
   position: absolute;
@@ -10,8 +36,14 @@ html, body, div, span, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, co
 }
 
 .baseURL {
-  .urlInput {
-    width: 70%;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  .urlForm {
+    flex: 1;
+    .urlInput {
+      width: 100%;
+    }
   }
 }
 .testControl {
@@ -31,27 +63,17 @@ html, body, div, span, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, co
     width: 7em;
   }
 }
-.commandGrid {
-  .type, .value {
-    width: 5em;
-  }
+.commandGrid li {
+  width: 100%;
   .draggable {
     cursor: move;
+    width: 1em;
   }
-  .type {
-    width: 20%;
-  }
-  .target {
-    width: 30%;
-  }
-  select.target {
-    width: 28%;
-  }
-  .value {
-    width: 30%;
+  .target, .value {
+    width: 25%;
   }
   .delete {
-    @include positionright;
-    width: 10%;
+    float: right;
+    width: 3em;
   }
 }

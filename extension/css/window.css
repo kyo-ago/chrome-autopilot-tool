@@ -1,4 +1,7 @@
-html, body, div, span, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, code, img, q, dl, dt, dd, ol, ul, li, form, label, table, caption, tbody, tfoot, thead, tr, th, td {
+html, body, div, span, iframe, h1, h2, h3, h4, h5, h6, p,
+blockquote, pre, a, code, img, q, dl, dt, dd, ol, ul, li,
+form, label, table, caption, tbody, tfoot, thead, tr, th,
+td {
   margin: 0;
   padding: 0;
   border: 0;
@@ -27,11 +30,26 @@ table {
   border-collapse: collapse;
   border-spacing: 0; }
 
+*, *:before, *:after {
+  box-sizing: inherit; }
+
+html {
+  box-sizing: border-box; }
+
+body {
+  padding: 0.5em; }
+
 [role="button"] {
   cursor: pointer; }
 
-.baseURL .urlInput {
-  width: 70%; }
+.baseURL {
+  display: flex;
+  align-items: center;
+  width: 100%; }
+  .baseURL .urlForm {
+    flex: 1; }
+    .baseURL .urlForm .urlInput {
+      width: 100%; }
 
 .testControl .play, .testControl .rec {
   display: inline-block; }
@@ -46,19 +64,13 @@ table {
 .testControl .range {
   width: 7em; }
 
-.commandGrid .type, .commandGrid .value {
-  width: 5em; }
-.commandGrid .draggable {
-  cursor: move; }
-.commandGrid .type {
-  width: 20%; }
-.commandGrid .target {
-  width: 30%; }
-.commandGrid select.target {
-  width: 28%; }
-.commandGrid .value {
-  width: 30%; }
-.commandGrid .delete {
-  position: absolute;
-  right: 0;
-  width: 10%; }
+.commandGrid li {
+  width: 100%; }
+  .commandGrid li .draggable {
+    cursor: move;
+    width: 1em; }
+  .commandGrid li .target, .commandGrid li .value {
+    width: 25%; }
+  .commandGrid li .delete {
+    float: right;
+    width: 3em; }
