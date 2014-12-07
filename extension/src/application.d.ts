@@ -304,7 +304,7 @@ declare module Cat.Application.Services.Tab {
         connect(): void;
         onMessage(callback: (message: Object) => void): void;
         onDisconnect(callback: () => void): void;
-        disconnect(): void;
+        private disconnect();
     }
 }
 declare module Cat.Application.Models.Message.AddComment {

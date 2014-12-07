@@ -11,15 +11,17 @@ describe('Cat.Application.Services.Tab.Manager', () => {
         manager.connect();
         assert(spy.callCount === 1);
     });
-    it('onUpdated',() => {
+    it('onUpdated',(done) => {
         sinonBox.spy(chrome.tabs.onUpdated, 'addListener');
         var spy = sinonBox.spy((resolve) => resolve());
         var manager = new Cat.Application.Services.Tab.Manager(tab, (manager) => new Promise<void>(spy));
-        manager.connect();
-        var handler = (<SinonSpy>chrome.tabs.onUpdated.addListener).lastCall.args[0];
-        handler(tab.id, {
-            status : 'loading'
+        manager.connect().then(() => {
+            var handler = (<SinonSpy>chrome.tabs.onUpdated.addListener).lastCall.args[0];
+            handler(tab.id, {
+                status : 'loading'
+            });
+            assert(spy.callCount === 2);
+            done();
         });
-        assert(spy.callCount === 2);
     });
 });

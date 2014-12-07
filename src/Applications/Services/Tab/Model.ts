@@ -80,7 +80,7 @@ module Cat.Application.Services.Tab {
         onDisconnect (callback: () => void) {
             this.port.onDisconnect.addListener(callback);
         }
-        disconnect () {
+        private disconnect () {
             this.port = null;
             delete this.port;
         }

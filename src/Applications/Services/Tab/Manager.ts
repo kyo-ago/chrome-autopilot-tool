@@ -13,16 +13,17 @@ module Cat.Application.Services.Tab {
         }
         private closeMessage = 'Close test case?';
         connect () {
-            this.tab.connect();
-            this.tab.addListener('onRemoved', () => {
-                if (confirm(this.closeMessage)) {
-                    window.close();
-                }
+            return this.initialize(this).then(() => {
+                this.tab.connect();
+                this.tab.addListener('onRemoved', () => {
+                    if (confirm(this.closeMessage)) {
+                        window.close();
+                    }
+                });
+                this.tab.addListener('onUpdated', () => {
+                    this.reloadTab();
+                });
             });
-            this.tab.addListener('onUpdated', () => {
-                this.reloadTab();
-            });
-            return this.initialize(this);
         }
         private reloadTab () {
             var tabId = this.tab.getTabId();
