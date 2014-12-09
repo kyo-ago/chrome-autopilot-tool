@@ -31,6 +31,7 @@ module Cat.Application.Services.Tab {
                 this.initialize(this).then(() => {
                     chrome.tabs.get(tabId, (tab) => {
                         this.tab = new Model(tab);
+                        this.tab.connect();
                         this.onConnectListeners.forEach(listener => listener());
                         this.onMessageListeners.forEach(listener => this.tab.onMessage(listener));
                         this.onDisconnectListeners.forEach(listener => this.tab.onDisconnect(listener));
