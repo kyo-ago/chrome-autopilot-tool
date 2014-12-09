@@ -39,8 +39,11 @@ module Cat.Application.Controllers {
         }
         private initTabInitializer (resolve, catchError) {
             (new Promise((resolve: (manager: Services.Tab.Manager) => void, reject: (errorMessage: string) => void) => {
-                var initializer = new Services.Tab.Initializer(this.calledTabId);
-                initializer.start().then(resolve).catch(reject);
+                var fileLoader = new Services.Tab.FileLoader(Services.Config.injectScripts);
+                fileLoader.gets().then(() => {
+                    var initializer = new Services.Tab.Initializer(this.calledTabId, fileLoader);
+                    initializer.start().then(resolve).catch(reject);
+                }).catch(reject);
             })).then((manager: Services.Tab.Manager) => {
                 this.initCommandSelectList().then((results) => {
                     var commandSelectList = results.shift();

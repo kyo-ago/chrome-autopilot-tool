@@ -6,7 +6,6 @@ module Cat.Application.Services.Tab {
             private tab: chrome.tabs.Tab
         ) {
             super();
-            this.port = chrome.tabs.connect(this.tab.id);
         }
         getTabId () {
             return this.tab.id;
@@ -63,6 +62,7 @@ module Cat.Application.Services.Tab {
             });
         }
         connect () {
+            this.port = chrome.tabs.connect(this.tab.id);
             this.port.onDisconnect.addListener(() => {
                 this.disconnect();
             });

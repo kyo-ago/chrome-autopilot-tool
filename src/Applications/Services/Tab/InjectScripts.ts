@@ -1,27 +1,21 @@
 module Cat.Application.Services.Tab {
     export class InjectScripts {
-        private injectScripts : string[];
-        constructor (private injectScripts_) {
-            this.injectScripts = injectScripts_.slice();
+        private injectScript : string;
+        constructor (private fileLoader) {
+            this.injectScript = fileLoader.getCode();
         }
         // set double loading flag.
         private executeEnd (tabid: number, resolve: () => void) {
             chrome.tabs.executeScript(tabid, {
-                'code' : 'this.extensionContentLoaded = true'
+                'code' : 'this.extensionContentLoaded = true;'
             }, resolve);
         }
-        private executeScript (tabid: number, injectScript: string) {
+        private executeScript (tabid: number) {
             return new Promise((resolve) => {
-                //コードをxhrでキャッシュしてfileではなく、codeで渡してユーザ動作をブロックしつつ実行できないか
                 chrome.tabs.executeScript(tabid, {
                     'runAt' : 'document_start',
-                    'file' : injectScript
-                }, () => {
-                    if (this.injectScripts.length) {
-                        return this.executeScript(tabid, this.injectScripts.shift()).then(resolve);
-                    }
-                    this.executeEnd(tabid, resolve);
-                });
+                    'code' : this.injectScript
+                }, () => this.executeEnd(tabid, resolve));
             });
         }
         connect(tabid: number) {
@@ -33,7 +27,7 @@ module Cat.Application.Services.Tab {
                     if (result && result.length && result[0]) {
                         return resolve();
                     }
-                    this.executeScript(tabid, this.injectScripts.shift()).then(resolve);
+                    this.executeScript(tabid).then(resolve);
                 });
             });
         }

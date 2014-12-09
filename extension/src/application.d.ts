@@ -251,22 +251,32 @@ declare module Cat.Application.Services.Selenium {
     }
 }
 declare module Cat.Application.Services.Tab {
+    class FileLoader {
+        private injectScripts;
+        private injectScript;
+        constructor(injectScripts: any);
+        getCode(): string;
+        gets(): Promise<{}>;
+    }
+}
+declare module Cat.Application.Services.Tab {
     class Initializer {
         private calledTabId;
+        private fileLoader;
         private injectScripts;
         private manager;
-        constructor(calledTabId: string);
+        constructor(calledTabId: string, fileLoader: FileLoader);
         start(): Promise<{}>;
         private getTab(calledTabId);
     }
 }
 declare module Cat.Application.Services.Tab {
     class InjectScripts {
-        private injectScripts_;
-        private injectScripts;
-        constructor(injectScripts_: any);
+        private fileLoader;
+        private injectScript;
+        constructor(fileLoader: any);
         private executeEnd(tabid, resolve);
-        private executeScript(tabid, injectScript);
+        private executeScript(tabid);
         connect(tabid: number): Promise<void>;
     }
 }

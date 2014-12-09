@@ -2,9 +2,8 @@ module Cat.Application.Services.Tab {
     export class Initializer {
         private injectScripts : InjectScripts;
         private manager : Manager;
-        constructor (private calledTabId: string) {
-            var injectScripts = Config.injectScripts;
-            this.injectScripts = new InjectScripts(injectScripts);
+        constructor (private calledTabId: string, private fileLoader: FileLoader) {
+            this.injectScripts = new InjectScripts(fileLoader);
         }
         start () {
             return new Promise((resolve, reject) => {
