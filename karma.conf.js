@@ -17,6 +17,7 @@ module.exports = function(config) {
     files: [
       'extension/bower_components/power-assert/build/power-assert.js',
       'extension/bower_components/eventemitter2/lib/eventemitter2.js',
+      'extension/bower_components/jQuery/dist/jquery.js',
       'node_modules/sinon/pkg/sinon.js',
       'test/initialize.js',
       'extension/src/application.js',

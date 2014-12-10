@@ -8,10 +8,9 @@ describe('Cat.Application.Services.Tab.Model', () => {
     it('sendMessage',() => {
         var spy = sinonBox.spy((resolve) => resolve());
         var manager = new Cat.Application.Services.Tab.Model(tab);
-        var promise = manager.sendMessage({}).then((result) => {
+        (<any>manager).port = true;
+        return manager.sendMessage({}).then((result) => {
             assert(result === 'OK');
         });
-        sinonBox.clock.tick(100);
-        return promise;
     });
 });
